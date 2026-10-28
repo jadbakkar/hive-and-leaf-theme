@@ -2,8 +2,7 @@
 :root {
   --paper: #fbf8f2;
   --cream: #f6f1e7;
-  --forest: #1f3a2e;
-  --honey: #d99a2b;
+  --forest: #1a3a2a;
   --burgundy: #6d1a36;
   --ink: #1d1d1b;
   --muted: #6b6a63;
@@ -18,13 +17,14 @@
 body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.6 var(--sans); }
 img { max-width: 100%; display: block; }
 a { color: inherit; }
-h1 { color: var(--burgundy); }
-a:hover { color: var(--burgundy); }
+h1, h2, h3 { color: var(--forest); }
+a:not(.btn):hover { color: var(--burgundy); }
 h1, h2, h3 { font-family: var(--serif); font-weight: 400; line-height: 1.15; margin: 0 0 .5em; }
 
 .container { width: min(var(--container), 100% - 2 * var(--gutter)); margin-inline: auto; }
 .section { padding: 64px 0; }
 .btn { display: inline-block; padding: .8em 1.6em; border-radius: 999px; background: var(--burgundy); color: var(--paper); text-decoration: none; border: 0; cursor: pointer; }
+.btn:hover { background: var(--forest); color: var(--paper); }
 .btn--forest { background: var(--forest); }
 .text-burgundy { color: var(--burgundy); }
 .bg-burgundy { background: var(--burgundy); color: var(--paper); }
