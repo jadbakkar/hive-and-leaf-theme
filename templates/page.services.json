@@ -1,0 +1,35 @@
+{
+  "sections": {
+    "hero": {
+      "type": "about-hero",
+      "settings": {
+        "heading": "Page title",
+        "subheading": "Supporting text goes here."
+      }
+    },
+    "a": {
+      "type": "image-with-text",
+      "settings": {}
+    },
+    "b": {
+      "type": "image-with-text",
+      "settings": {
+        "image_position": "right"
+      }
+    },
+    "cta": {
+      "type": "about-cta",
+      "settings": {
+        "heading": "Closing heading",
+        "text": "Supporting text goes here.",
+        "button_label": "Button"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "a",
+    "b",
+    "cta"
+  ]
+}

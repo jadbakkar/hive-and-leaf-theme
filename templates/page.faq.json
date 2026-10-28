@@ -1,0 +1,39 @@
+{
+  "sections": {
+    "faq": {
+      "type": "faq",
+      "settings": {},
+      "blocks": {
+        "q1": {
+          "type": "item",
+          "settings": {}
+        },
+        "q2": {
+          "type": "item",
+          "settings": {}
+        },
+        "q3": {
+          "type": "item",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3"
+      ]
+    },
+    "cta": {
+      "type": "about-cta",
+      "settings": {
+        "heading": "Closing heading",
+        "text": "Supporting text goes here.",
+        "button_label": "Button"
+      }
+    }
+  },
+  "order": [
+    "faq",
+    "cta"
+  ]
+}
