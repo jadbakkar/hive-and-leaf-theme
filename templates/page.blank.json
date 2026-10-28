@@ -1,0 +1,19 @@
+{
+  "sections": {
+    "hero": {
+      "type": "about-hero",
+      "settings": {
+        "heading": "Page title",
+        "subheading": "Supporting text goes here."
+      }
+    },
+    "text": {
+      "type": "rich-text",
+      "settings": {}
+    }
+  },
+  "order": [
+    "hero",
+    "text"
+  ]
+}
