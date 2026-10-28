@@ -1,0 +1,15 @@
+<div class="container section" style="max-width:720px;">
+  <p><a href="{{ blog.url }}">&larr; Back to {{ blog.title }}</a></p>
+  <h1>{{ article.title }}</h1>
+  <p style="color:var(--muted);">{{ article.published_at | date: "%B %d, %Y" }}</p>
+  <div class="article-content">
+    {{ article.content }}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Article",
+  "settings": []
+}
+{% endschema %}

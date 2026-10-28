@@ -1,0 +1,111 @@
+<header class="site-header" id="header-{{ section.id }}">
+  <div class="container site-header__inner">
+    <a class="site-header__logo" href="{{ routes.root_url }}">{{ shop.name }}</a>
+
+    <div class="site-header__right">
+      <nav class="site-header__nav" data-nav aria-label="Main">
+        {% for link in section.settings.menu.links %}
+          <a href="{{ link.url }}">{{ link.title }}</a>
+        {% endfor %}
+      </nav>
+      <a class="site-header__cart" href="{{ routes.cart_url }}">Cart ({{ cart.item_count }})</a>
+      <button type="button" class="site-header__toggle" data-nav-toggle aria-expanded="false" aria-controls="header-{{ section.id }}-nav">Menu</button>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: relative;
+    height: 64px;
+    border-bottom: 1px solid var(--line);
+    background: var(--paper);
+  }
+  .site-header__inner {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .site-header__logo {
+    font-family: var(--serif);
+    font-size: 1.4rem;
+    text-decoration: none;
+  }
+  .site-header__right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .site-header__nav {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .site-header__nav a,
+  .site-header__cart {
+    text-decoration: none;
+  }
+  .site-header__toggle {
+    display: none;
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: .4em 1em;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  @media (max-width: 767px) {
+    .site-header__nav {
+      display: none;
+      position: absolute;
+      top: 64px;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+    }
+    .site-header__nav.is-open {
+      display: flex;
+    }
+    .site-header__nav a {
+      padding: 14px var(--gutter);
+      border-top: 1px solid var(--line);
+    }
+    .site-header__toggle {
+      display: inline-block;
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    var header = document.getElementById('header-{{ section.id }}');
+    if (!header) return;
+    var toggle = header.querySelector('[data-nav-toggle]');
+    var nav = header.querySelector('[data-nav]');
+    toggle.addEventListener('click', function () {
+      var open = nav.classList.toggle('is-open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    }
+  ]
+}
+{% endschema %}

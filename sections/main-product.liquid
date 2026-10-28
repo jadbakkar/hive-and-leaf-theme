@@ -1,0 +1,57 @@
+<div class="container section">
+  <div class="product" style="display:grid;gap:32px;grid-template-columns:1fr 1fr;">
+    <div class="card-media">
+      {% if product.featured_image %}
+        {{ product.featured_image | image_url: width: 900 | image_tag: alt: product.title }}
+      {% else %}
+        {{ 'product-1' | placeholder_svg_tag }}
+      {% endif %}
+    </div>
+
+    <div class="product-info">
+      <h1>{{ product.title }}</h1>
+      <p>{{ product.price | money }}</p>
+
+      {% form 'product', product %}
+        <p>
+          <label for="variant-{{ section.id }}">Variant</label><br>
+          <select name="id" id="variant-{{ section.id }}">
+            {% for variant in product.variants %}
+              <option value="{{ variant.id }}" {% unless variant.available %}disabled{% endunless %}>
+                {{ variant.title }}
+              </option>
+            {% endfor %}
+          </select>
+        </p>
+
+        <p>
+          <label for="quantity-{{ section.id }}">Quantity</label><br>
+          <input type="number" name="quantity" id="quantity-{{ section.id }}" value="1" min="1">
+        </p>
+
+        <p>
+          <button type="submit" class="btn" {% unless product.available %}disabled{% endunless %}>
+            {% if product.available %}Add to cart{% else %}Sold out{% endif %}
+          </button>
+        </p>
+      {% endform %}
+
+      <div class="product-description">
+        {{ product.description }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  @media (max-width: 767px) {
+    .product { grid-template-columns: 1fr !important; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Product",
+  "settings": []
+}
+{% endschema %}

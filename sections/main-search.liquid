@@ -1,0 +1,31 @@
+<div class="container section">
+  <h1>Search</h1>
+
+  <form action="{{ routes.search_url }}" method="get" role="search">
+    <label for="search-q-{{ section.id }}">Search our store</label><br>
+    <input type="search" name="q" id="search-q-{{ section.id }}" value="{{ search.terms | escape }}">
+    <button type="submit" class="btn">Search</button>
+  </form>
+
+  {% if search.performed %}
+    {% if search.results_count > 0 %}
+      <p>{{ search.results_count }} result(s) found.</p>
+      <ul>
+        {% for item in search.results %}
+          <li>
+            <a href="{{ item.url }}">{{ item.title }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No results found for "{{ search.terms }}".</p>
+    {% endif %}
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Search",
+  "settings": []
+}
+{% endschema %}
