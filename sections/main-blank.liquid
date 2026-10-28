@@ -1,0 +1,14 @@
+<div>
+  <h1>{{ section.settings.heading | default: shop.name }}</h1>
+  <p>{{ section.settings.subheading }}</p>
+</div>
+
+{% schema %}
+{
+  "name": "Blank page",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "text", "id": "subheading", "label": "Subheading", "default": "Coming soon" }
+  ]
+}
+{% endschema %}
