@@ -4,10 +4,82 @@
       "type": "hero",
       "settings": {}
     },
+    "image-with-text": {
+      "type": "image-with-text",
+      "settings": {}
+    },
+    "multicolumn": {
+      "type": "multicolumn",
+      "settings": {},
+      "blocks": {
+        "column_1": {
+          "type": "column",
+          "settings": {
+            "title": "Morning",
+            "text": "Start the day with a warm cup of green tea and a spoon of raw honey."
+          }
+        },
+        "column_2": {
+          "type": "column",
+          "settings": {
+            "title": "Recovery",
+            "text": "After training, a roasted rooibos with honey helps you wind down and refuel."
+          }
+        },
+        "column_3": {
+          "type": "column",
+          "settings": {
+            "title": "Sleep",
+            "text": "A chamomile and lavender blend, sweetened lightly, for a calm evening."
+          }
+        }
+      },
+      "block_order": ["column_1", "column_2", "column_3"]
+    },
     "featured-collection": {
       "type": "featured-collection",
       "settings": {}
+    },
+    "image-banner": {
+      "type": "image-banner",
+      "settings": {}
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "settings": {},
+      "blocks": {
+        "testimonial_1": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "The honey tastes like the real thing, and my evening tea is now my favourite part of the day.",
+            "author": "Claire, Lyon"
+          }
+        },
+        "testimonial_2": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "My coach suggested a simple morning ritual and this tea made it easy to stick to.",
+            "author": "Marco, Turin"
+          }
+        },
+        "testimonial_3": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Calm, honest products. I finally have a wind-down routine I actually enjoy.",
+            "author": "Priya, London"
+          }
+        }
+      },
+      "block_order": ["testimonial_1", "testimonial_2", "testimonial_3"]
+    },
+    "rich-text": {
+      "type": "rich-text",
+      "settings": {}
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {}
     }
   },
-  "order": ["hero", "featured-collection"]
+  "order": ["hero", "image-with-text", "multicolumn", "featured-collection", "image-banner", "testimonials", "rich-text", "newsletter"]
 }

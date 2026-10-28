@@ -1,0 +1,86 @@
+<div class="container section">
+  <h2 style="text-align: center;">{{ section.settings.heading }}</h2>
+  <div class="grid">
+    {% for block in section.blocks %}
+      <article class="column" {{ block.shopify_attributes }}>
+        <div class="card-media">
+          {% if block.settings.image != blank %}
+            {{ block.settings.image | image_url: width: 800 | image_tag: class: 'img-fill', loading: 'lazy' }}
+          {% else %}
+            <div class="img-blank img-blank--portrait"></div>
+          {% endif %}
+        </div>
+        <h3 style="margin-top: 16px;">{{ block.settings.title }}</h3>
+        <p>{{ block.settings.text }}</p>
+      </article>
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Multicolumn",
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Rituals for every part of the day"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "column",
+      "name": "Column",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Morning"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "default": "Start the day with a warm cup of green tea and a spoon of raw honey."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Multicolumn",
+      "blocks": [
+        {
+          "type": "column",
+          "settings": {
+            "title": "Morning",
+            "text": "Start the day with a warm cup of green tea and a spoon of raw honey."
+          }
+        },
+        {
+          "type": "column",
+          "settings": {
+            "title": "Recovery",
+            "text": "After training, a roasted rooibos with honey helps you wind down and refuel."
+          }
+        },
+        {
+          "type": "column",
+          "settings": {
+            "title": "Sleep",
+            "text": "A chamomile and lavender blend, sweetened lightly, for a calm evening."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

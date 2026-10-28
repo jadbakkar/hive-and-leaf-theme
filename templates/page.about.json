@@ -1,0 +1,99 @@
+{
+  "sections": {
+    "about_hero": {
+      "type": "about-hero",
+      "settings": {
+        "heading": "Our story",
+        "subheading": "Hive & Leaf began with tea, raw honey and one simple idea: a small daily ritual can take care of you."
+      }
+    },
+    "about_founder": {
+      "type": "about-founder",
+      "settings": {
+        "heading": "Meet Coach [Name]",
+        "bio": "<p>Coach [Name] spent years helping people build calmer, healthier routines. Again and again, the same thing made the biggest difference: small, steady rituals. Hive & Leaf grew from that idea.</p>",
+        "signature": "Coach [Name]"
+      }
+    },
+    "about_values": {
+      "type": "about-values",
+      "settings": {
+        "heading": "What we believe"
+      },
+      "blocks": {
+        "value_nourish": {
+          "type": "value",
+          "settings": {
+            "title": "Nourish",
+            "text": "Simple, whole ingredients. Tea leaves and raw honey, nothing added."
+          }
+        },
+        "value_move": {
+          "type": "value",
+          "settings": {
+            "title": "Move",
+            "text": "Small daily habits add up. A cup between tasks is a gentle reset."
+          }
+        },
+        "value_rest": {
+          "type": "value",
+          "settings": {
+            "title": "Rest",
+            "text": "Rest is part of the routine. Slow down and let the day settle."
+          }
+        }
+      },
+      "block_order": ["value_nourish", "value_move", "value_rest"]
+    },
+    "about_process": {
+      "type": "about-process",
+      "settings": {
+        "heading": "How it's made"
+      },
+      "blocks": {
+        "step_sourcing": {
+          "type": "step",
+          "settings": {
+            "number": "01",
+            "title": "Sourcing",
+            "text": "We work with small farms and honey keepers we know by name."
+          }
+        },
+        "step_tasting": {
+          "type": "step",
+          "settings": {
+            "number": "02",
+            "title": "Tasting",
+            "text": "Every batch is tasted and adjusted until it feels right."
+          }
+        },
+        "step_blending": {
+          "type": "step",
+          "settings": {
+            "number": "03",
+            "title": "Blending",
+            "text": "Leaves and honey are blended by hand in small runs."
+          }
+        },
+        "step_packing": {
+          "type": "step",
+          "settings": {
+            "number": "04",
+            "title": "Packing",
+            "text": "Sealed fresh and sent with care, ready for your ritual."
+          }
+        }
+      },
+      "block_order": ["step_sourcing", "step_tasting", "step_blending", "step_packing"]
+    },
+    "about_cta": {
+      "type": "about-cta",
+      "settings": {
+        "heading": "Start your ritual",
+        "text": "Pick a tea, add a spoon of honey, and take a slow minute for yourself.",
+        "button_label": "Shop the collection"
+      }
+    }
+  },
+  "order": ["about_hero", "about_founder", "about_values", "about_process", "about_cta"]
+}

@@ -1,0 +1,73 @@
+<div class="container section">
+  <h2 style="text-align: center;">{{ section.settings.heading }}</h2>
+  <div class="grid">
+    {% for block in section.blocks %}
+      <blockquote class="testimonial" style="background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 24px; margin: 0;" {{ block.shopify_attributes }}>
+        <p style="margin-top: 0;">&ldquo;{{ block.settings.quote }}&rdquo;</p>
+        <footer style="color: var(--muted);">&mdash; {{ block.settings.author }}</footer>
+      </blockquote>
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Testimonials",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "What our community says"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Quote",
+          "default": "The honey tastes like the real thing, and my evening tea is now my favourite part of the day."
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Author",
+          "default": "Claire, Lyon"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonials",
+      "blocks": [
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "The honey tastes like the real thing, and my evening tea is now my favourite part of the day.",
+            "author": "Claire, Lyon"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "My coach suggested a simple morning ritual and this tea made it easy to stick to.",
+            "author": "Marco, Turin"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Calm, honest products. I finally have a wind-down routine I actually enjoy.",
+            "author": "Priya, London"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

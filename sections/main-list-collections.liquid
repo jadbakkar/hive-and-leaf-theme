@@ -7,7 +7,7 @@
           {% if collection.featured_image %}
             {{ collection.featured_image | image_url: width: 600 | image_tag: loading: 'lazy' }}
           {% else %}
-            {{ 'collection-1' | placeholder_svg_tag }}
+            <div class="img-blank img-blank--portrait"></div>
           {% endif %}
         </div>
         <h3>{{ collection.title }}</h3>

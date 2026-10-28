@@ -4,7 +4,7 @@
       {% if product.featured_image %}
         {{ product.featured_image | image_url: width: 900 | image_tag: alt: product.title }}
       {% else %}
-        {{ 'product-1' | placeholder_svg_tag }}
+        <div class="img-blank img-blank--portrait"></div>
       {% endif %}
     </div>
 
