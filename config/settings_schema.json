@@ -1,1 +1,58 @@
-[{ "name": "theme_info", "theme_name": "Blank", "theme_version": "1.0.0", "theme_author": "Studio", "theme_documentation_url": "https://shopify.dev/docs/themes", "theme_support_url": "https://help.shopify.com" }]
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Hive & Leaf",
+    "theme_author": "Hive & Leaf",
+    "theme_version": "1.0.0",
+    "theme_documentation_url": "https://shopify.dev/docs/themes",
+    "theme_support_url": "https://help.shopify.com"
+  },
+  {
+    "name": "Logo",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo image"
+      },
+      {
+        "type": "range",
+        "id": "logo_width",
+        "label": "Logo width",
+        "min": 60,
+        "max": 300,
+        "step": 10,
+        "unit": "px",
+        "default": 140
+      }
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      { "type": "color", "id": "color_paper", "label": "Paper (page background)", "default": "#fbf8f2" },
+      { "type": "color", "id": "color_cream", "label": "Cream (alternate background)", "default": "#f6f1e7" },
+      { "type": "color", "id": "color_forest", "label": "Forest (primary)", "default": "#1a3a2a" },
+      { "type": "color", "id": "color_burgundy", "label": "Burgundy (accent)", "default": "#6d1a36" },
+      { "type": "color", "id": "color_ink", "label": "Ink (body text)", "default": "#1d1d1b" },
+      { "type": "color", "id": "color_muted", "label": "Muted text", "default": "#6b6a63" },
+      { "type": "color", "id": "color_line", "label": "Lines and borders", "default": "#e3dccd" }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      { "type": "font_picker", "id": "type_heading_font", "label": "Heading font", "default": "playfair_display_n4" },
+      { "type": "font_picker", "id": "type_body_font", "label": "Body font", "default": "work_sans_n4" }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      { "type": "text", "id": "social_instagram", "label": "Instagram URL" },
+      { "type": "text", "id": "social_facebook", "label": "Facebook URL" },
+      { "type": "text", "id": "social_tiktok", "label": "TikTok URL" },
+      { "type": "text", "id": "social_whatsapp", "label": "WhatsApp number or link" }
+    ]
+  }
+]

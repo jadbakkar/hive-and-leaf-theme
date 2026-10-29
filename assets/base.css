@@ -1,31 +1,61 @@
-/* Shared structure styles. Simple on purpose: layout, type and colors only. */
+/* Shared structure styles. Simple on purpose: layout, type and colors only.
+   Color and font tokens (--paper, --cream, --forest, --burgundy, --ink, --muted, --line,
+   --serif, --sans, --heading-weight) are set by snippets/css-variables.liquid. */
 :root {
-  --paper: #fbf8f2;
-  --cream: #f6f1e7;
-  --forest: #1a3a2a;
-  --burgundy: #6d1a36;
-  --ink: #1d1d1b;
-  --muted: #6b6a63;
-  --line: #e3dccd;
-  --serif: Georgia, 'Times New Roman', serif;
-  --sans: system-ui, -apple-system, 'Segoe UI', sans-serif;
   --container: 1200px;
   --gutter: 16px;
+
+  --space-xs: 8px;
+  --space-s: 16px;
+  --space-m: 32px;
+  --space-l: 64px;
+  --space-xl: 96px;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
 body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.6 var(--sans); }
 img { max-width: 100%; display: block; }
 a { color: inherit; }
-h1, h2, h3 { color: var(--forest); }
 a:not(.btn):hover { color: var(--burgundy); }
-h1, h2, h3 { font-family: var(--serif); font-weight: 400; line-height: 1.15; margin: 0 0 .5em; }
+
+/* Type scale */
+h1, h2, h3 { font-family: var(--serif); font-weight: var(--heading-weight, 400); color: var(--forest); line-height: 1.15; margin: 0 0 .5em; }
+h1 { font-size: clamp(2.5rem, 5vw, 4rem); }
+h2 { font-size: clamp(2rem, 4vw, 2.75rem); }
+h3 { font-size: 1.5rem; }
 
 .container { width: min(var(--container), 100% - 2 * var(--gutter)); margin-inline: auto; }
 .section { padding: 64px 0; }
+.section--pad-s { padding: 32px 0; }
+.section--pad-m { padding: 64px 0; }
+.section--pad-l { padding: 96px 0; }
+
+/* Color schemes for sections. Apply to a section wrapper. */
+.scheme-light { background: var(--paper); color: var(--ink); }
+.scheme-cream { background: var(--cream); color: var(--ink); }
+
+.scheme-forest, .scheme-burgundy {
+  --muted: rgba(251, 248, 242, .8);
+  color: var(--paper);
+}
+.scheme-forest { background: var(--forest); }
+.scheme-burgundy { background: var(--burgundy); }
+.scheme-forest h1, .scheme-forest h2, .scheme-forest h3,
+.scheme-burgundy h1, .scheme-burgundy h2, .scheme-burgundy h3 { color: var(--paper); }
+.scheme-forest a:not(.btn), .scheme-burgundy a:not(.btn) { color: inherit; }
+.scheme-forest a:not(.btn):hover, .scheme-burgundy a:not(.btn):hover { color: inherit; opacity: .8; }
+.scheme-forest .btn { background: var(--burgundy); color: var(--paper); }
+.scheme-forest .btn:hover { background: var(--paper); color: var(--forest); }
+.scheme-burgundy .btn { background: var(--forest); color: var(--paper); }
+.scheme-burgundy .btn:hover { background: var(--paper); color: var(--burgundy); }
+
 .btn { display: inline-block; padding: .8em 1.6em; border-radius: 999px; background: var(--burgundy); color: var(--paper); text-decoration: none; border: 0; cursor: pointer; }
 .btn:hover { background: var(--forest); color: var(--paper); }
 .btn--forest { background: var(--forest); }
+.btn--outline { background: transparent; color: inherit; border: 1px solid currentColor; }
+.btn--outline:hover { background: transparent; color: inherit; opacity: .75; }
+.scheme-forest .btn--outline, .scheme-burgundy .btn--outline { background: transparent; color: inherit; }
+.scheme-forest .btn--outline:hover, .scheme-burgundy .btn--outline:hover { background: transparent; color: inherit; opacity: .75; }
 .text-burgundy { color: var(--burgundy); }
 .bg-burgundy { background: var(--burgundy); color: var(--paper); }
 .grid { display: grid; gap: 24px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
@@ -50,3 +80,9 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 400; line-height: 1.15; mar
           mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3Ccircle cx='8.5' cy='8.5' r='1.5'/%3E%3Cpath d='m21 15-5-5L5 21'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 .img-blank::after { content: "Image"; font: 500 .7rem/1 var(--sans); letter-spacing: .18em; text-transform: uppercase; }
+
+/* Accessibility helpers */
+.skip-link { position: absolute; left: var(--space-xs); top: var(--space-xs); z-index: 1000; padding: .6em 1em; background: var(--forest); color: var(--paper); border-radius: 999px; text-decoration: none; transform: translateY(-200%); }
+.skip-link:focus { transform: none; }
+.visually-hidden { position: absolute !important; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+:focus-visible { outline: 2px solid var(--burgundy); outline-offset: 2px; }
