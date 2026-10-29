@@ -3,18 +3,24 @@
     "hero": {
       "type": "page-hero",
       "settings": {
+        "eyebrow": "Short label",
         "heading": "Page title",
-        "subheading": "Supporting text goes here."
+        "subheading": "Supporting text goes here.",
+        "alignment": "left",
+        "color_scheme": "light"
       }
     },
     "a": {
       "type": "image-with-text",
-      "settings": {}
+      "settings": {
+        "color_scheme": "cream"
+      }
     },
     "b": {
       "type": "image-with-text",
       "settings": {
-        "image_position": "right"
+        "image_position": "right",
+        "color_scheme": "light"
       }
     },
     "cta": {
@@ -22,7 +28,8 @@
       "settings": {
         "heading": "Closing heading",
         "text": "Supporting text goes here.",
-        "button_label": "Button"
+        "button_label": "Button",
+        "color_scheme": "forest"
       }
     }
   },

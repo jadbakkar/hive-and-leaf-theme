@@ -1,67 +1,117 @@
-<style>
-  .blog-head { margin-bottom: var(--space-m); }
-  .blog-tags { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 0 0 var(--space-m); }
-  .blog-tags a { display: inline-block; padding: 6px 14px; border: 1px solid var(--line); border-radius: 999px; font-size: .9rem; text-decoration: none; }
-  .blog-tags a:hover, .blog-tags a[aria-current="page"] { background: var(--forest); border-color: var(--forest); color: var(--paper); }
-
-  .blog-grid { display: grid; gap: var(--space-m) 24px; grid-template-columns: 1fr; }
-  @media (min-width: 800px) { .blog-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-
-  .article-card { display: flex; flex-direction: column; }
-  .article-card__media { display: block; width: 100%; aspect-ratio: 16 / 9; margin-bottom: var(--space-s); border-radius: 12px; overflow: hidden; background: var(--cream); }
-  .article-card__media img { width: 100%; height: 100%; object-fit: cover; }
-  .article-card__media .img-blank { height: 100%; border-radius: 12px; }
-  .article-card__date { margin: 0 0 6px; color: var(--muted); font-size: .85rem; letter-spacing: .04em; }
-  .article-card__title { font-size: 1.5rem; margin-bottom: 8px; }
-  .article-card__title a { text-decoration: none; }
-  .article-card__excerpt { margin: 0 0 12px; color: var(--muted); }
-  .article-card__more { margin-top: auto; color: var(--burgundy); font-weight: 600; text-decoration: none; }
-
-  .blog-empty { color: var(--muted); }
-  .blog-pagination { margin-top: var(--space-m); }
-</style>
-
-<section class="section blog-section scheme-{{ section.settings.color_scheme | default: 'light' }}">
-<div class="container">
-  <header class="blog-head">
-    <h1>{{ blog.title }}</h1>
-  </header>
-
-  {% if blog.all_tags.size > 0 %}
-    <nav aria-label="Filter articles by tag">
-      <ul class="blog-tags">
-        <li><a href="{{ blog.url }}" {% if current_tags == blank %}aria-current="page"{% endif %}>All</a></li>
-        {% for tag in blog.all_tags %}
-          <li>
-            <a href="{{ blog.url }}/tagged/{{ tag | handleize }}" {% if current_tags contains tag %}aria-current="page"{% endif %}>{{ tag }}</a>
-          </li>
-        {% endfor %}
-      </ul>
-    </nav>
-  {% endif %}
-
-  {% paginate blog.articles by section.settings.posts_per_page %}
-    {% if blog.articles.size > 0 %}
-      <div class="blog-grid">
-        {% for article in blog.articles %}
-          {% render 'article-card', article: article %}
-        {% endfor %}
+<section class="section blog {% render 'section-classes', settings: section.settings %}">
+  <div class="container">
+    <header class="page-header page-header--rule blog__header">
+      <div class="page-header__titles">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="eyebrow eyebrow--rule">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        <h1 class="page-header__title">{{ blog.title }}</h1>
+        {%- if section.settings.intro != blank -%}
+          <p class="lede">{{ section.settings.intro }}</p>
+        {%- endif -%}
       </div>
+      {%- if blog.articles_count > 0 -%}
+        <div class="page-header__aside">
+          <p class="meta"><span>{{ blog.articles_count }} {% if blog.articles_count == 1 %}story{% else %}stories{% endif %}</span></p>
+        </div>
+      {%- endif -%}
+    </header>
 
-      {% if paginate.pages > 1 %}
-        <div class="blog-pagination">{{ paginate | default_pagination }}</div>
-      {% endif %}
-    {% else %}
-      <p class="blog-empty">No articles yet. Check back soon.</p>
-    {% endif %}
-  {% endpaginate %}
-</div>
+    {%- if section.settings.show_tags and blog.all_tags.size > 0 -%}
+      <nav aria-label="Filter stories by topic">
+        <ul class="tabs blog__tabs" role="list">
+          <li><a class="tabs__link" href="{{ blog.url }}"{% if current_tags == blank %} aria-current="page"{% endif %}>All</a></li>
+          {%- for tag in blog.all_tags -%}
+            <li>
+              <a class="tabs__link" href="{{ blog.url }}/tagged/{{ tag | handleize }}"{% if current_tags contains tag %} aria-current="page"{% endif %}>{{ tag }}</a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+
+    {%- paginate blog.articles by section.settings.posts_per_page -%}
+      {%- if blog.articles.size > 0 -%}
+        {%- liquid
+          assign show_featured = false
+          if section.settings.feature_first and paginate.current_page == 1
+            assign show_featured = true
+          endif
+        -%}
+        {%- if show_featured -%}
+          <div class="blog__featured">
+            {% render 'article-card', article: blog.articles.first, featured: true, heading_tag: 'h2' %}
+          </div>
+        {%- endif -%}
+
+        {%- if show_featured == false or blog.articles.size > 1 -%}
+          <ul class="blog__grid" role="list">
+            {%- for article in blog.articles -%}
+              {%- if show_featured and forloop.first -%}{%- continue -%}{%- endif -%}
+              <li>{% render 'article-card', article: article, heading_tag: 'h2' %}</li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+        {% render 'pagination', paginate: paginate %}
+      {%- else -%}
+        <div class="empty-state">
+          <span class="icon-badge">{% render 'icon', name: 'cup' %}</span>
+          <h2 class="empty-state__title h3">No stories yet</h2>
+          <p class="lede">New stories from the hives and tea gardens are on their way. Check back soon.</p>
+          <div class="btn-row"><a class="btn btn--outline" href="{{ routes.all_products_collection_url }}">Shop all</a></div>
+        </div>
+      {%- endif -%}
+    {%- endpaginate -%}
+  </div>
 </section>
+
+<style>
+  .blog { padding-top: clamp(40px, 5vw, 72px); }
+  .blog__header { margin-bottom: 0; border-bottom: 0; padding-bottom: clamp(28px, 3vw, 40px); }
+  .blog__tabs { margin-bottom: clamp(40px, 5vw, 64px); }
+  .blog__featured { margin-bottom: clamp(48px, 6vw, 88px); padding-bottom: clamp(48px, 6vw, 88px); border-bottom: 1px solid var(--rule); }
+  .blog__grid { display: grid; gap: 56px 24px; margin: 0; padding: 0; list-style: none; }
+  .blog__grid > li { display: flex; }
+  @media (min-width: 600px) {
+    .blog__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 990px) {
+    .blog__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 72px clamp(24px, 3vw, 40px); }
+    /* Two stories left after the featured one: give them half the width each. */
+    .blog__grid:has(> li:nth-child(2):last-child) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+</style>
 
 {% schema %}
 {
   "name": "Blog",
   "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "info": "Small label above the blog title",
+      "default": "Short label"
+    },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Intro text",
+      "default": "Supporting text goes here."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tags",
+      "label": "Show topic filter",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "feature_first",
+      "label": "Feature the latest story",
+      "default": true
+    },
     {
       "type": "number",
       "id": "posts_per_page",

@@ -1,16 +1,33 @@
 {%- comment -%}
   Article card. Usage: {% render 'article-card', article: article %}
+  Optional: featured: true (large, side-by-side on desktop), heading_tag: 'h2' (defaults to h3).
+  Styles: .article-card in assets/base.css (Page primitives).
 {%- endcomment -%}
-<article class="article-card">
-  <a class="article-card__media card-media" href="{{ article.url }}" tabindex="-1" aria-hidden="true">
-    {% if article.image %}
-      {{ article.image | image_url: width: 800 | image_tag: loading: 'lazy', alt: article.title }}
-    {% else %}
-      <div class="img-blank img-blank--wide"></div>
-    {% endif %}
+{%- liquid
+  assign tag = heading_tag | default: 'h3'
+  if featured
+    assign excerpt_words = 40
+    assign image_sizes = '(min-width: 990px) 58vw, 100vw'
+  else
+    assign excerpt_words = 22
+    assign image_sizes = '(min-width: 990px) 33vw, (min-width: 600px) 50vw, 100vw'
+  endif
+-%}
+<article class="article-card{% if featured %} article-card--featured{% endif %}">
+  <a class="article-card__media media-frame media-frame--landscape" href="{{ article.url }}" tabindex="-1" aria-hidden="true">
+    {%- if article.image -%}
+      {{ article.image | image_url: width: 1600 | image_tag: loading: 'lazy', alt: '', sizes: image_sizes, widths: '480, 720, 960, 1280, 1600' }}
+    {%- else -%}
+      <span class="img-blank" data-label="Journal"></span>
+    {%- endif -%}
   </a>
-  <p class="article-card__date">{{ article.published_at | date: "%B %d, %Y" }}</p>
-  <h3 class="article-card__title"><a href="{{ article.url }}">{{ article.title }}</a></h3>
-  <p class="article-card__excerpt">{{ article.excerpt_or_content | strip_html | truncatewords: 25 }}</p>
-  <a class="article-card__more" href="{{ article.url }}">Read more<span class="visually-hidden"> about {{ article.title }}</span></a>
+  <div class="article-card__body">
+    <p class="meta article-card__meta">
+      {%- if article.tags.size > 0 -%}<span class="article-card__tag">{{ article.tags.first }}</span>{%- endif -%}
+      <span><time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: '%B %-d, %Y' }}</time></span>
+    </p>
+    <{{ tag }} class="article-card__title"><a href="{{ article.url }}">{{ article.title }}</a></{{ tag }}>
+    <p class="article-card__excerpt">{{ article.excerpt_or_content | strip_html | truncatewords: excerpt_words }}</p>
+    <a class="link-arrow article-card__more" href="{{ article.url }}">Read more<span class="visually-hidden">: {{ article.title }}</span></a>
+  </div>
 </article>

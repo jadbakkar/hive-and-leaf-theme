@@ -1,27 +1,201 @@
-<style>
-  .contact-form { max-width: 640px; }
-  .contact-form__field { display: grid; gap: 6px; margin-bottom: 16px; }
-  .contact-form input, .contact-form textarea { font: inherit; padding: .7em 1em; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
-</style>
+{%- liquid
+  # WhatsApp: a number (spaces, +, -, brackets allowed) becomes a wa.me link; anything else is used as a URL.
+  assign wa = section.settings.whatsapp | default: settings.social_whatsapp | strip
+  assign wa_digits = wa | remove: '+' | remove: ' ' | remove: '-' | remove: '(' | remove: ')'
+  assign wa_is_number = false
+  if wa_digits != blank
+    assign wa_is_number = true
+    assign wa_chars = wa_digits | split: ''
+    for c in wa_chars
+      unless '0123456789' contains c
+        assign wa_is_number = false
+      endunless
+    endfor
+  endif
+  assign wa_url = blank
+  if wa_is_number
+    assign wa_url = 'https://wa.me/' | append: wa_digits
+  elsif wa != blank
+    assign wa_url = wa
+  endif
+  assign phone_digits = section.settings.phone | remove: ' ' | remove: '-' | remove: '(' | remove: ')'
+-%}
+<section class="section contact {% render 'section-classes', settings: section.settings %}">
+  <div class="container contact__grid">
+    <div class="contact__intro">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow eyebrow--rule">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      {%- if section.index == 1 -%}
+        <h1 class="contact__title">{{ section.settings.heading }}</h1>
+      {%- else -%}
+        <h2 class="contact__title h1">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <p class="lede contact__text">{{ section.settings.text }}</p>
+      {%- endif -%}
 
-<section class="section contact-form-section {% render 'section-classes', settings: section.settings %}">
-  <div class="container contact-form">
-    <h1>{{ section.settings.heading }}</h1>
-    {% if section.settings.text != blank %}<p>{{ section.settings.text }}</p>{% endif %}
-    {% form 'contact' %}
-      {% if form.posted_successfully? %}<p>Thanks, we will be in touch.</p>{% endif %}
-      <div class="contact-form__field"><label for="cf-name">Name</label><input id="cf-name" name="contact[name]" type="text"></div>
-      <div class="contact-form__field"><label for="cf-email">Email</label><input id="cf-email" name="contact[email]" type="email" required></div>
-      <div class="contact-form__field"><label for="cf-body">Message</label><textarea id="cf-body" name="contact[body]" rows="6"></textarea></div>
-      <button class="btn" type="submit">Send</button>
-    {% endform %}
+      <dl class="contact__details">
+        {%- if section.settings.address != blank -%}
+          <div class="contact__detail">
+            <dt>Visit</dt>
+            <dd>{{ section.settings.address | newline_to_br }}</dd>
+          </div>
+        {%- endif -%}
+        {%- if section.settings.phone != blank -%}
+          <div class="contact__detail">
+            <dt>Call</dt>
+            <dd><a href="tel:{{ phone_digits }}">{{ section.settings.phone }}</a></dd>
+          </div>
+        {%- endif -%}
+        {%- if section.settings.email != blank -%}
+          <div class="contact__detail">
+            <dt>Email</dt>
+            <dd><a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a></dd>
+          </div>
+        {%- endif -%}
+        {%- if section.settings.hours != blank -%}
+          <div class="contact__detail">
+            <dt>Hours</dt>
+            <dd>{{ section.settings.hours | newline_to_br }}</dd>
+          </div>
+        {%- endif -%}
+      </dl>
+
+      {%- if wa_url != blank -%}
+        <a class="contact__wa" href="{{ wa_url }}" target="_blank" rel="noopener">
+          <span class="icon-badge">{% render 'icon', name: 'whatsapp' %}</span>
+          <span class="contact__wa-text">
+            <span class="contact__wa-label">{{ section.settings.whatsapp_label }}</span>
+            <span class="contact__wa-sub">{{ section.settings.whatsapp_text }}<span class="visually-hidden"> (opens in a new tab)</span></span>
+          </span>
+          <span class="link-arrow" aria-hidden="true"></span>
+        </a>
+      {%- endif -%}
+    </div>
+
+    <div class="contact__form-wrap panel scheme-cream">
+      {%- if section.settings.form_heading != blank -%}
+        <h2 class="contact__form-title h3">{{ section.settings.form_heading }}</h2>
+      {%- endif -%}
+      {%- form 'contact', class: 'contact__form' -%}
+        {%- if form.posted_successfully? -%}
+          <p class="contact__status" role="status">{% render 'icon', name: 'leaf' %}Thank you. Your message is on its way and we will be in touch soon.</p>
+        {%- endif -%}
+        {%- if form.errors -%}
+          <div class="contact__status contact__status--error" role="alert">
+            <p>Please check the following:</p>
+            <ul>
+              {%- for field in form.errors -%}
+                <li>{{ form.errors.translated_fields[field] | capitalize }} {{ form.errors.messages[field] }}</li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+
+        <div class="contact__row">
+          <div class="field">
+            <label for="ContactName-{{ section.id }}">Name</label>
+            <input id="ContactName-{{ section.id }}" type="text" name="contact[name]" autocomplete="name" value="{{ form.name }}">
+          </div>
+          <div class="field">
+            <label for="ContactPhone-{{ section.id }}">Phone <span class="contact__optional">(optional)</span></label>
+            <input id="ContactPhone-{{ section.id }}" type="tel" name="contact[phone]" autocomplete="tel" value="{{ form.phone }}">
+          </div>
+        </div>
+        <div class="field">
+          <label for="ContactEmail-{{ section.id }}">Email <span aria-hidden="true">*</span></label>
+          <input id="ContactEmail-{{ section.id }}" type="email" name="contact[email]" autocomplete="email" value="{{ form.email }}" required aria-required="true">
+        </div>
+        <div class="field">
+          <label for="ContactBody-{{ section.id }}">Message</label>
+          <textarea id="ContactBody-{{ section.id }}" name="contact[body]" rows="6">{{ form.body }}</textarea>
+        </div>
+        <div class="contact__submit">
+          <button class="btn" type="submit">Send message</button>
+          <p class="form-message">We usually reply within one working day.</p>
+        </div>
+      {%- endform -%}
+    </div>
   </div>
 </section>
+
+<style>
+  .contact__grid { display: grid; gap: 48px; align-items: start; }
+  @media (min-width: 990px) {
+    .contact__grid { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(56px, 7vw, 120px); }
+  }
+  .contact__title { margin: 0; }
+  .contact__text { margin: 24px 0 0; }
+
+  .contact__details { display: grid; margin: 40px 0 0; border-top: 1px solid var(--rule); }
+  .contact__detail { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 18px 0; border-bottom: 1px solid var(--rule); }
+  .contact__detail dt {
+    padding-top: 3px;
+    color: var(--fg-muted);
+    font: 500 var(--fs-eyebrow)/1.3 var(--sans);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+  }
+  .contact__detail dd { margin: 0; }
+  .contact__detail a { text-decoration: none; }
+  .contact__detail a:hover { text-decoration: underline; }
+
+  .contact__wa {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-top: 32px;
+    padding: 18px 20px 18px 18px;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: border-color var(--dur) var(--ease), background-color var(--dur) var(--ease);
+  }
+  .contact__wa:hover { border-color: var(--fg); color: inherit; }
+  .contact__wa .icon-badge { width: 48px; height: 48px; font-size: 22px; }
+  .contact__wa-text { display: grid; gap: 2px; flex: 1; min-width: 0; }
+  .contact__wa-label { font-family: var(--serif); font-size: 1.2rem; color: var(--heading); }
+  .contact__wa-sub { color: var(--fg-muted); font-size: var(--fs-small); }
+  .contact__wa .link-arrow { flex: none; }
+  .contact__wa:hover .link-arrow::after { transform: translateX(4px); }
+
+  .contact__form-title { margin: 0 0 28px; }
+  .contact__form { display: grid; gap: 20px; margin: 0; }
+  .contact__form .field label { margin-bottom: 10px; }
+  .contact__form .field input, .contact__form .field textarea { background: var(--paper); }
+  .contact__optional { color: var(--fg-muted); letter-spacing: .08em; text-transform: none; }
+  .contact__row { display: grid; gap: 20px; }
+  @media (min-width: 600px) { .contact__row { grid-template-columns: 1fr 1fr; } }
+  .contact__submit { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; margin-top: 4px; }
+  .contact__submit .form-message { margin: 0; }
+  .contact__status {
+    display: flex;
+    gap: 12px;
+    margin: 0;
+    padding: 16px;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    background: var(--paper);
+    font-size: var(--fs-small);
+  }
+  .contact__status .icon { flex: none; font-size: 20px; color: var(--accent); }
+  .contact__status--error { display: block; border-color: var(--accent); color: var(--accent); }
+  .contact__status--error p { margin: 0 0 4px; }
+  .contact__status--error ul { margin: 0; padding-left: 1.2em; }
+</style>
 
 {% schema %}
 {
   "name": "Contact form",
   "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "info": "Small label above the heading",
+      "default": "Short label"
+    },
     {
       "type": "text",
       "id": "heading",
@@ -33,6 +207,62 @@
       "id": "text",
       "label": "Text",
       "default": "Supporting text goes here."
+    },
+    {
+      "type": "header",
+      "content": "Contact details"
+    },
+    {
+      "type": "textarea",
+      "id": "address",
+      "label": "Address",
+      "default": "Street address\nCity, Lebanon"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone",
+      "default": "+961 00 000 000"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email",
+      "default": "hello@example.com"
+    },
+    {
+      "type": "textarea",
+      "id": "hours",
+      "label": "Opening hours",
+      "default": "Monday to Saturday, 9:00 to 18:00"
+    },
+    {
+      "type": "text",
+      "id": "whatsapp",
+      "label": "WhatsApp number or link",
+      "info": "Leave empty to use the number from Theme settings > Social"
+    },
+    {
+      "type": "text",
+      "id": "whatsapp_label",
+      "label": "WhatsApp label",
+      "default": "Message us on WhatsApp"
+    },
+    {
+      "type": "text",
+      "id": "whatsapp_text",
+      "label": "WhatsApp text",
+      "default": "The quickest way to reach us."
+    },
+    {
+      "type": "header",
+      "content": "Form"
+    },
+    {
+      "type": "text",
+      "id": "form_heading",
+      "label": "Form heading",
+      "default": "Send a message"
     },
     {
       "type": "select",

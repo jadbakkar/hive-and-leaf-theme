@@ -3,23 +3,69 @@
     "hero": {
       "type": "page-hero",
       "settings": {
+        "eyebrow": "Short label",
         "heading": "Delivery & payment",
-        "subheading": "Where we deliver, how long it takes, and how you can pay."
+        "subheading": "Where we deliver, how long it takes, and how you can pay.",
+        "alignment": "left",
+        "show_image": false,
+        "color_scheme": "cream"
       }
+    },
+    "facts": {
+      "type": "icon-columns",
+      "settings": {
+        "eyebrow": "",
+        "heading": "",
+        "color_scheme": "light",
+        "padding": "s"
+      },
+      "blocks": {
+        "fact_delivery": {
+          "type": "column",
+          "settings": {
+            "builtin_icon": "truck",
+            "title": "Column title",
+            "text": "Short description goes here."
+          }
+        },
+        "fact_cash": {
+          "type": "column",
+          "settings": {
+            "builtin_icon": "cash",
+            "title": "Column title",
+            "text": "Short description goes here."
+          }
+        },
+        "fact_packing": {
+          "type": "column",
+          "settings": {
+            "builtin_icon": "jar",
+            "title": "Column title",
+            "text": "Short description goes here."
+          }
+        }
+      },
+      "block_order": ["fact_delivery", "fact_cash", "fact_packing"]
     },
     "text": {
       "type": "rich-text",
       "settings": {
+        "eyebrow": "Short label",
         "heading": "How delivery works",
         "text": "<p>Describe delivery areas, timeframes and any delivery fees.</p>",
         "button_label": "Shop all",
-        "button_link": "shopify://collections/all"
+        "button_link": "shopify://collections/all",
+        "alignment": "left",
+        "button_style": "link",
+        "color_scheme": "cream"
       }
     },
     "faq": {
       "type": "faq",
       "settings": {
-        "heading": "Common questions"
+        "eyebrow": "Short label",
+        "heading": "Common questions",
+        "color_scheme": "light"
       },
       "blocks": {
         "q1": {
@@ -51,9 +97,10 @@
       "settings": {
         "heading": "Ready to order?",
         "text": "Supporting text goes here.",
-        "button_label": "Shop all"
+        "button_label": "Shop all",
+        "color_scheme": "forest"
       }
     }
   },
-  "order": ["hero", "text", "faq", "cta"]
+  "order": ["hero", "facts", "text", "faq", "cta"]
 }

@@ -1,155 +1,276 @@
-<style>
-  .cart-page__title { margin-bottom: var(--space-m); }
-  .cart-layout { display: grid; gap: var(--space-m); align-items: start; }
-  @media (min-width: 900px) {
-    .cart-layout { grid-template-columns: minmax(0, 1fr) 340px; }
-  }
-
-  .cart-head { display: none; }
-  .cart-items { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
-  .cart-row {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: var(--space-xs) var(--space-s);
-    align-items: center;
-    padding: var(--space-s) 0;
-    border-bottom: 1px solid var(--line);
-  }
-  .cart-row__product { grid-column: 1 / -1; display: flex; gap: var(--space-s); align-items: center; }
-  .cart-row__media { width: 88px; flex-shrink: 0; }
-  .cart-row__media .card-media { aspect-ratio: 4 / 5; border-radius: 10px; }
-  .cart-row__title { font-family: var(--serif); font-size: 1.15rem; color: var(--forest); text-decoration: none; }
-  .cart-row__variant { color: var(--muted); font-size: .9rem; }
-  .cart-row__remove { display: inline-block; margin-top: 6px; font-size: .85rem; color: var(--muted); }
-  .cart-row__qty input { width: 88px; padding: .5em .6em; border: 1px solid var(--line); border-radius: 999px; background: #fff; font: inherit; text-align: center; }
-  .cart-row__price { display: none; }
-  .cart-row__total { font-weight: 600; text-align: right; }
-
-  .cart-note { margin-top: var(--space-m); }
-  .cart-note label, .cart-note__label { display: block; font-weight: 600; margin-bottom: 8px; }
-  .cart-note textarea { width: 100%; min-height: 96px; padding: .75em 1em; border: 1px solid var(--line); border-radius: 12px; background: #fff; font: inherit; resize: vertical; }
-
-  .cart-summary { background: var(--cream); border-radius: 12px; padding: var(--space-m) var(--space-s); }
-  .cart-summary__title { font-size: 1.5rem; margin-bottom: var(--space-s); }
-  .cart-summary__row { display: flex; justify-content: space-between; gap: var(--space-s); font-weight: 600; font-size: 1.05rem; }
-  .cart-summary__hint { margin: var(--space-xs) 0 var(--space-s); color: var(--muted); font-size: .9rem; }
-  .cart-summary__cod { display: inline-block; margin-bottom: var(--space-s); padding: 6px 12px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); font-size: .8rem; letter-spacing: .02em; }
-  .cart-summary__actions { display: grid; gap: var(--space-xs); }
-  .cart-summary__actions .btn { text-align: center; border: 0; }
-  .cart-summary__actions .btn--outline { border: 1px solid currentColor; }
-
-  .cart-empty { text-align: center; padding: var(--space-l) 0; }
-  .cart-empty h2 { margin-bottom: var(--space-s); }
-
-  @media (min-width: 900px) {
-    .cart-head {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 110px 110px 110px;
-      gap: var(--space-s);
-      padding: var(--space-xs) 0;
-      font-size: .8rem;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    .cart-head span:not(:first-child) { text-align: center; }
-    .cart-head span:last-child { text-align: right; }
-    .cart-row { grid-template-columns: minmax(0, 1fr) 110px 110px 110px; }
-    .cart-row__product { grid-column: auto; }
-    .cart-row__qty { text-align: center; }
-    .cart-row__price { display: block; text-align: center; }
-    .cart-row__total { text-align: right; }
-  }
-</style>
-
-<section class="section cart-section scheme-{{ section.settings.color_scheme | default: 'light' }}">
-<div class="container">
-  <h1 class="cart-page__title">Cart</h1>
-
-  {% if cart.item_count > 0 %}
-    {% form 'cart', cart %}
-      <div class="cart-layout">
-        <div>
-          <div class="cart-head" aria-hidden="true">
-            <span>Product</span>
-            <span>Quantity</span>
-            <span>Price</span>
-            <span>Total</span>
-          </div>
-
-          <ul class="cart-items">
-            {% for item in cart.items %}
-              <li class="cart-row">
-                <div class="cart-row__product">
-                  <div class="cart-row__media">
-                    <div class="card-media">
-                      {% if item.image %}
-                        {{ item.image | image_url: width: 240 | image_tag: alt: item.product.title, loading: 'lazy' }}
-                      {% else %}
-                        <div class="img-blank img-blank--portrait"></div>
-                      {% endif %}
-                    </div>
-                  </div>
-                  <div>
-                    <a class="cart-row__title" href="{{ item.url }}">{{ item.product.title }}</a>
-                    {% unless item.variant.title == 'Default Title' %}
-                      <div class="cart-row__variant">{{ item.variant.title }}</div>
-                    {% endunless %}
-                    <div><a class="cart-row__remove" href="{{ item.url_to_remove }}">Remove<span class="visually-hidden"> {{ item.product.title }}</span></a></div>
-                  </div>
-                </div>
-
-                <div class="cart-row__qty">
-                  <label class="visually-hidden" for="updates-{{ forloop.index }}-{{ section.id }}">Quantity for {{ item.product.title }}</label>
-                  <input type="number" id="updates-{{ forloop.index }}-{{ section.id }}" name="updates[]" value="{{ item.quantity }}" min="0">
-                </div>
-
-                <div class="cart-row__price">{{ item.final_price | money }}</div>
-                <div class="cart-row__total">{{ item.final_line_price | money }}</div>
-              </li>
-            {% endfor %}
-          </ul>
-
-          {% if section.settings.show_note %}
-            <div class="cart-note">
-              <label for="cart-note-{{ section.id }}">Order note</label>
-              <textarea id="cart-note-{{ section.id }}" name="note" rows="3" placeholder="Anything we should know about your order?">{{ cart.note | escape }}</textarea>
-            </div>
-          {% endif %}
+<section class="section cart-page {% render 'section-classes', settings: section.settings %}">
+  <div class="container">
+    {%- if cart.item_count > 0 -%}
+      <header class="page-header page-header--rule cart-page__header">
+        <div class="page-header__titles">
+          {%- if section.settings.eyebrow != blank -%}
+            <p class="eyebrow eyebrow--rule">{{ section.settings.eyebrow }}</p>
+          {%- endif -%}
+          <h1 class="page-header__title">{{ section.settings.heading }}</h1>
         </div>
+        <div class="page-header__aside">
+          <p class="meta"><span>{{ cart.item_count }} {% if cart.item_count == 1 %}item{% else %}items{% endif %}</span></p>
+          <a class="link-arrow" href="{{ routes.all_products_collection_url }}">Continue shopping</a>
+        </div>
+      </header>
 
-        <aside class="cart-summary" aria-labelledby="cart-summary-title-{{ section.id }}">
-          <h2 id="cart-summary-title-{{ section.id }}" class="cart-summary__title">Order summary</h2>
-          <div class="cart-summary__row">
-            <span>Subtotal</span>
-            <span>{{ cart.total_price | money }}</span>
+      <form action="{{ routes.cart_url }}" method="post" class="cart-page__form" id="CartForm-{{ section.id }}" data-cart-page-form novalidate>
+        <div class="cart-page__layout">
+          <div class="cart-page__main">
+            <div class="cart-page__head" aria-hidden="true">
+              <span>Product</span>
+              <span>Quantity</span>
+              <span>Total</span>
+            </div>
+
+            <ul class="cart-page__items" role="list">
+              {%- for item in cart.items -%}
+                <li class="cart-line">
+                  <a class="cart-line__media" href="{{ item.url }}" tabindex="-1" aria-hidden="true">
+                    <span class="media-frame">
+                      {%- if item.image -%}
+                        {{ item.image | image_url: width: 300 | image_tag: alt: '', loading: 'lazy', widths: '150, 300', sizes: '120px' }}
+                      {%- else -%}
+                        <span class="img-blank img-blank--small" data-label=""></span>
+                      {%- endif -%}
+                    </span>
+                  </a>
+
+                  <div class="cart-line__details">
+                    {%- if item.vendor != blank -%}<p class="cart-line__vendor">{{ item.vendor }}</p>{%- endif -%}
+                    <h2 class="cart-line__title"><a href="{{ item.url }}">{{ item.product.title }}</a></h2>
+                    {%- unless item.product.has_only_default_variant -%}
+                      <ul class="cart-line__options" role="list">
+                        {%- for option in item.options_with_values -%}
+                          <li>{{ option.name }}: {{ option.value }}</li>
+                        {%- endfor -%}
+                      </ul>
+                    {%- endunless -%}
+                    <p class="cart-line__unit">
+                      {%- if item.original_price > item.final_price -%}<s>{{ item.original_price | money }}</s> {% endif -%}
+                      {{ item.final_price | money }}
+                    </p>
+                    {%- for discount in item.line_level_discount_allocations -%}
+                      <p class="cart-line__discount">{{ discount.discount_application.title }} (&minus;{{ discount.amount | money }})</p>
+                    {%- endfor -%}
+                  </div>
+
+                  <div class="cart-line__qty">
+                    <label class="visually-hidden" for="Quantity-{{ section.id }}-{{ forloop.index }}">Quantity for {{ item.product.title | escape }}</label>
+                    <div class="qty qty--small" data-qty>
+                      <button type="button" class="qty__btn" data-qty-dec aria-label="Decrease quantity of {{ item.product.title | escape }}">{% render 'icon', name: 'minus' %}</button>
+                      <input class="qty__input" type="number" id="Quantity-{{ section.id }}-{{ forloop.index }}" name="updates[]" value="{{ item.quantity }}" min="0" inputmode="numeric" data-cart-qty-input>
+                      <button type="button" class="qty__btn" data-qty-inc aria-label="Increase quantity of {{ item.product.title | escape }}">{% render 'icon', name: 'plus' %}</button>
+                    </div>
+                    <a class="cart-line__remove" href="{{ item.url_to_remove }}">Remove<span class="visually-hidden"> {{ item.product.title }}</span></a>
+                  </div>
+
+                  <p class="cart-line__total">{{ item.final_line_price | money }}</p>
+                </li>
+              {%- endfor -%}
+            </ul>
           </div>
-          <p class="cart-summary__hint">Taxes and delivery calculated at checkout.</p>
 
-          {% if section.settings.cod_note != blank %}
-            <p class="cart-summary__cod">{{ section.settings.cod_note }}</p>
-          {% endif %}
+          <aside class="cart-page__summary panel scheme-cream sticky-col" aria-labelledby="CartSummary-{{ section.id }}">
+            <h2 class="cart-summary__title" id="CartSummary-{{ section.id }}">Order summary</h2>
 
-          <div class="cart-summary__actions">
-            <button type="submit" name="checkout" class="btn">Checkout</button>
-            <button type="submit" name="update" class="btn btn--outline">Update cart</button>
-          </div>
-        </aside>
+            <dl class="cart-summary__rows">
+              <div class="cart-summary__row">
+                <dt>Subtotal</dt>
+                <dd>{{ cart.items_subtotal_price | money }}</dd>
+              </div>
+              {%- for discount in cart.cart_level_discount_applications -%}
+                <div class="cart-summary__row">
+                  <dt>{{ discount.title }}</dt>
+                  <dd>&minus;{{ discount.total_allocated_amount | money }}</dd>
+                </div>
+              {%- endfor -%}
+              <div class="cart-summary__row">
+                <dt>Delivery</dt>
+                <dd class="text-muted">At checkout</dd>
+              </div>
+              <div class="cart-summary__row cart-summary__row--total">
+                <dt>Total</dt>
+                <dd>{{ cart.total_price | money_with_currency }}</dd>
+              </div>
+            </dl>
+
+            {%- if section.settings.cod_note != blank -%}
+              <div class="cart-summary__cod">
+                {% render 'icon', name: 'cash' %}
+                <div>
+                  <p class="cart-summary__cod-title">{{ section.settings.cod_note }}</p>
+                  {%- if section.settings.cod_text != blank -%}
+                    <p class="cart-summary__cod-text">{{ section.settings.cod_text }}</p>
+                  {%- endif -%}
+                </div>
+              </div>
+            {%- endif -%}
+
+            {%- if section.settings.show_note -%}
+              <details class="accordion accordion--small cart-summary__note"{% if cart.note != blank %} open{% endif %}>
+                <summary class="accordion__summary">Add an order note<span class="accordion__icon" aria-hidden="true"></span></summary>
+                <div class="accordion__body field">
+                  <label class="visually-hidden" for="CartNote-{{ section.id }}">Order note</label>
+                  <textarea id="CartNote-{{ section.id }}" name="note" rows="3" placeholder="Delivery instructions, a gift message, anything we should know.">{{ cart.note | escape }}</textarea>
+                </div>
+              </details>
+            {%- endif -%}
+
+            <div class="cart-summary__actions">
+              <button type="submit" name="checkout" class="btn btn--block">Checkout</button>
+              <button type="submit" name="update" class="btn btn--link cart-summary__update" data-cart-update>Update cart</button>
+            </div>
+          </aside>
+        </div>
+      </form>
+    {%- else -%}
+      <div class="empty-state cart-page__empty">
+        <span class="icon-badge">{% render 'icon', name: 'jar' %}</span>
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="eyebrow eyebrow--flank">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        <h1 class="empty-state__title h2">Your cart is empty</h1>
+        <p class="lede">Nothing here yet. Find a jar of raw honey or a tin of loose-leaf tea to start.</p>
+        <div class="btn-row">
+          <a class="btn" href="{{ routes.all_products_collection_url }}">Shop all</a>
+          <a class="btn btn--outline" href="{{ routes.collections_url }}">Browse collections</a>
+        </div>
+        {%- if section.settings.cod_note != blank -%}
+          <p class="cart-page__empty-note">{% render 'icon', name: 'cash' %}{{ section.settings.cod_note }}</p>
+        {%- endif -%}
       </div>
-    {% endform %}
-  {% else %}
-    <div class="cart-empty">
-      <h2>Your cart is empty</h2>
-      <a class="btn" href="{{ routes.all_products_collection_url }}">Continue shopping</a>
-    </div>
-  {% endif %}
-</div>
+    {%- endif -%}
+  </div>
 </section>
+
+<style>
+  .cart-page { padding-top: clamp(40px, 5vw, 72px); }
+  .cart-page__layout { display: grid; gap: 40px; align-items: start; }
+  @media (min-width: 990px) {
+    .cart-page__layout { grid-template-columns: minmax(0, 1fr) 380px; gap: clamp(48px, 6vw, 96px); }
+  }
+
+  .cart-page__head { display: none; }
+  .cart-page__items { margin: 0; padding: 0; list-style: none; }
+
+  .cart-line {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr) auto;
+    grid-template-areas:
+      "media details total"
+      "media qty qty";
+    gap: 12px 20px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .cart-line:first-child { padding-top: 0; }
+  .cart-line__media { grid-area: media; display: block; }
+  .cart-line__media .media-frame { display: block; }
+  .cart-line__details { grid-area: details; min-width: 0; }
+  .cart-line__vendor {
+    margin: 0 0 6px;
+    color: var(--fg-muted);
+    font: 500 var(--fs-eyebrow)/1.3 var(--sans);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+  }
+  .cart-line__title { margin: 0 0 6px; font-size: 1.25rem; line-height: 1.25; letter-spacing: 0; }
+  .cart-line__title a { text-decoration: none; }
+  .cart-line__options { margin: 0; padding: 0; list-style: none; color: var(--fg-muted); font-size: var(--fs-small); }
+  .cart-line__unit { margin: 6px 0 0; color: var(--fg-muted); font-size: var(--fs-small); font-variant-numeric: tabular-nums; }
+  .cart-line__discount { margin: 4px 0 0; color: var(--accent); font-size: var(--fs-small); }
+  .cart-line__qty { grid-area: qty; display: flex; align-items: center; gap: 20px; }
+  .cart-line__remove {
+    color: var(--fg-muted);
+    font: 500 .68rem/1.3 var(--sans);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    text-underline-offset: .35em;
+  }
+  .cart-line__total { grid-area: total; margin: 0; font-size: 1rem; font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+
+  @media (min-width: 768px) {
+    .cart-page__head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 180px 110px;
+      gap: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--rule);
+      color: var(--fg-muted);
+      font: 500 var(--fs-eyebrow)/1.3 var(--sans);
+      letter-spacing: var(--tracking-caps);
+      text-transform: uppercase;
+    }
+    .cart-page__head span:last-child { text-align: right; }
+    .cart-line {
+      grid-template-columns: 120px minmax(0, 1fr) 180px 110px;
+      grid-template-areas: "media details qty total";
+      gap: 24px;
+      align-items: center;
+      padding: 32px 0;
+    }
+    .cart-line:first-child { padding-top: 32px; }
+    .cart-line__qty { flex-direction: column; align-items: flex-start; gap: 12px; }
+  }
+
+  /* Summary */
+  .cart-summary__title { margin: 0 0 24px; font-size: var(--fs-h3); }
+  .cart-summary__rows { margin: 0; }
+  .cart-summary__row { display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; font-size: .95rem; }
+  .cart-summary__row dt { color: var(--fg-muted); }
+  .cart-summary__row dd { margin: 0; font-variant-numeric: tabular-nums; }
+  .cart-summary__row--total { margin-top: 10px; padding-top: 20px; border-top: 1px solid var(--rule); font-size: 1.1rem; }
+  .cart-summary__row--total dt { color: var(--fg); font-weight: 500; }
+  .cart-summary__row--total dd { font-weight: 500; }
+
+  .cart-summary__cod {
+    display: flex;
+    gap: 14px;
+    margin: 24px 0 8px;
+    padding: 16px;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--paper) 55%, transparent);
+  }
+  .cart-summary__cod .icon { flex: none; margin-top: 1px; font-size: 22px; color: var(--accent); stroke-width: 1.35; }
+  .cart-summary__cod-title { margin: 0; font-weight: 500; font-size: .92rem; }
+  .cart-summary__cod-text { margin: 2px 0 0; color: var(--fg-muted); font-size: .85rem; line-height: 1.5; }
+  .cart-summary__note { margin-top: 8px; border-bottom: 1px solid var(--rule); }
+  .cart-summary__note textarea { min-height: 96px; resize: vertical; background: var(--paper); }
+  .cart-summary__actions { display: grid; justify-items: center; gap: 16px; margin-top: 24px; }
+  .cart-summary__update { font-size: .68rem; color: var(--fg-muted); }
+  .cart-page__form.is-updating .cart-page__items { opacity: .55; transition: opacity var(--dur) var(--ease); pointer-events: none; }
+
+  /* Empty */
+  .cart-page__empty { padding-block: clamp(32px, 6vw, 96px); }
+  .cart-page__empty-note {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin: 40px 0 0;
+    color: var(--fg-muted);
+    font-size: var(--fs-small);
+  }
+  .cart-page__empty-note .icon { font-size: 20px; color: var(--accent); }
+</style>
 
 {% schema %}
 {
   "name": "Cart",
   "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Your order"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Cart"
+    },
     {
       "type": "checkbox",
       "id": "show_note",
@@ -161,6 +282,12 @@
       "id": "cod_note",
       "label": "Info note",
       "default": "Cash on delivery available"
+    },
+    {
+      "type": "text",
+      "id": "cod_text",
+      "label": "Info note details",
+      "default": "Pay in cash when your order arrives, anywhere in Lebanon."
     },
     {
       "type": "select",

@@ -8,6 +8,7 @@
         "variant_picker": { "type": "variant_picker", "settings": {} },
         "quantity": { "type": "quantity", "settings": {} },
         "buy_buttons": { "type": "buy_buttons", "settings": {} },
+        "reassurance": { "type": "reassurance", "settings": {} },
         "description": { "type": "description", "settings": {} },
         "tab_ingredients": {
           "type": "collapsible",
@@ -37,6 +38,7 @@
         "variant_picker",
         "quantity",
         "buy_buttons",
+        "reassurance",
         "description",
         "tab_ingredients",
         "tab_how_to_use",
@@ -46,7 +48,9 @@
     },
     "related": {
       "type": "related-products",
-      "settings": {}
+      "settings": {
+        "color_scheme": "cream"
+      }
     }
   },
   "order": ["main", "related"]

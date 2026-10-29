@@ -2,10 +2,31 @@
   "sections": {
     "form": {
       "type": "contact-form",
-      "settings": {}
+      "settings": {
+        "eyebrow": "Short label",
+        "whatsapp": "+961 00 000 000",
+        "color_scheme": "light"
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "settings": {
+        "eyebrow": "Short label",
+        "heading": "Section heading",
+        "text": "Supporting text goes here.",
+        "link_label": "",
+        "color_scheme": "cream"
+      },
+      "blocks": {
+        "q1": { "type": "item", "settings": {} },
+        "q2": { "type": "item", "settings": {} },
+        "q3": { "type": "item", "settings": {} }
+      },
+      "block_order": ["q1", "q2", "q3"]
     }
   },
   "order": [
-    "form"
+    "form",
+    "faq"
   ]
 }

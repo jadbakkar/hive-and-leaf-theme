@@ -3,27 +3,37 @@
     "about_hero": {
       "type": "page-hero",
       "settings": {
+        "eyebrow": "Short label",
         "heading": "Page title",
-        "subheading": "Supporting text goes here."
+        "subheading": "Supporting text goes here.",
+        "alignment": "left",
+        "color_scheme": "light"
       }
     },
     "about_founder": {
       "type": "person",
       "settings": {
+        "eyebrow": "Short label",
         "heading": "Person heading",
         "bio": "<p>Short bio goes here.</p>",
-        "signature": "Name"
+        "signature": "Name",
+        "role": "Role",
+        "color_scheme": "cream",
+        "padding": "l"
       }
     },
     "about_values": {
       "type": "icon-columns",
       "settings": {
-        "heading": "Section heading"
+        "eyebrow": "Short label",
+        "heading": "Section heading",
+        "color_scheme": "light"
       },
       "blocks": {
         "value_nourish": {
           "type": "column",
           "settings": {
+            "builtin_icon": "honeycomb",
             "title": "Title",
             "text": "Short description goes here."
           }
@@ -31,6 +41,7 @@
         "value_move": {
           "type": "column",
           "settings": {
+            "builtin_icon": "leaf",
             "title": "Title",
             "text": "Short description goes here."
           }
@@ -38,6 +49,7 @@
         "value_rest": {
           "type": "column",
           "settings": {
+            "builtin_icon": "hand",
             "title": "Title",
             "text": "Short description goes here."
           }
@@ -52,7 +64,10 @@
     "about_process": {
       "type": "steps",
       "settings": {
-        "heading": "Section heading"
+        "eyebrow": "Short label",
+        "heading": "Section heading",
+        "color_scheme": "forest",
+        "padding": "l"
       },
       "blocks": {
         "step_sourcing": {
@@ -100,7 +115,8 @@
       "settings": {
         "heading": "Closing heading",
         "text": "Supporting text goes here.",
-        "button_label": "Button"
+        "button_label": "Button",
+        "color_scheme": "cream"
       }
     }
   },

@@ -1,23 +1,59 @@
-{% assign recs = recommendations %}
+{%- assign recs = recommendations -%}
 <section class="section related-products {% render 'section-classes', settings: section.settings %}" data-related-products>
-<div class="container">
-  <h2>{{ section.settings.heading }}</h2>
-  <div data-recommendations data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&amp;product_id={{ product.id }}&amp;limit={{ section.settings.limit }}">
-    {% if recs.performed and recs.products_count > 0 %}
-      <div class="related-products__grid">
-        {% for recommended in recs.products %}
-          {% render 'product-card', product: recommended %}
-        {% endfor %}
+  <div class="container">
+    <div class="section-header">
+      <div class="section-header__titles">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="eyebrow eyebrow--rule">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        <h2 class="section-header__title">{{ section.settings.heading }}</h2>
       </div>
-    {% endif %}
+      {%- if section.settings.link_label != blank -%}
+        <a class="link-arrow" href="{{ routes.all_products_collection_url }}">{{ section.settings.link_label }}</a>
+      {%- endif -%}
+    </div>
+
+    <div data-recommendations data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&amp;product_id={{ product.id }}&amp;limit={{ section.settings.limit }}">
+      {%- if recs.performed and recs.products_count > 0 -%}
+        <ul class="related-products__grid" role="list">
+          {%- for recommended in recs.products -%}
+            <li class="related-products__item">{% render 'product-card', product: recommended %}</li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
   </div>
-</div>
 </section>
 
 <style>
-  .related-products__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 16px; }
+  .related-products__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 40px 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .related-products__item { min-width: 0; }
+  @media (max-width: 767px) {
+    /* Swipeable row on phones, matching the homepage featured collection. */
+    .related-products__grid {
+      grid-template-columns: none;
+      grid-auto-flow: column;
+      grid-auto-columns: 68%;
+      gap: 16px;
+      margin-inline: calc(var(--gutter) * -1);
+      padding-inline: var(--gutter);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: var(--gutter);
+      scrollbar-width: none;
+    }
+    .related-products__grid::-webkit-scrollbar { display: none; }
+    .related-products__item { scroll-snap-align: start; }
+  }
   @media (min-width: 768px) {
-    .related-products__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px 24px; }
+    .related-products__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 56px 24px; }
   }
 </style>
 
@@ -27,9 +63,22 @@
   "settings": [
     {
       "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "info": "Small label above the heading",
+      "default": "Short label"
+    },
+    {
+      "type": "text",
       "id": "heading",
       "label": "Heading",
       "default": "You may also like"
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "Link label",
+      "default": "View all"
     },
     {
       "type": "range",

@@ -1,82 +1,184 @@
-<style>
-  .search-head { margin-bottom: var(--space-m); }
-  .search-form { display: flex; flex-wrap: wrap; gap: 12px; max-width: 640px; margin-bottom: var(--space-m); }
-  .search-form label { flex-basis: 100%; font-weight: 600; }
-  .search-form input[type="search"] { flex: 1 1 240px; min-width: 0; padding: .8em 1.2em; border: 1px solid var(--line); border-radius: 999px; background: #fff; font: inherit; }
-  .search-form .btn { border: 0; cursor: pointer; }
-  .search-summary { color: var(--muted); margin: 0 0 var(--space-s); }
+{%- assign terms = search.terms | escape -%}
+<section class="section search {% render 'section-classes', settings: section.settings %}">
+  <div class="container">
+    <header class="search__header">
+      <p class="eyebrow eyebrow--flank">Search</p>
+      <h1 class="search__title">
+        {%- if search.performed and search.terms != blank -%}
+          Results for <em>&ldquo;{{ terms }}&rdquo;</em>
+        {%- else -%}
+          What are you looking for?
+        {%- endif -%}
+      </h1>
 
-  .search-grid { display: grid; gap: var(--space-m) 24px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  @media (min-width: 900px) { .search-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+      <form class="search__form" action="{{ routes.search_url }}" method="get" role="search">
+        <label class="visually-hidden" for="SearchInput-{{ section.id }}">Search the store</label>
+        {%- if section.settings.products_only -%}
+          <input type="hidden" name="type" value="product">
+        {%- endif -%}
+        <span class="search__icon" aria-hidden="true">{% render 'icon', name: 'search' %}</span>
+        <input class="search__input" type="search" name="q" id="SearchInput-{{ section.id }}" value="{{ terms }}" placeholder="Honey, green tea, gift box" autocomplete="off">
+        <button type="submit" class="btn search__submit">Search</button>
+      </form>
 
-  .search-card { display: flex; flex-direction: column; padding: var(--space-s); border: 1px solid var(--line); border-radius: 12px; background: #fff; }
-  .search-card__type { margin: 0 0 6px; color: var(--muted); font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; }
-  .search-card h3 { font-size: 1.3rem; margin-bottom: 8px; }
-  .search-card h3 a { text-decoration: none; }
-  .search-card p { margin: 0 0 12px; color: var(--muted); font-size: .95rem; }
-  .search-card__more { margin-top: auto; color: var(--burgundy); font-weight: 600; text-decoration: none; }
+      {%- if search.performed -%}
+        <p class="meta search__count" role="status"><span>{{ search.results_count }} {% if search.results_count == 1 %}result{% else %}results{% endif %}</span></p>
+      {%- endif -%}
+    </header>
 
-  .search-pagination { margin-top: var(--space-m); }
-  .search-empty { padding: var(--space-m) 0; color: var(--muted); }
-</style>
+    {%- if search.performed -%}
+      {%- paginate search.results by 12 -%}
+        {%- if search.results_count > 0 -%}
+          {%- liquid
+            assign product_count = 0
+            assign other_count = 0
+            for item in search.results
+              if item.object_type == 'product'
+                assign product_count = product_count | plus: 1
+              else
+                assign other_count = other_count | plus: 1
+              endif
+            endfor
+          -%}
 
-<section class="section search-section scheme-{{ section.settings.color_scheme | default: 'light' }}">
-<div class="container">
-  <header class="search-head">
-    <h1>Search</h1>
-  </header>
+          {%- if product_count > 0 -%}
+            <div class="search__group">
+              <h2 class="search__group-title">Products <span class="search__group-count">{{ product_count }}</span></h2>
+              <ul class="search__grid" role="list">
+                {%- for item in search.results -%}
+                  {%- if item.object_type == 'product' -%}
+                    <li>{% render 'product-card', product: item %}</li>
+                  {%- endif -%}
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- endif -%}
 
-  <form class="search-form" action="{{ routes.search_url }}" method="get" role="search">
-    <label for="search-q-{{ section.id }}">Search our store</label>
-    {% if section.settings.products_only %}
-      <input type="hidden" name="type" value="product">
-    {% endif %}
-    <input type="search" name="q" id="search-q-{{ section.id }}" value="{{ search.terms | escape }}" placeholder="Search for honey, tea, gifts" autocomplete="off">
-    <button type="submit" class="btn">Search</button>
-  </form>
+          {%- if other_count > 0 -%}
+            <div class="search__group">
+              <h2 class="search__group-title">Journal &amp; pages <span class="search__group-count">{{ other_count }}</span></h2>
+              <ul class="search__list" role="list">
+                {%- for item in search.results -%}
+                  {%- unless item.object_type == 'product' -%}
+                    <li class="search-result">
+                      <p class="meta search-result__type">
+                        <span>{% if item.object_type == 'article' %}Journal{% else %}Page{% endif %}</span>
+                        {%- if item.object_type == 'article' -%}<span>{{ item.published_at | date: '%B %-d, %Y' }}</span>{%- endif -%}
+                      </p>
+                      <h3 class="search-result__title"><a href="{{ item.url }}">{{ item.title }}</a></h3>
+                      {%- if item.object_type == 'article' -%}
+                        <p class="search-result__excerpt">{{ item.excerpt_or_content | strip_html | truncatewords: 30 }}</p>
+                      {%- else -%}
+                        <p class="search-result__excerpt">{{ item.content | strip_html | truncatewords: 30 }}</p>
+                      {%- endif -%}
+                      <span class="link-arrow search-result__arrow" aria-hidden="true"></span>
+                    </li>
+                  {%- endunless -%}
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- endif -%}
 
-  {% if search.performed %}
-    {% paginate search.results by 12 %}
-      {% if search.results_count > 0 %}
-        <p class="search-summary" role="status">{{ search.results_count }} result{% if search.results_count != 1 %}s{% endif %} for "{{ search.terms | escape }}"</p>
-
-        <div class="search-grid">
-          {% for item in search.results %}
-            {% case item.object_type %}
-              {% when 'product' %}
-                {% render 'product-card', product: item %}
-              {% when 'article' %}
-                <div class="search-card">
-                  <p class="search-card__type">Journal</p>
-                  <h3><a href="{{ item.url }}">{{ item.title }}</a></h3>
-                  <p>{{ item.excerpt_or_content | strip_html | truncatewords: 25 }}</p>
-                  <a class="search-card__more" href="{{ item.url }}">Read more</a>
-                </div>
-              {% else %}
-                <div class="search-card">
-                  <p class="search-card__type">Page</p>
-                  <h3><a href="{{ item.url }}">{{ item.title }}</a></h3>
-                  <p>{{ item.content | strip_html | truncatewords: 25 }}</p>
-                  <a class="search-card__more" href="{{ item.url }}">View page</a>
-                </div>
-            {% endcase %}
-          {% endfor %}
-        </div>
-
-        {% if paginate.pages > 1 %}
-          <div class="search-pagination">{{ paginate | default_pagination }}</div>
-        {% endif %}
-      {% else %}
-        <div class="search-empty">
-          <p>No results found for "{{ search.terms | escape }}". Try a different word, or browse our <a href="{{ routes.all_products_collection_url }}">full range</a>.</p>
-        </div>
-      {% endif %}
-    {% endpaginate %}
-  {% else %}
-    <p class="search-empty">Type a word above to search products, articles and pages.</p>
-  {% endif %}
-</div>
+          {% render 'pagination', paginate: paginate %}
+        {%- else -%}
+          <div class="empty-state">
+            <span class="icon-badge">{% render 'icon', name: 'search' %}</span>
+            <h2 class="empty-state__title h3">Nothing found for &ldquo;{{ terms }}&rdquo;</h2>
+            <p class="lede">Check the spelling, try a shorter word, or browse the full range.</p>
+            <div class="btn-row"><a class="btn" href="{{ routes.all_products_collection_url }}">Shop all</a></div>
+          </div>
+        {%- endif -%}
+      {%- endpaginate -%}
+    {%- else -%}
+      <div class="search__suggest">
+        <p class="eyebrow">Popular</p>
+        <ul class="search__suggest-list" role="list">
+          {%- for collection in collections limit: 6 -%}
+            <li><a class="chip" href="{{ collection.url }}">{{ collection.title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+  </div>
 </section>
+
+<style>
+  .search { padding-top: clamp(40px, 5vw, 72px); }
+  .search__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: clamp(40px, 5vw, 72px);
+    padding-bottom: clamp(32px, 4vw, 56px);
+    border-bottom: 1px solid var(--rule);
+    text-align: center;
+  }
+  .search__header .eyebrow { justify-content: center; }
+  .search__title { margin: 0 0 clamp(28px, 4vw, 44px); font-size: var(--fs-h2); }
+  .search__title em { color: var(--accent); }
+
+  .search__form { position: relative; display: flex; gap: 8px; width: 100%; max-width: 640px; }
+  .search__icon { position: absolute; top: 50%; left: 18px; color: var(--fg-muted); font-size: 20px; transform: translateY(-50%); pointer-events: none; }
+  .search__input {
+    flex: 1;
+    min-width: 0;
+    min-height: 56px;
+    padding: 0 18px 0 50px;
+    border: 1px solid var(--field-border);
+    border-radius: var(--radius);
+    background: transparent;
+    color: inherit;
+    font: 400 1.05rem/1.2 var(--sans);
+    transition: border-color var(--dur) var(--ease);
+  }
+  .search__input::placeholder { color: var(--fg-muted); }
+  .search__input:hover { border-color: var(--fg); }
+  .search__input:focus-visible { border-color: var(--fg); outline: 2px solid var(--accent); outline-offset: 2px; }
+  .search__input::-webkit-search-cancel-button { -webkit-appearance: none; }
+  .search__submit { min-height: 56px; }
+  @media (max-width: 479px) {
+    .search__submit { padding-inline: 18px; }
+  }
+  .search__count { margin-top: 20px; }
+
+  .search__group + .search__group { margin-top: clamp(56px, 7vw, 96px); }
+  .search__group-title {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin: 0 0 32px;
+    color: var(--fg);
+    font: 500 var(--fs-eyebrow)/1.3 var(--sans);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+  }
+  .search__group-count { color: var(--fg-muted); }
+  .search__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 16px; margin: 0; padding: 0; list-style: none; }
+  @media (min-width: 990px) { .search__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 56px 24px; } }
+
+  .search__list { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--rule); }
+  .search-result {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 32px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .search-result > :not(.search-result__arrow) { grid-column: 1; }
+  .search-result__type { margin-bottom: 10px; }
+  .search-result__title { margin: 0 0 8px; font-size: var(--fs-h3); }
+  .search-result__title a { text-decoration: none; }
+  .search-result__title a::after { content: ""; position: absolute; inset: 0; }
+  .search-result__excerpt { margin: 0; color: var(--fg-muted); max-width: var(--measure); }
+  .search-result__arrow { grid-column: 2; grid-row: 1 / span 3; align-self: center; }
+  .search-result:hover .search-result__title a { color: var(--accent); }
+  .search-result:hover .search-result__arrow::after { transform: translateX(4px); }
+
+  .search__suggest { text-align: center; }
+  .search__suggest .eyebrow { justify-content: center; }
+  .search__suggest-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 0; padding: 0; list-style: none; }
+</style>
 
 {% schema %}
 {

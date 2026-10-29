@@ -3,20 +3,28 @@
     "hero": {
       "type": "page-hero",
       "settings": {
+        "eyebrow": "Short label",
         "heading": "Page title",
-        "subheading": "Supporting text goes here."
+        "subheading": "Supporting text goes here.",
+        "alignment": "center",
+        "show_image": false,
+        "color_scheme": "cream"
       }
     },
     "text": {
       "type": "rich-text",
-      "settings": {}
+      "settings": {
+        "alignment": "left",
+        "color_scheme": "light"
+      }
     },
     "cta": {
       "type": "cta-banner",
       "settings": {
         "heading": "Closing heading",
         "text": "Supporting text goes here.",
-        "button_label": "Button"
+        "button_label": "Button",
+        "color_scheme": "forest"
       }
     }
   },

@@ -1,71 +1,142 @@
-<style>
-  .article-page { max-width: 720px; margin-inline: auto; }
-  .article-back { display: inline-block; margin-bottom: var(--space-m); color: var(--muted); font-size: .9rem; text-decoration: none; }
-  .article-meta { color: var(--muted); font-size: .9rem; letter-spacing: .04em; margin: 0 0 var(--space-xs); }
-  .article-meta span + span::before { content: "\00b7"; margin: 0 .5em; }
-  .article-page h1 { margin-bottom: var(--space-s); }
-  .article-hero { width: 100%; margin: var(--space-m) 0; border-radius: 12px; overflow: hidden; aspect-ratio: 16 / 9; background: var(--cream); }
-  .article-hero img { width: 100%; height: 100%; object-fit: cover; }
-  .article-hero .img-blank { height: 100%; border-radius: 12px; }
+{%- liquid
+  assign article_full_url = shop.url | append: article.url
+  assign share_title = article.title | append: ' ' | append: article_full_url
+  assign word_count = article.content | strip_html | split: ' ' | size
+  assign read_minutes = word_count | divided_by: 200 | at_least: 1
+-%}
+<section class="section article {% render 'section-classes', settings: section.settings %}">
+  <article class="article__inner">
+    <header class="container--narrow article__header">
+      <a class="link-arrow link-arrow--back article__back" href="{{ article.blog.url }}">{{ article.blog.title }}</a>
+      {%- if article.tags.size > 0 -%}
+        <p class="eyebrow eyebrow--flank article__eyebrow">{{ article.tags.first }}</p>
+      {%- endif -%}
+      <h1 class="article__title">{{ article.title }}</h1>
+      <p class="meta article__meta">
+        {%- if section.settings.show_author and article.author != blank -%}<span>By {{ article.author }}</span>{%- endif -%}
+        <span><time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: '%B %-d, %Y' }}</time></span>
+        {%- if section.settings.show_reading_time -%}<span>{{ read_minutes }} min read</span>{%- endif -%}
+      </p>
+    </header>
 
-  .article-content { font-size: 1.1rem; line-height: 1.75; }
-  .article-content > * + * { margin-top: 1.1em; }
-  .article-content h2 { font-size: 2rem; margin-top: 1.6em; }
-  .article-content h3 { font-size: 1.5rem; margin-top: 1.4em; }
-  .article-content a { color: var(--burgundy); text-underline-offset: 3px; }
-  .article-content blockquote { margin: 1.6em 0; padding: 0 0 0 var(--space-s); border-left: 3px solid var(--burgundy); font-family: var(--serif); font-size: 1.35rem; font-style: italic; color: var(--forest); }
-  .article-content img { border-radius: 12px; height: auto; margin-inline: auto; }
-  .article-content ul, .article-content ol { padding-left: 1.4em; }
-  .article-content li + li { margin-top: .4em; }
-
-  .article-share { margin-top: var(--space-l); padding-top: var(--space-s); border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
-  .article-share__label { font-weight: 600; margin-right: 4px; }
-  .article-share a { padding: 8px 16px; border: 1px solid var(--line); border-radius: 999px; font-size: .9rem; text-decoration: none; }
-  .article-share a:hover { background: var(--forest); border-color: var(--forest); color: var(--paper); }
-</style>
-
-{%- capture article_full_url -%}{{ shop.url }}{{ article.url }}{%- endcapture -%}
-{%- capture share_title -%}{{ article.title }} {{ article_full_url }}{%- endcapture -%}
-
-<section class="section article-section scheme-{{ section.settings.color_scheme | default: 'light' }}">
-<div class="container">
-  <article class="article-page">
-    <a class="article-back" href="{{ article.blog.url }}">&larr; Back to {{ article.blog.title }}</a>
-
-    <h1>{{ article.title }}</h1>
-    <p class="article-meta">
-      <span>{{ article.published_at | date: "%B %d, %Y" }}</span>
-      {% if article.author != blank %}<span>{{ article.author }}</span>{% endif %}
-    </p>
-
-    {% if article.image %}
-      <div class="article-hero">
-        {{ article.image | image_url: width: 1600 | image_tag: loading: 'lazy', alt: article.title }}
+    <div class="container article__hero">
+      <div class="media-frame media-frame--panorama">
+        {%- if article.image -%}
+          {{ article.image | image_url: width: 2400 | image_tag: loading: 'eager', alt: article.image.alt, sizes: '(min-width: 1240px) 1240px, 100vw', widths: '750, 1100, 1500, 2000, 2400' }}
+        {%- else -%}
+          <div class="img-blank" data-label="Article image"></div>
+        {%- endif -%}
       </div>
-    {% else %}
-      <div class="article-hero">
-        <div class="img-blank img-blank--wide"></div>
-      </div>
-    {% endif %}
-
-    <div class="article-content rte">
-      {{ article.content }}
     </div>
 
-    <div class="article-share">
-      <span class="article-share__label">Share</span>
-      <a href="https://www.facebook.com/sharer/sharer.php?u={{ article_full_url | url_encode }}" target="_blank" rel="noopener">Facebook</a>
-      <a href="https://x.com/intent/post?url={{ article_full_url | url_encode }}&amp;text={{ article.title | url_encode }}" target="_blank" rel="noopener">X</a>
-      <a href="https://wa.me/?text={{ share_title | url_encode }}" target="_blank" rel="noopener">WhatsApp</a>
+    <div class="container--narrow">
+      <div class="article__content prose rte{% if section.settings.drop_cap %} prose--dropcap{% endif %}">
+        {{ article.content }}
+      </div>
+
+      <footer class="article__footer">
+        {%- if article.tags.size > 0 -%}
+          <ul class="article__tags" role="list" aria-label="Topics">
+            {%- for tag in article.tags -%}
+              <li><a class="chip" href="{{ article.blog.url }}/tagged/{{ tag | handleize }}">{{ tag }}</a></li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+        <div class="article__share">
+          <span class="article__share-label">Share</span>
+          <a href="https://wa.me/?text={{ share_title | url_encode }}" target="_blank" rel="noopener" aria-label="Share on WhatsApp (opens in a new tab)">{% render 'icon', name: 'whatsapp' %}</a>
+          <a href="https://www.facebook.com/sharer/sharer.php?u={{ article_full_url | url_encode }}" target="_blank" rel="noopener" aria-label="Share on Facebook (opens in a new tab)">{% render 'icon', name: 'facebook' %}</a>
+          <a href="https://x.com/intent/post?url={{ article_full_url | url_encode }}&amp;text={{ article.title | url_encode }}" target="_blank" rel="noopener" aria-label="Share on X (opens in a new tab)">
+            <svg class="icon" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M5 4l14 16M19 4L5 20"/></svg>
+          </a>
+        </div>
+      </footer>
+
+      {%- if blog.previous_article or blog.next_article -%}
+        <nav class="article__pager" aria-label="More stories">
+          {%- comment -%} Shopify: previous_article is the newer story, next_article the older one. {%- endcomment -%}
+          {%- if blog.previous_article -%}
+            <a class="link-arrow link-arrow--back" href="{{ blog.previous_article.url | default: blog.previous_article }}">Newer story</a>
+          {%- else -%}<span></span>{%- endif -%}
+          {%- if blog.next_article -%}
+            <a class="link-arrow" href="{{ blog.next_article.url | default: blog.next_article }}">Older story</a>
+          {%- endif -%}
+        </nav>
+      {%- endif -%}
     </div>
   </article>
-</div>
 </section>
+
+<style>
+  .article { padding-top: clamp(40px, 5vw, 72px); }
+  .article__header { display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .article__back { align-self: center; margin-bottom: clamp(32px, 5vw, 56px); color: var(--fg-muted); }
+  .article__eyebrow { justify-content: center; }
+  .article__title { margin: 0 0 24px; font-size: clamp(2.4rem, 1.6rem + 3vw, 4rem); }
+  .article__meta { justify-content: center; }
+  .article__hero { margin-block: clamp(40px, 5vw, 72px); }
+  @media (max-width: 767px) {
+    .article__hero { width: 100%; }
+    .article__hero .media-frame { border-radius: 0; aspect-ratio: 4 / 3; }
+  }
+  .article__content { max-width: none; }
+  .article__content > p:first-child { font-size: 1.15em; color: var(--fg); }
+
+  .article__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin: clamp(48px, 6vw, 80px) 0 0;
+    padding-top: 28px;
+    border-top: 1px solid var(--rule);
+  }
+  .article__tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .article__share { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+  .article__share-label {
+    margin-right: 8px;
+    color: var(--fg-muted);
+    font: 500 var(--fs-eyebrow)/1.3 var(--sans);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+  }
+  .article__share a {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--rule);
+    border-radius: 50%;
+    font-size: 17px;
+    transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+  }
+  .article__share a:hover { border-color: var(--accent); }
+  .article__pager { display: flex; justify-content: space-between; gap: 16px; margin-top: 40px; }
+</style>
 
 {% schema %}
 {
   "name": "Article",
   "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "Show author",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_reading_time",
+      "label": "Show reading time",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "drop_cap",
+      "label": "Large first letter",
+      "default": true
+    },
     {
       "type": "select",
       "id": "color_scheme",

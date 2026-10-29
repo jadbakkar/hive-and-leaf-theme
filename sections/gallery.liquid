@@ -1,40 +1,58 @@
-<style>
-  .gallery__title { text-align: center; margin-bottom: 32px; }
-  .gallery__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-  .gallery__item { position: relative; aspect-ratio: 1 / 1; border-radius: 12px; overflow: hidden; background: var(--cream); }
-  .gallery__item .img-fill { height: 100%; }
-  .gallery__item .img-blank { height: 100%; aspect-ratio: auto; border-radius: 0; }
-  @media (min-width: 768px) {
-    .gallery__grid { grid-template-columns: repeat(4, 1fr); gap: 24px; }
-  }
-</style>
-
 <section class="section gallery {% render 'section-classes', settings: section.settings %}">
   <div class="container">
-    {% if section.settings.heading != blank %}
-      <h2 class="gallery__title">{{ section.settings.heading }}</h2>
-    {% endif %}
-
-    <div class="gallery__grid">
-      {% for block in section.blocks %}
-        <div class="gallery__item" {{ block.shopify_attributes }}>
-          {% if block.settings.image != blank %}
-            {{ block.settings.image | image_url: width: 800 | image_tag: class: 'img-fill', loading: 'lazy' }}
-          {% else %}
-            <div class="img-blank img-blank--square"></div>
-          {% endif %}
+    {%- if section.settings.heading != blank or section.settings.eyebrow != blank -%}
+      <div class="section-header{% if section.settings.center %} section-header--center{% endif %}">
+        <div class="section-header__titles">
+          {%- if section.settings.eyebrow != blank -%}
+            <p class="eyebrow {% if section.settings.center %}eyebrow--flank{% else %}eyebrow--rule{% endif %}">{{ section.settings.eyebrow }}</p>
+          {%- endif -%}
+          {%- if section.settings.heading != blank -%}
+            <h2 class="section-header__title">{{ section.settings.heading }}</h2>
+          {%- endif -%}
         </div>
-      {% endfor %}
-    </div>
+      </div>
+    {%- endif -%}
+
+    <ul class="gallery__grid" role="list">
+      {%- for block in section.blocks -%}
+        <li class="gallery__item" {{ block.shopify_attributes }}>
+          <div class="media-frame media-frame--square">
+            {%- if block.settings.image != blank -%}
+              {{ block.settings.image | image_url: width: 900 | image_tag: loading: 'lazy', sizes: '(min-width: 768px) 25vw, 50vw', widths: '300, 450, 600, 900', alt: block.settings.image.alt }}
+            {%- else -%}
+              <div class="img-blank img-blank--small"></div>
+            {%- endif -%}
+          </div>
+          {%- if block.settings.caption != blank -%}
+            <p class="gallery__caption">{{ block.settings.caption }}</p>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
   </div>
 </section>
+
+<style>
+  .gallery__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 0; padding: 0; list-style: none; }
+  @media (min-width: 768px) { .gallery__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; } }
+  .gallery__item { min-width: 0; }
+  .gallery__caption {
+    margin: 12px 0 0;
+    color: var(--fg-muted);
+    font: 500 var(--fs-eyebrow)/1.4 var(--sans);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+  }
+</style>
 
 {% schema %}
 {
   "name": "Gallery",
   "max_blocks": 12,
   "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "info": "Small label above the heading", "default": "Short label" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "Section heading" },
+    { "type": "checkbox", "id": "center", "label": "Center the heading", "default": false },
     {
       "type": "select",
       "id": "color_scheme",
@@ -64,7 +82,8 @@
       "type": "image",
       "name": "Image",
       "settings": [
-        { "type": "image_picker", "id": "image", "label": "Image" }
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "caption", "label": "Caption (optional)" }
       ]
     }
   ],

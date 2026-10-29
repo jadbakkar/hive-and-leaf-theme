@@ -1,32 +1,67 @@
-<style>
-  .page-hero__title { font-size: clamp(2.5rem, 6vw, 4.5rem); }
-  .page-hero__sub { max-width: 640px; margin: 0 auto 40px; color: var(--muted); font-size: 1.15rem; }
-  .page-hero--left { text-align: left; }
-  .page-hero--center .page-hero__eyebrow { justify-content: center; }
-  .page-hero--left .page-hero__sub { margin-left: 0; }
-  .page-hero__media { position: relative; width: 100%; border-radius: 12px; overflow: hidden; background: var(--cream); aspect-ratio: 16 / 9; }
-  .page-hero__media .img-fill { height: 100%; }
-</style>
-
-<section class="section page-hero page-hero--{{ section.settings.alignment | default: 'center' }} {% render 'section-classes', settings: section.settings %}">
+{%- liquid
+  assign align = section.settings.alignment | default: 'center'
+  assign show_media = section.settings.show_image
+  if section.settings.image != blank
+    assign show_media = true
+  endif
+-%}
+<section class="section page-hero page-hero--{{ align }}{% if show_media %} page-hero--has-media{% endif %} {% render 'section-classes', settings: section.settings %}">
   <div class="container">
-    {%- if section.settings.eyebrow != blank -%}
-      <p class="eyebrow page-hero__eyebrow">{{ section.settings.eyebrow }}</p>
-    {%- endif -%}
-    <h1 class="page-hero__title">{{ section.settings.heading }}</h1>
-    {% if section.settings.subheading != blank %}
-      <p class="page-hero__sub">{{ section.settings.subheading }}</p>
-    {% endif %}
-
-    {% if section.settings.image != blank %}
-      <div class="page-hero__media">
-        {{ section.settings.image | image_url: width: 1200 | image_tag: class: 'img-fill', loading: 'lazy' }}
+    <div class="page-hero__inner">
+      <div class="page-hero__titles">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="eyebrow {% if align == 'center' %}eyebrow--flank{% else %}eyebrow--rule{% endif %} page-hero__eyebrow">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        {%- if section.index == 1 -%}
+          <h1 class="page-hero__title">{{ section.settings.heading }}</h1>
+        {%- else -%}
+          <h2 class="page-hero__title h1">{{ section.settings.heading }}</h2>
+        {%- endif -%}
       </div>
-    {% else %}
-      <div class="img-blank img-blank--wide" data-label="Image"></div>
-    {% endif %}
+      {%- if section.settings.subheading != blank -%}
+        <p class="page-hero__sub lede">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- if show_media -%}
+      <div class="page-hero__media media-frame media-frame--panorama">
+        {%- if section.settings.image != blank -%}
+          {{ section.settings.image | image_url: width: 2400 | image_tag: loading: 'eager', sizes: '(min-width: 1240px) 1240px, 100vw', widths: '750, 1100, 1500, 2000, 2400', alt: section.settings.image.alt }}
+        {%- else -%}
+          <div class="img-blank" data-label="Image"></div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
   </div>
 </section>
+
+<style>
+  .page-hero__inner { display: grid; gap: 24px; }
+  .page-hero__title { margin: 0; }
+  .page-hero__sub { margin: 0; }
+  .page-hero--has-media .page-hero__inner { margin-bottom: clamp(40px, 5vw, 72px); }
+
+  /* Centered: one centred column. */
+  .page-hero--center .page-hero__inner { justify-items: center; max-width: 860px; margin-inline: auto; text-align: center; }
+  .page-hero--center .page-hero__eyebrow { justify-content: center; }
+  .page-hero--center .page-hero__sub { margin-inline: auto; }
+
+  /* Left: title on the left, supporting text on the right on wide screens. */
+  .page-hero--left .page-hero__inner { justify-items: start; text-align: left; }
+  @media (min-width: 990px) {
+    .page-hero--left .page-hero__inner {
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      align-items: end;
+      gap: clamp(48px, 6vw, 112px);
+    }
+    .page-hero--left .page-hero__sub { padding-bottom: .5em; }
+  }
+
+  .page-hero__media { border-radius: var(--radius); }
+  @media (max-width: 767px) {
+    .page-hero__media { aspect-ratio: 4 / 3; }
+  }
+</style>
 
 {% schema %}
 {
@@ -55,6 +90,13 @@
       "type": "image_picker",
       "id": "image",
       "label": "Image"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "label": "Show image area",
+      "info": "Shows a placeholder until an image is chosen. An image, once chosen, always shows.",
+      "default": true
     },
     {
       "type": "select",

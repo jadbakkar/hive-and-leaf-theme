@@ -2,7 +2,10 @@
   "sections": {
     "faq": {
       "type": "faq",
-      "settings": {},
+      "settings": {
+        "eyebrow": "Short label",
+        "color_scheme": "light"
+      },
       "blocks": {
         "q1": {
           "type": "item",
@@ -15,12 +18,22 @@
         "q3": {
           "type": "item",
           "settings": {}
+        },
+        "q4": {
+          "type": "item",
+          "settings": {}
+        },
+        "q5": {
+          "type": "item",
+          "settings": {}
         }
       },
       "block_order": [
         "q1",
         "q2",
-        "q3"
+        "q3",
+        "q4",
+        "q5"
       ]
     },
     "cta": {
@@ -28,7 +41,8 @@
       "settings": {
         "heading": "Closing heading",
         "text": "Supporting text goes here.",
-        "button_label": "Button"
+        "button_label": "Button",
+        "color_scheme": "forest"
       }
     }
   },
