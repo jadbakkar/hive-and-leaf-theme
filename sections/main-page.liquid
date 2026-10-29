@@ -1,8 +1,24 @@
-<section class="section scheme-{{ section.settings.color_scheme | default: 'light' }}">
-<div class="container" style="max-width:720px;">
-  <h1>{{ page.title }}</h1>
-  <div class="page-content">
-    {{ page.content }}
+<style>
+  .page-body { max-width: 720px; margin-inline: auto; }
+  .page-body h1 { margin-bottom: var(--space-m); }
+  .page-content { font-size: 1.1rem; line-height: 1.75; }
+  .page-content > * + * { margin-top: 1.1em; }
+  .page-content h2 { font-size: 2rem; margin-top: 1.6em; }
+  .page-content h3 { font-size: 1.5rem; margin-top: 1.4em; }
+  .page-content a { color: var(--burgundy); text-underline-offset: 3px; }
+  .page-content blockquote { margin: 1.6em 0; padding: 0 0 0 var(--space-s); border-left: 3px solid var(--burgundy); font-family: var(--serif); font-size: 1.35rem; font-style: italic; color: var(--forest); }
+  .page-content img { border-radius: 12px; height: auto; margin-inline: auto; }
+  .page-content ul, .page-content ol { padding-left: 1.4em; }
+  .page-content li + li { margin-top: .4em; }
+</style>
+
+<section class="section page-section scheme-{{ section.settings.color_scheme | default: 'light' }}">
+<div class="container">
+  <div class="page-body">
+    <h1>{{ page.title }}</h1>
+    <div class="page-content rte">
+      {{ page.content }}
+    </div>
   </div>
 </div>
 </section>

@@ -1,26 +1,79 @@
-<section class="section scheme-{{ section.settings.color_scheme | default: 'light' }}">
-<div class="container">
-  <h1>Search</h1>
+<style>
+  .search-head { margin-bottom: var(--space-m); }
+  .search-form { display: flex; flex-wrap: wrap; gap: 12px; max-width: 640px; margin-bottom: var(--space-m); }
+  .search-form label { flex-basis: 100%; font-weight: 600; }
+  .search-form input[type="search"] { flex: 1 1 240px; min-width: 0; padding: .8em 1.2em; border: 1px solid var(--line); border-radius: 999px; background: #fff; font: inherit; }
+  .search-form .btn { border: 0; cursor: pointer; }
+  .search-summary { color: var(--muted); margin: 0 0 var(--space-s); }
 
-  <form action="{{ routes.search_url }}" method="get" role="search">
-    <label for="search-q-{{ section.id }}">Search our store</label><br>
-    <input type="search" name="q" id="search-q-{{ section.id }}" value="{{ search.terms | escape }}">
+  .search-grid { display: grid; gap: var(--space-m) 24px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (min-width: 900px) { .search-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+  .search-card { display: flex; flex-direction: column; padding: var(--space-s); border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+  .search-card__type { margin: 0 0 6px; color: var(--muted); font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; }
+  .search-card h3 { font-size: 1.3rem; margin-bottom: 8px; }
+  .search-card h3 a { text-decoration: none; }
+  .search-card p { margin: 0 0 12px; color: var(--muted); font-size: .95rem; }
+  .search-card__more { margin-top: auto; color: var(--burgundy); font-weight: 600; text-decoration: none; }
+
+  .search-pagination { margin-top: var(--space-m); }
+  .search-empty { padding: var(--space-m) 0; color: var(--muted); }
+</style>
+
+<section class="section search-section scheme-{{ section.settings.color_scheme | default: 'light' }}">
+<div class="container">
+  <header class="search-head">
+    <h1>Search</h1>
+  </header>
+
+  <form class="search-form" action="{{ routes.search_url }}" method="get" role="search">
+    <label for="search-q-{{ section.id }}">Search our store</label>
+    {% if section.settings.products_only %}
+      <input type="hidden" name="type" value="product">
+    {% endif %}
+    <input type="search" name="q" id="search-q-{{ section.id }}" value="{{ search.terms | escape }}" placeholder="Search for honey, tea, gifts" autocomplete="off">
     <button type="submit" class="btn">Search</button>
   </form>
 
   {% if search.performed %}
-    {% if search.results_count > 0 %}
-      <p>{{ search.results_count }} result(s) found.</p>
-      <ul>
-        {% for item in search.results %}
-          <li>
-            <a href="{{ item.url }}">{{ item.title }}</a>
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p>No results found for "{{ search.terms }}".</p>
-    {% endif %}
+    {% paginate search.results by 12 %}
+      {% if search.results_count > 0 %}
+        <p class="search-summary" role="status">{{ search.results_count }} result{% if search.results_count != 1 %}s{% endif %} for "{{ search.terms | escape }}"</p>
+
+        <div class="search-grid">
+          {% for item in search.results %}
+            {% case item.object_type %}
+              {% when 'product' %}
+                {% render 'product-card', product: item %}
+              {% when 'article' %}
+                <div class="search-card">
+                  <p class="search-card__type">Journal</p>
+                  <h3><a href="{{ item.url }}">{{ item.title }}</a></h3>
+                  <p>{{ item.excerpt_or_content | strip_html | truncatewords: 25 }}</p>
+                  <a class="search-card__more" href="{{ item.url }}">Read more</a>
+                </div>
+              {% else %}
+                <div class="search-card">
+                  <p class="search-card__type">Page</p>
+                  <h3><a href="{{ item.url }}">{{ item.title }}</a></h3>
+                  <p>{{ item.content | strip_html | truncatewords: 25 }}</p>
+                  <a class="search-card__more" href="{{ item.url }}">View page</a>
+                </div>
+            {% endcase %}
+          {% endfor %}
+        </div>
+
+        {% if paginate.pages > 1 %}
+          <div class="search-pagination">{{ paginate | default_pagination }}</div>
+        {% endif %}
+      {% else %}
+        <div class="search-empty">
+          <p>No results found for "{{ search.terms | escape }}". Try a different word, or browse our <a href="{{ routes.all_products_collection_url }}">full range</a>.</p>
+        </div>
+      {% endif %}
+    {% endpaginate %}
+  {% else %}
+    <p class="search-empty">Type a word above to search products, articles and pages.</p>
   {% endif %}
 </div>
 </section>
@@ -29,6 +82,12 @@
 {
   "name": "Search",
   "settings": [
+    {
+      "type": "checkbox",
+      "id": "products_only",
+      "label": "Search products only",
+      "default": false
+    },
     {
       "type": "select",
       "id": "color_scheme",

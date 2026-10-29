@@ -7,7 +7,7 @@
 
 <section class="section faq-section {% render 'section-classes', settings: section.settings %}">
   <div class="container faq">
-    <h1>{{ section.settings.heading }}</h1>
+    {% if section.index == 1 %}<h1>{{ section.settings.heading }}</h1>{% else %}<h2>{{ section.settings.heading }}</h2>{% endif %}
     {% for block in section.blocks %}
       <details {{ block.shopify_attributes }}>
         <summary>{{ block.settings.question }}</summary>

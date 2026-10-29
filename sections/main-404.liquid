@@ -1,8 +1,21 @@
-<section class="section scheme-{{ section.settings.color_scheme | default: 'light' }}">
-<div class="container">
+<style>
+  .not-found { text-align: center; padding: var(--space-l) 0; }
+  .not-found__code { font-family: var(--serif); font-size: clamp(6rem, 22vw, 12rem); line-height: 1; color: var(--burgundy); margin: 0 0 var(--space-xs); }
+  .not-found h1 { margin-bottom: var(--space-s); }
+  .not-found p { color: var(--muted); max-width: 480px; margin: 0 auto var(--space-m); }
+  .not-found__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+  .not-found__actions .btn--outline { color: var(--forest); }
+</style>
+
+<section class="section not-found-section scheme-{{ section.settings.color_scheme | default: 'light' }}">
+<div class="container not-found">
+  <p class="not-found__code" aria-hidden="true">404</p>
   <h1>Page not found</h1>
-  <p>The page you are looking for does not exist.</p>
-  <p><a class="btn" href="{{ routes.root_url }}">Back to home</a></p>
+  <p>Sorry, the page you were looking for has moved or does not exist. Let us help you find something good.</p>
+  <div class="not-found__actions">
+    <a class="btn" href="{{ routes.root_url }}">Back to home</a>
+    <a class="btn btn--outline" href="{{ routes.all_products_collection_url }}">Shop all</a>
+  </div>
 </div>
 </section>
 

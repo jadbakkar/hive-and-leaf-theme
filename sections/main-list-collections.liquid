@@ -1,20 +1,41 @@
-<section class="section scheme-{{ section.settings.color_scheme | default: 'light' }}">
+<style>
+  .collections-head { margin-bottom: var(--space-m); }
+  .collections-grid { display: grid; gap: var(--space-m) 24px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (min-width: 900px) { .collections-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .collection-card { display: block; text-decoration: none; }
+  .collection-card .card-media { aspect-ratio: 4 / 5; margin-bottom: var(--space-s); }
+  .collection-card .card-media img { transition: transform .4s ease; }
+  .collection-card:hover .card-media img { transform: scale(1.03); }
+  .collection-card__title { font-size: 1.5rem; margin: 0 0 4px; }
+  .collection-card__count { margin: 0; color: var(--muted); font-size: .9rem; }
+  .collections-empty { color: var(--muted); }
+</style>
+
+<section class="section collections-section scheme-{{ section.settings.color_scheme | default: 'light' }}">
 <div class="container">
-  <h1>Collections</h1>
-  <div class="grid">
-    {% for collection in collections %}
-      <a href="{{ collection.url }}" class="product-card">
-        <div class="card-media">
-          {% if collection.featured_image %}
-            {{ collection.featured_image | image_url: width: 600 | image_tag: loading: 'lazy' }}
-          {% else %}
-            <div class="img-blank img-blank--portrait"></div>
-          {% endif %}
-        </div>
-        <h3>{{ collection.title }}</h3>
-      </a>
-    {% endfor %}
-  </div>
+  <header class="collections-head">
+    <h1>Collections</h1>
+  </header>
+
+  {% if collections.size > 0 %}
+    <div class="collections-grid">
+      {% for collection in collections %}
+        <a href="{{ collection.url }}" class="collection-card">
+          <div class="card-media">
+            {% if collection.image %}
+              {{ collection.image | image_url: width: 800 | image_tag: loading: 'lazy', alt: collection.title }}
+            {% else %}
+              <div class="img-blank img-blank--portrait"></div>
+            {% endif %}
+          </div>
+          <h2 class="collection-card__title">{{ collection.title }}</h2>
+          <p class="collection-card__count">{{ collection.products_count }} product{% if collection.products_count != 1 %}s{% endif %}</p>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="collections-empty">No collections yet.</p>
+  {% endif %}
 </div>
 </section>
 
