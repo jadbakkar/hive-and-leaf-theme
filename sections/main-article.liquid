@@ -1,4 +1,5 @@
-<div class="container section" style="max-width:720px;">
+<section class="section scheme-{{ section.settings.color_scheme | default: 'light' }}">
+<div class="container" style="max-width:720px;">
   <p><a href="{{ blog.url }}">&larr; Back to {{ blog.title }}</a></p>
   <h1>{{ article.title }}</h1>
   <p style="color:var(--muted);">{{ article.published_at | date: "%B %d, %Y" }}</p>
@@ -6,10 +7,36 @@
     {{ article.content }}
   </div>
 </div>
+</section>
 
 {% schema %}
 {
   "name": "Article",
-  "settings": []
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        {
+          "value": "light",
+          "label": "Light"
+        },
+        {
+          "value": "cream",
+          "label": "Cream"
+        },
+        {
+          "value": "forest",
+          "label": "Dark green"
+        },
+        {
+          "value": "burgundy",
+          "label": "Burgundy"
+        }
+      ],
+      "default": "light"
+    }
+  ]
 }
 {% endschema %}

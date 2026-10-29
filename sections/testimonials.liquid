@@ -1,14 +1,16 @@
-<div class="container section">
+<section class="section testimonials {% render 'section-classes', settings: section.settings %}">
+<div class="container">
   <h2 style="text-align: center;">{{ section.settings.heading }}</h2>
   <div class="grid">
     {% for block in section.blocks %}
-      <blockquote class="testimonial" style="background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 24px; margin: 0;" {{ block.shopify_attributes }}>
+      <blockquote class="testimonial" style="background: #fff; color: var(--ink); border: 1px solid var(--line); border-radius: 12px; padding: 24px; margin: 0;" {{ block.shopify_attributes }}>
         <p style="margin-top: 0;">&ldquo;{{ block.settings.quote }}&rdquo;</p>
-        <footer style="color: var(--muted);">&mdash; {{ block.settings.author }}</footer>
+        <footer style="color: #6b6459;">&mdash; {{ block.settings.author }}</footer>
       </blockquote>
     {% endfor %}
   </div>
 </div>
+</section>
 
 {% schema %}
 {
@@ -19,6 +21,50 @@
       "id": "heading",
       "label": "Heading",
       "default": "Section heading"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        {
+          "value": "light",
+          "label": "Light"
+        },
+        {
+          "value": "cream",
+          "label": "Cream"
+        },
+        {
+          "value": "forest",
+          "label": "Dark green"
+        },
+        {
+          "value": "burgundy",
+          "label": "Burgundy"
+        }
+      ],
+      "default": "light"
+    },
+    {
+      "type": "select",
+      "id": "padding",
+      "label": "Spacing",
+      "options": [
+        {
+          "value": "s",
+          "label": "Small"
+        },
+        {
+          "value": "m",
+          "label": "Medium"
+        },
+        {
+          "value": "l",
+          "label": "Large"
+        }
+      ],
+      "default": "m"
     }
   ],
   "blocks": [

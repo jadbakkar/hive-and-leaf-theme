@@ -1,4 +1,5 @@
-<div class="container section">
+<section class="section scheme-{{ section.settings.color_scheme | default: 'light' }}">
+<div class="container">
   <h1>Collections</h1>
   <div class="grid">
     {% for collection in collections %}
@@ -15,10 +16,36 @@
     {% endfor %}
   </div>
 </div>
+</section>
 
 {% schema %}
 {
   "name": "Collections list",
-  "settings": []
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        {
+          "value": "light",
+          "label": "Light"
+        },
+        {
+          "value": "cream",
+          "label": "Cream"
+        },
+        {
+          "value": "forest",
+          "label": "Dark green"
+        },
+        {
+          "value": "burgundy",
+          "label": "Burgundy"
+        }
+      ],
+      "default": "light"
+    }
+  ]
 }
 {% endschema %}

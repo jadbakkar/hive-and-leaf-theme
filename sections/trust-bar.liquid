@@ -1,0 +1,72 @@
+<style>
+  .trust-bar__list { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 16px 40px; margin: 0; padding: 0; list-style: none; text-align: center; }
+  .trust-bar__item { display: flex; align-items: center; gap: 10px; font-weight: 500; }
+  .trust-bar__icon { width: 28px; height: 28px; object-fit: contain; flex-shrink: 0; }
+</style>
+
+<section class="section trust-bar {% render 'section-classes', settings: section.settings %}">
+  <div class="container">
+    <ul class="trust-bar__list">
+      {% for block in section.blocks %}
+        <li class="trust-bar__item" {{ block.shopify_attributes }}>
+          {% if block.settings.icon != blank %}
+            {{ block.settings.icon | image_url: width: 56 | image_tag: class: 'trust-bar__icon', loading: 'lazy' }}
+          {% endif %}
+          <span>{{ block.settings.text }}</span>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Trust bar",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "light", "label": "Light" },
+        { "value": "cream", "label": "Cream" },
+        { "value": "forest", "label": "Dark green" },
+        { "value": "burgundy", "label": "Burgundy" }
+      ],
+      "default": "cream"
+    },
+    {
+      "type": "select",
+      "id": "padding",
+      "label": "Spacing",
+      "options": [
+        { "value": "s", "label": "Small" },
+        { "value": "m", "label": "Medium" },
+        { "value": "l", "label": "Large" }
+      ],
+      "default": "s"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Item",
+      "settings": [
+        { "type": "image_picker", "id": "icon", "label": "Icon (optional)" },
+        { "type": "text", "id": "text", "label": "Text", "default": "Item text" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trust bar",
+      "blocks": [
+        { "type": "item", "settings": { "text": "Item text" } },
+        { "type": "item", "settings": { "text": "Item text" } },
+        { "type": "item", "settings": { "text": "Item text" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

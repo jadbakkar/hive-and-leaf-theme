@@ -1,4 +1,5 @@
-<div class="container section">
+<section class="section scheme-{{ section.settings.color_scheme | default: 'light' }}">
+<div class="container">
   <h1>Search</h1>
 
   <form action="{{ routes.search_url }}" method="get" role="search">
@@ -22,10 +23,36 @@
     {% endif %}
   {% endif %}
 </div>
+</section>
 
 {% schema %}
 {
   "name": "Search",
-  "settings": []
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        {
+          "value": "light",
+          "label": "Light"
+        },
+        {
+          "value": "cream",
+          "label": "Cream"
+        },
+        {
+          "value": "forest",
+          "label": "Dark green"
+        },
+        {
+          "value": "burgundy",
+          "label": "Burgundy"
+        }
+      ],
+      "default": "light"
+    }
+  ]
 }
 {% endschema %}
