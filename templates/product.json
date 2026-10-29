@@ -2,8 +2,52 @@
   "sections": {
     "main": {
       "type": "main-product",
+      "blocks": {
+        "title": { "type": "title", "settings": {} },
+        "price": { "type": "price", "settings": {} },
+        "variant_picker": { "type": "variant_picker", "settings": {} },
+        "quantity": { "type": "quantity", "settings": {} },
+        "buy_buttons": { "type": "buy_buttons", "settings": {} },
+        "description": { "type": "description", "settings": {} },
+        "tab_ingredients": {
+          "type": "collapsible",
+          "settings": {
+            "heading": "Ingredients",
+            "content": "<p>Placeholder text. List the ingredients in this blend.</p>"
+          }
+        },
+        "tab_how_to_use": {
+          "type": "collapsible",
+          "settings": {
+            "heading": "How to use",
+            "content": "<p>Placeholder text. Explain how to prepare and enjoy this product.</p>"
+          }
+        },
+        "tab_delivery": {
+          "type": "collapsible",
+          "settings": {
+            "heading": "Delivery & payment",
+            "content": "<p>Placeholder text. Describe delivery times, costs and accepted payment methods.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "title",
+        "price",
+        "variant_picker",
+        "quantity",
+        "buy_buttons",
+        "description",
+        "tab_ingredients",
+        "tab_how_to_use",
+        "tab_delivery"
+      ],
+      "settings": {}
+    },
+    "related": {
+      "type": "related-products",
       "settings": {}
     }
   },
-  "order": ["main"]
+  "order": ["main", "related"]
 }

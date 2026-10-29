@@ -1,0 +1,27 @@
+{%- comment -%}
+  Price display. Pass either `product` (uses the product's price) or `variant` (uses that variant).
+  Shows a struck-through compare-at price and a "Sale" badge when on sale, and "Sold out" when unavailable.
+{%- endcomment -%}
+{%- liquid
+  assign price_source = variant | default: product
+  assign on_sale = false
+  if price_source.compare_at_price != blank and price_source.compare_at_price > price_source.price
+    assign on_sale = true
+  endif
+  assign from_price = false
+  if variant == blank and product.price_varies
+    assign from_price = true
+  endif
+-%}
+<div class="price">
+  {%- if on_sale -%}
+    <s class="price__compare">{{ price_source.compare_at_price | money }}</s>
+  {%- endif -%}
+  <span class="price__current">{% if from_price %}From {% endif %}{{ price_source.price | money }}</span>
+  {%- if on_sale -%}
+    <span class="price__badge">Sale</span>
+  {%- endif -%}
+  {%- unless price_source.available -%}
+    <span class="price__sold-out">Sold out</span>
+  {%- endunless -%}
+</div>

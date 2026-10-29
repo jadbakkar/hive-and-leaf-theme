@@ -423,3 +423,244 @@
     initCart();
   });
 })();
+
+// --- Product page ---
+(function () {
+  'use strict';
+
+  var desktopQuery = window.matchMedia ? window.matchMedia('(min-width: 768px)') : null;
+
+  function ready(fn) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fn);
+    } else {
+      fn();
+    }
+  }
+
+  function all(root, selector) {
+    return Array.prototype.slice.call((root || document).querySelectorAll(selector));
+  }
+
+  function node(tag, className, text) {
+    var element = document.createElement(tag);
+    if (className) element.className = className;
+    if (text !== undefined && text !== null) element.textContent = text;
+    return element;
+  }
+
+  function formatMoney(cents, format) {
+    var value = Number(cents || 0) / 100;
+    if (!format) return value.toFixed(2);
+    return format.replace(/\{\{\s*(\w+)\s*\}\}/, function (_, key) {
+      var parts = value.toFixed(/no_decimals/.test(key) ? 0 : 2).split('.');
+      var separators = /comma_separator/.test(key) ? ['.', ','] : [',', '.'];
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, separators[0]);
+      return parts.join(separators[1]);
+    });
+  }
+
+  // Mirrors snippets/price.liquid for a single variant.
+  function renderPrice(wrapper, variant, format) {
+    while (wrapper.firstChild) wrapper.removeChild(wrapper.firstChild);
+    var onSale = !!variant.compare_at_price && variant.compare_at_price > variant.price;
+    var box = node('div', 'price');
+    if (onSale) box.appendChild(node('s', 'price__compare', formatMoney(variant.compare_at_price, format)));
+    box.appendChild(node('span', 'price__current', formatMoney(variant.price, format)));
+    if (onSale) box.appendChild(node('span', 'price__badge', 'Sale'));
+    if (!variant.available) box.appendChild(node('span', 'price__sold-out', 'Sold out'));
+    wrapper.appendChild(box);
+  }
+
+  function initProduct(section) {
+    var dataEl = section.querySelector('[data-product-json]');
+    if (!dataEl) return;
+
+    var product;
+    try {
+      product = JSON.parse(dataEl.textContent);
+    } catch (error) {
+      return;
+    }
+    var variants = (product && product.variants) || [];
+    if (!variants.length) return;
+
+    var format = section.getAttribute('data-money-format') || '';
+    var form = section.querySelector('.product-form');
+    var idInput = form ? form.querySelector('input[name="id"]') : null;
+    var priceWrap = section.querySelector('[data-price]');
+    var button = section.querySelector('[data-add-to-cart]');
+    var buttonLabel = section.querySelector('[data-add-label]');
+    var selects = all(section, '[data-option-select]');
+    var slides = all(section, '[data-gallery-slide]');
+    var thumbs = all(section, '[data-gallery-thumb]');
+    var qtyInputs = all(section, '[data-quantity-input]');
+
+    function indexOf(el) {
+      return Number(el.getAttribute('data-index'));
+    }
+
+    function showSlide(index) {
+      slides.forEach(function (slide) {
+        slide.hidden = indexOf(slide) !== index;
+      });
+      thumbs.forEach(function (thumb) {
+        thumb.setAttribute('aria-pressed', indexOf(thumb) === index ? 'true' : 'false');
+      });
+    }
+
+    function showMedia(mediaId) {
+      var match = slides.filter(function (slide) {
+        return slide.getAttribute('data-media-id') === String(mediaId);
+      })[0];
+      if (match) showSlide(indexOf(match));
+    }
+
+    function variantById(id) {
+      return variants.filter(function (variant) {
+        return String(variant.id) === String(id);
+      })[0] || null;
+    }
+
+    // Start from the current variant, then replace the values of every option that has a select.
+    function selectedVariant() {
+      var base = variantById(idInput ? idInput.value : '') || variants[0];
+      var wanted = base.options.slice();
+      selects.forEach(function (select) {
+        wanted[Number(select.getAttribute('data-option-index'))] = select.value;
+      });
+      return variants.filter(function (variant) {
+        return variant.options.every(function (value, i) {
+          return value === wanted[i];
+        });
+      })[0] || null;
+    }
+
+    function updateButton(variant) {
+      if (!button) return;
+      var label = 'Add to cart';
+      var disabled = false;
+      if (!variant) {
+        label = 'Unavailable';
+        disabled = true;
+      } else if (!variant.available) {
+        label = 'Sold out';
+        disabled = true;
+      }
+      button.disabled = disabled;
+      if (buttonLabel) {
+        buttonLabel.textContent = label;
+      } else {
+        button.textContent = label;
+      }
+    }
+
+    function syncUrl(variant) {
+      if (!window.history || !window.history.replaceState) return;
+      try {
+        var url = new URL(window.location.href);
+        url.searchParams.set('variant', variant.id);
+        window.history.replaceState(window.history.state, '', url.toString());
+      } catch (error) {
+        // Keep the current URL if it cannot be parsed.
+      }
+    }
+
+    function update() {
+      var variant = selectedVariant();
+      if (variant) {
+        if (idInput) idInput.value = String(variant.id);
+        if (priceWrap) renderPrice(priceWrap, variant, format);
+        if (variant.featured_media) showMedia(variant.featured_media.id);
+        syncUrl(variant);
+      }
+      updateButton(variant);
+    }
+
+    selects.forEach(function (select) {
+      select.addEventListener('change', update);
+    });
+
+    thumbs.forEach(function (thumb) {
+      thumb.addEventListener('click', function () {
+        showSlide(indexOf(thumb));
+      });
+    });
+
+    var firstVisible = slides.filter(function (slide) { return !slide.hidden; })[0];
+    if (firstVisible) showSlide(indexOf(firstVisible));
+
+    qtyInputs.forEach(function (input) {
+      var wrap = input.parentNode;
+      var dec = wrap.querySelector('[data-qty-dec]');
+      var inc = wrap.querySelector('[data-qty-inc]');
+
+      function current() {
+        return parseInt(input.value, 10) || 1;
+      }
+
+      function setQty(value) {
+        input.value = String(Math.max(1, value));
+      }
+
+      if (dec) dec.addEventListener('click', function () { setQty(current() - 1); });
+      if (inc) inc.addEventListener('click', function () { setQty(current() + 1); });
+      input.addEventListener('change', function () { setQty(current()); });
+    });
+  }
+
+  // Related products: fill the wrapper with the recommendations section if the server did not render them.
+  function initRecommendations() {
+    all(document, '[data-recommendations]').forEach(function (wrap) {
+      var url = wrap.getAttribute('data-url');
+      var section = wrap.closest('[data-related-products]');
+      if (!url || wrap.querySelector('.product-card')) return;
+
+      fetch(url, { headers: { Accept: 'text/html' } })
+        .then(function (response) {
+          if (!response.ok) throw new Error('Recommendations request failed');
+          return response.text();
+        })
+        .then(function (html) {
+          var doc = new DOMParser().parseFromString(html, 'text/html');
+          var fresh = doc.querySelector('[data-recommendations]');
+          wrap.innerHTML = fresh ? fresh.innerHTML : '';
+          if (section && !wrap.querySelector('.product-card')) section.hidden = true;
+        })
+        .catch(function () {
+          if (section) section.hidden = true;
+        });
+    });
+  }
+
+  // Collection: sort changes submit the filter form; filters start closed on mobile and open on desktop.
+  function initCollections() {
+    all(document, '[data-collection-form]').forEach(function (form) {
+      all(form, '[data-auto-submit]').forEach(function (input) {
+        input.addEventListener('change', function () {
+          form.submit();
+        });
+      });
+
+      var filters = form.querySelector('[data-collection-filters]');
+      if (!filters || !desktopQuery) return;
+
+      function syncFilters() {
+        filters.open = desktopQuery.matches;
+      }
+
+      syncFilters();
+      if (desktopQuery.addEventListener) {
+        desktopQuery.addEventListener('change', syncFilters);
+      } else if (desktopQuery.addListener) {
+        desktopQuery.addListener(syncFilters);
+      }
+    });
+  }
+
+  ready(function () {
+    all(document, '[data-product-section]').forEach(initProduct);
+    initRecommendations();
+    initCollections();
+  });
+})();
