@@ -5,9 +5,9 @@
   .faq details p { color: var(--muted); margin: 12px 0 0; }
 </style>
 
-<section class="section">
+<section class="section faq-section {% render 'section-classes', settings: section.settings %}">
   <div class="container faq">
-    <h1>{{ section.settings.heading }}</h1>
+    {% if section.index == 1 %}<h1>{{ section.settings.heading }}</h1>{% else %}<h2>{{ section.settings.heading }}</h2>{% endif %}
     {% for block in section.blocks %}
       <details {{ block.shopify_attributes }}>
         <summary>{{ block.settings.question }}</summary>
@@ -21,20 +21,92 @@
 {
   "name": "FAQ",
   "settings": [
-    { "type": "text", "id": "heading", "label": "Heading", "default": "Page title" }
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Page title"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        {
+          "value": "light",
+          "label": "Light"
+        },
+        {
+          "value": "cream",
+          "label": "Cream"
+        },
+        {
+          "value": "forest",
+          "label": "Dark green"
+        },
+        {
+          "value": "burgundy",
+          "label": "Burgundy"
+        }
+      ],
+      "default": "light"
+    },
+    {
+      "type": "select",
+      "id": "padding",
+      "label": "Spacing",
+      "options": [
+        {
+          "value": "s",
+          "label": "Small"
+        },
+        {
+          "value": "m",
+          "label": "Medium"
+        },
+        {
+          "value": "l",
+          "label": "Large"
+        }
+      ],
+      "default": "m"
+    }
   ],
   "blocks": [
     {
       "type": "item",
       "name": "Question",
       "settings": [
-        { "type": "text", "id": "question", "label": "Question", "default": "Question goes here?" },
-        { "type": "textarea", "id": "answer", "label": "Answer", "default": "Answer goes here." }
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "Question goes here?"
+        },
+        {
+          "type": "textarea",
+          "id": "answer",
+          "label": "Answer",
+          "default": "Answer goes here."
+        }
       ]
     }
   ],
   "presets": [
-    { "name": "FAQ", "blocks": [ { "type": "item" }, { "type": "item" }, { "type": "item" } ] }
+    {
+      "name": "FAQ",
+      "blocks": [
+        {
+          "type": "item"
+        },
+        {
+          "type": "item"
+        },
+        {
+          "type": "item"
+        }
+      ]
+    }
   ]
 }
 {% endschema %}

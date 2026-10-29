@@ -1,0 +1,83 @@
+<style>
+  .gallery__title { text-align: center; margin-bottom: 32px; }
+  .gallery__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .gallery__item { position: relative; aspect-ratio: 1 / 1; border-radius: 12px; overflow: hidden; background: var(--cream); }
+  .gallery__item .img-fill { height: 100%; }
+  .gallery__item .img-blank { height: 100%; aspect-ratio: auto; border-radius: 0; }
+  @media (min-width: 768px) {
+    .gallery__grid { grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  }
+</style>
+
+<section class="section gallery {% render 'section-classes', settings: section.settings %}">
+  <div class="container">
+    {% if section.settings.heading != blank %}
+      <h2 class="gallery__title">{{ section.settings.heading }}</h2>
+    {% endif %}
+
+    <div class="gallery__grid">
+      {% for block in section.blocks %}
+        <div class="gallery__item" {{ block.shopify_attributes }}>
+          {% if block.settings.image != blank %}
+            {{ block.settings.image | image_url: width: 800 | image_tag: class: 'img-fill', loading: 'lazy' }}
+          {% else %}
+            <div class="img-blank img-blank--square"></div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Gallery",
+  "max_blocks": 12,
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Section heading" },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "light", "label": "Light" },
+        { "value": "cream", "label": "Cream" },
+        { "value": "forest", "label": "Dark green" },
+        { "value": "burgundy", "label": "Burgundy" }
+      ],
+      "default": "light"
+    },
+    {
+      "type": "select",
+      "id": "padding",
+      "label": "Spacing",
+      "options": [
+        { "value": "s", "label": "Small" },
+        { "value": "m", "label": "Medium" },
+        { "value": "l", "label": "Large" }
+      ],
+      "default": "m"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Gallery",
+      "blocks": [
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" }
+      ]
+    }
+  ]
+}
+{% endschema %}

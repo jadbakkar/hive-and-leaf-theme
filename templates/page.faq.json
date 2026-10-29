@@ -24,7 +24,7 @@
       ]
     },
     "cta": {
-      "type": "about-cta",
+      "type": "cta-banner",
       "settings": {
         "heading": "Closing heading",
         "text": "Supporting text goes here.",

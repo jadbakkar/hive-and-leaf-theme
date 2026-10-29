@@ -1,0 +1,98 @@
+<style>
+  .icon-columns__title { text-align: center; font-size: clamp(2rem, 4vw, 2.75rem); margin-bottom: 40px; }
+  .icon-columns__grid { display: grid; gap: 32px; grid-template-columns: 1fr; text-align: center; }
+  .icon-columns__media { position: relative; width: 96px; aspect-ratio: 1 / 1; margin: 0 auto 16px; border-radius: 12px; overflow: hidden; background: var(--cream); }
+  .icon-columns__media .img-fill { height: 100%; }
+  .icon-columns__item h3 { font-size: 1.5rem; margin-top: 0; }
+  .icon-columns__item p { color: var(--muted); margin: 0; }
+  @media (min-width: 600px) {
+    .icon-columns__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 900px) {
+    .icon-columns__grid { grid-template-columns: repeat(var(--cols, 3), 1fr); }
+  }
+</style>
+
+<section class="section icon-columns {% render 'section-classes', settings: section.settings %}">
+  <div class="container">
+    <h2 class="icon-columns__title">{{ section.settings.heading }}</h2>
+
+    <div class="icon-columns__grid" style="--cols: {{ section.settings.columns | default: 3 }};">
+      {% for block in section.blocks %}
+        <div class="icon-columns__item" {{ block.shopify_attributes }}>
+          {% if block.settings.image != blank %}
+            <div class="icon-columns__media">
+              {{ block.settings.image | image_url: width: 400 | image_tag: class: 'img-fill', loading: 'lazy' }}
+            </div>
+          {% else %}
+            <div class="img-blank img-blank--square icon-columns__media"></div>
+          {% endif %}
+          <h3>{{ block.settings.title }}</h3>
+          <p>{{ block.settings.text }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Icon columns",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Section heading" },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Columns per row",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "light", "label": "Light" },
+        { "value": "cream", "label": "Cream" },
+        { "value": "forest", "label": "Dark green" },
+        { "value": "burgundy", "label": "Burgundy" }
+      ],
+      "default": "light"
+    },
+    {
+      "type": "select",
+      "id": "padding",
+      "label": "Spacing",
+      "options": [
+        { "value": "s", "label": "Small" },
+        { "value": "m", "label": "Medium" },
+        { "value": "l", "label": "Large" }
+      ],
+      "default": "m"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "column",
+      "name": "Column",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Icon image" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Column title" },
+        { "type": "textarea", "id": "text", "label": "Text", "default": "Short description goes here." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Icon columns",
+      "blocks": [
+        { "type": "column", "settings": { "title": "Column title", "text": "Short description goes here." } },
+        { "type": "column", "settings": { "title": "Column title", "text": "Short description goes here." } },
+        { "type": "column", "settings": { "title": "Column title", "text": "Short description goes here." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

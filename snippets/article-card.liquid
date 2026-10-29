@@ -1,0 +1,16 @@
+{%- comment -%}
+  Article card. Usage: {% render 'article-card', article: article %}
+{%- endcomment -%}
+<article class="article-card">
+  <a class="article-card__media card-media" href="{{ article.url }}" tabindex="-1" aria-hidden="true">
+    {% if article.image %}
+      {{ article.image | image_url: width: 800 | image_tag: loading: 'lazy', alt: article.title }}
+    {% else %}
+      <div class="img-blank img-blank--wide"></div>
+    {% endif %}
+  </a>
+  <p class="article-card__date">{{ article.published_at | date: "%B %d, %Y" }}</p>
+  <h3 class="article-card__title"><a href="{{ article.url }}">{{ article.title }}</a></h3>
+  <p class="article-card__excerpt">{{ article.excerpt_or_content | strip_html | truncatewords: 25 }}</p>
+  <a class="article-card__more" href="{{ article.url }}">Read more<span class="visually-hidden"> about {{ article.title }}</span></a>
+</article>

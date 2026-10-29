@@ -2,6 +2,41 @@
   "sections": {
     "hero": {
       "type": "hero",
+      "settings": {
+        "layout": "full"
+      }
+    },
+    "trust-bar": {
+      "type": "trust-bar",
+      "settings": {},
+      "blocks": {
+        "item_1": {
+          "type": "item",
+          "settings": {
+            "text": "Item text"
+          }
+        },
+        "item_2": {
+          "type": "item",
+          "settings": {
+            "text": "Item text"
+          }
+        },
+        "item_3": {
+          "type": "item",
+          "settings": {
+            "text": "Item text"
+          }
+        }
+      },
+      "block_order": [
+        "item_1",
+        "item_2",
+        "item_3"
+      ]
+    },
+    "featured-collection": {
+      "type": "featured-collection",
       "settings": {}
     },
     "image-with-text": {
@@ -40,13 +75,11 @@
         "column_3"
       ]
     },
-    "featured-collection": {
-      "type": "featured-collection",
-      "settings": {}
-    },
-    "image-banner": {
-      "type": "image-banner",
-      "settings": {}
+    "hero-split": {
+      "type": "hero",
+      "settings": {
+        "layout": "split"
+      }
     },
     "testimonials": {
       "type": "testimonials",
@@ -91,10 +124,11 @@
   },
   "order": [
     "hero",
+    "trust-bar",
+    "featured-collection",
     "image-with-text",
     "multicolumn",
-    "featured-collection",
-    "image-banner",
+    "hero-split",
     "testimonials",
     "rich-text",
     "newsletter"

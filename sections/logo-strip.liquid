@@ -1,0 +1,90 @@
+<style>
+  .logo-strip__title { text-align: center; font-size: 1.25rem; margin-bottom: 32px; }
+  .logo-strip__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 32px; align-items: center; justify-items: center; }
+  .logo-strip__logo { width: 100%; max-width: 180px; }
+  .logo-strip__logo .img-fill { height: auto; max-height: 80px; width: 100%; object-fit: contain; border-radius: 0; filter: grayscale(1); opacity: .7; transition: opacity .2s, filter .2s; }
+  .logo-strip__logo a:hover .img-fill { filter: none; opacity: 1; }
+  .logo-strip__logo .img-blank { aspect-ratio: 16 / 9; }
+</style>
+
+<section class="section logo-strip {% render 'section-classes', settings: section.settings %}">
+  <div class="container">
+    {% if section.settings.heading != blank %}
+      <h2 class="logo-strip__title">{{ section.settings.heading }}</h2>
+    {% endif %}
+
+    <div class="logo-strip__grid">
+      {% for block in section.blocks %}
+        <div class="logo-strip__logo" {{ block.shopify_attributes }}>
+          {% capture logo %}
+            {% if block.settings.image != blank %}
+              {{ block.settings.image | image_url: width: 400 | image_tag: class: 'img-fill', loading: 'lazy' }}
+            {% else %}
+              <div class="img-blank img-blank--wide"></div>
+            {% endif %}
+          {% endcapture %}
+
+          {% if block.settings.link != blank %}
+            <a href="{{ block.settings.link }}">{{ logo }}</a>
+          {% else %}
+            {{ logo }}
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Logo strip",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Section heading" },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "light", "label": "Light" },
+        { "value": "cream", "label": "Cream" },
+        { "value": "forest", "label": "Dark green" },
+        { "value": "burgundy", "label": "Burgundy" }
+      ],
+      "default": "light"
+    },
+    {
+      "type": "select",
+      "id": "padding",
+      "label": "Spacing",
+      "options": [
+        { "value": "s", "label": "Small" },
+        { "value": "m", "label": "Medium" },
+        { "value": "l", "label": "Large" }
+      ],
+      "default": "m"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "logo",
+      "name": "Logo",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Logo image" },
+        { "type": "url", "id": "link", "label": "Link (optional)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Logo strip",
+      "blocks": [
+        { "type": "logo" },
+        { "type": "logo" },
+        { "type": "logo" },
+        { "type": "logo" }
+      ]
+    }
+  ]
+}
+{% endschema %}

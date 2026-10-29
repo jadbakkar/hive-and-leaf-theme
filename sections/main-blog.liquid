@@ -1,20 +1,97 @@
-<div class="container section">
-  <h1>{{ blog.title }}</h1>
+<style>
+  .blog-head { margin-bottom: var(--space-m); }
+  .blog-tags { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 0 0 var(--space-m); }
+  .blog-tags a { display: inline-block; padding: 6px 14px; border: 1px solid var(--line); border-radius: 999px; font-size: .9rem; text-decoration: none; }
+  .blog-tags a:hover, .blog-tags a[aria-current="page"] { background: var(--forest); border-color: var(--forest); color: var(--paper); }
 
-  {% for article in blog.articles %}
-    <article style="padding:24px 0;border-bottom:1px solid var(--line);">
-      <h2><a href="{{ article.url }}" style="text-decoration:none;">{{ article.title }}</a></h2>
-      <p style="color:var(--muted);">{{ article.published_at | date: "%B %d, %Y" }}</p>
-      <p>{{ article.excerpt_or_content | strip_html | truncate: 160 }}</p>
-    </article>
-  {% else %}
-    <p>No articles yet.</p>
-  {% endfor %}
+  .blog-grid { display: grid; gap: var(--space-m) 24px; grid-template-columns: 1fr; }
+  @media (min-width: 800px) { .blog-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+  .article-card { display: flex; flex-direction: column; }
+  .article-card__media { display: block; width: 100%; aspect-ratio: 16 / 9; margin-bottom: var(--space-s); border-radius: 12px; overflow: hidden; background: var(--cream); }
+  .article-card__media img { width: 100%; height: 100%; object-fit: cover; }
+  .article-card__media .img-blank { height: 100%; border-radius: 12px; }
+  .article-card__date { margin: 0 0 6px; color: var(--muted); font-size: .85rem; letter-spacing: .04em; }
+  .article-card__title { font-size: 1.5rem; margin-bottom: 8px; }
+  .article-card__title a { text-decoration: none; }
+  .article-card__excerpt { margin: 0 0 12px; color: var(--muted); }
+  .article-card__more { margin-top: auto; color: var(--burgundy); font-weight: 600; text-decoration: none; }
+
+  .blog-empty { color: var(--muted); }
+  .blog-pagination { margin-top: var(--space-m); }
+</style>
+
+<section class="section blog-section scheme-{{ section.settings.color_scheme | default: 'light' }}">
+<div class="container">
+  <header class="blog-head">
+    <h1>{{ blog.title }}</h1>
+  </header>
+
+  {% if blog.all_tags.size > 0 %}
+    <nav aria-label="Filter articles by tag">
+      <ul class="blog-tags">
+        <li><a href="{{ blog.url }}" {% if current_tags == blank %}aria-current="page"{% endif %}>All</a></li>
+        {% for tag in blog.all_tags %}
+          <li>
+            <a href="{{ blog.url }}/tagged/{{ tag | handleize }}" {% if current_tags contains tag %}aria-current="page"{% endif %}>{{ tag }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    </nav>
+  {% endif %}
+
+  {% paginate blog.articles by section.settings.posts_per_page %}
+    {% if blog.articles.size > 0 %}
+      <div class="blog-grid">
+        {% for article in blog.articles %}
+          {% render 'article-card', article: article %}
+        {% endfor %}
+      </div>
+
+      {% if paginate.pages > 1 %}
+        <div class="blog-pagination">{{ paginate | default_pagination }}</div>
+      {% endif %}
+    {% else %}
+      <p class="blog-empty">No articles yet. Check back soon.</p>
+    {% endif %}
+  {% endpaginate %}
 </div>
+</section>
 
 {% schema %}
 {
   "name": "Blog",
-  "settings": []
+  "settings": [
+    {
+      "type": "number",
+      "id": "posts_per_page",
+      "label": "Articles per page",
+      "default": 9
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        {
+          "value": "light",
+          "label": "Light"
+        },
+        {
+          "value": "cream",
+          "label": "Cream"
+        },
+        {
+          "value": "forest",
+          "label": "Dark green"
+        },
+        {
+          "value": "burgundy",
+          "label": "Burgundy"
+        }
+      ],
+      "default": "light"
+    }
+  ]
 }
 {% endschema %}

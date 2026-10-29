@@ -1,4 +1,5 @@
-<div class="container section">
+<section class="section {% render 'section-classes', settings: section.settings %}">
+<div class="container">
   <div style="max-width: 720px; margin-inline: auto; text-align: center;">
     <h2>{{ section.settings.heading }}</h2>
     <div>{{ section.settings.text }}</div>
@@ -7,6 +8,7 @@
     {% endif %}
   </div>
 </div>
+</section>
 
 {% schema %}
 {
@@ -34,6 +36,29 @@
       "type": "url",
       "id": "button_link",
       "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "light", "label": "Light" },
+        { "value": "cream", "label": "Cream" },
+        { "value": "forest", "label": "Dark green" },
+        { "value": "burgundy", "label": "Burgundy" }
+      ],
+      "default": "light"
+    },
+    {
+      "type": "select",
+      "id": "padding",
+      "label": "Spacing",
+      "options": [
+        { "value": "s", "label": "Small" },
+        { "value": "m", "label": "Medium" },
+        { "value": "l", "label": "Large" }
+      ],
+      "default": "m"
     }
   ],
   "presets": [

@@ -1,0 +1,82 @@
+<style>
+  .person__grid { display: grid; gap: 48px; align-items: center; grid-template-columns: 1fr; }
+  .person__title { font-size: clamp(2rem, 4vw, 2.75rem); }
+  .person__sig { font-family: var(--serif); font-style: italic; font-size: 1.4rem; color: var(--burgundy); margin: 16px 0 0; }
+  .scheme-forest .person__sig, .scheme-burgundy .person__sig { color: inherit; opacity: .85; }
+  .person__media { position: relative; width: 100%; border-radius: 12px; overflow: hidden; background: var(--cream); aspect-ratio: 4 / 5; }
+  .person__media .img-fill { height: 100%; }
+  @media (min-width: 768px) {
+    .person__grid { grid-template-columns: 1fr 1fr; }
+    .person--right .person__media-wrap { order: 2; }
+  }
+</style>
+
+<section class="section person person--{{ section.settings.image_position | default: 'left' }} {% render 'section-classes', settings: section.settings %}">
+  <div class="container person__grid">
+    <div class="person__media-wrap">
+      {% if section.settings.image != blank %}
+        <div class="person__media">
+          {{ section.settings.image | image_url: width: 1200 | image_tag: class: 'img-fill', loading: 'lazy' }}
+        </div>
+      {% else %}
+        <div class="img-blank img-blank--portrait"></div>
+      {% endif %}
+    </div>
+
+    <div class="person__text">
+      <h2 class="person__title">{{ section.settings.heading }}</h2>
+      <div class="rte">{{ section.settings.bio }}</div>
+      {% if section.settings.signature != blank %}
+        <p class="person__sig">{{ section.settings.signature }}</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Person",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Person heading" },
+    { "type": "richtext", "id": "bio", "label": "Bio", "default": "<p>Short bio goes here.</p>" },
+    { "type": "text", "id": "signature", "label": "Signature name", "default": "Name" },
+    { "type": "image_picker", "id": "image", "label": "Portrait image" },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image position",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "light", "label": "Light" },
+        { "value": "cream", "label": "Cream" },
+        { "value": "forest", "label": "Dark green" },
+        { "value": "burgundy", "label": "Burgundy" }
+      ],
+      "default": "light"
+    },
+    {
+      "type": "select",
+      "id": "padding",
+      "label": "Spacing",
+      "options": [
+        { "value": "s", "label": "Small" },
+        { "value": "m", "label": "Medium" },
+        { "value": "l", "label": "Large" }
+      ],
+      "default": "m"
+    }
+  ],
+  "presets": [
+    { "name": "Person" }
+  ]
+}
+{% endschema %}

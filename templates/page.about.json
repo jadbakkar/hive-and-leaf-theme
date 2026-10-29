@@ -1,14 +1,14 @@
 {
   "sections": {
     "about_hero": {
-      "type": "about-hero",
+      "type": "page-hero",
       "settings": {
         "heading": "Page title",
         "subheading": "Supporting text goes here."
       }
     },
     "about_founder": {
-      "type": "about-founder",
+      "type": "person",
       "settings": {
         "heading": "Person heading",
         "bio": "<p>Short bio goes here.</p>",
@@ -16,27 +16,27 @@
       }
     },
     "about_values": {
-      "type": "about-values",
+      "type": "icon-columns",
       "settings": {
         "heading": "Section heading"
       },
       "blocks": {
         "value_nourish": {
-          "type": "value",
+          "type": "column",
           "settings": {
             "title": "Title",
             "text": "Short description goes here."
           }
         },
         "value_move": {
-          "type": "value",
+          "type": "column",
           "settings": {
             "title": "Title",
             "text": "Short description goes here."
           }
         },
         "value_rest": {
-          "type": "value",
+          "type": "column",
           "settings": {
             "title": "Title",
             "text": "Short description goes here."
@@ -50,7 +50,7 @@
       ]
     },
     "about_process": {
-      "type": "about-process",
+      "type": "steps",
       "settings": {
         "heading": "Section heading"
       },
@@ -96,7 +96,7 @@
       ]
     },
     "about_cta": {
-      "type": "about-cta",
+      "type": "cta-banner",
       "settings": {
         "heading": "Closing heading",
         "text": "Supporting text goes here.",

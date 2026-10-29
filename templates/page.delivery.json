@@ -1,0 +1,59 @@
+{
+  "sections": {
+    "hero": {
+      "type": "page-hero",
+      "settings": {
+        "heading": "Delivery & payment",
+        "subheading": "Where we deliver, how long it takes, and how you can pay."
+      }
+    },
+    "text": {
+      "type": "rich-text",
+      "settings": {
+        "heading": "How delivery works",
+        "text": "<p>Describe delivery areas, timeframes and any delivery fees.</p>",
+        "button_label": "Shop all",
+        "button_link": "shopify://collections/all"
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "settings": {
+        "heading": "Common questions"
+      },
+      "blocks": {
+        "q1": {
+          "type": "item",
+          "settings": {
+            "question": "how do I pay on delivery?",
+            "answer": "Explain how cash on delivery works and what to have ready when the order arrives."
+          }
+        },
+        "q2": {
+          "type": "item",
+          "settings": {
+            "question": "how long does delivery take?",
+            "answer": "Give the typical delivery window for your area."
+          }
+        },
+        "q3": {
+          "type": "item",
+          "settings": {
+            "question": "can I change my order after placing it?",
+            "answer": "Explain how customers can contact you to make changes."
+          }
+        }
+      },
+      "block_order": ["q1", "q2", "q3"]
+    },
+    "cta": {
+      "type": "cta-banner",
+      "settings": {
+        "heading": "Ready to order?",
+        "text": "Supporting text goes here.",
+        "button_label": "Shop all"
+      }
+    }
+  },
+  "order": ["hero", "text", "faq", "cta"]
+}

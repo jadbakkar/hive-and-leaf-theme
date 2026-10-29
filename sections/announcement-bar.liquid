@@ -1,0 +1,68 @@
+{%- if section.blocks.size > 0 -%}
+<section class="announcement-bar scheme-{{ section.settings.color_scheme | default: 'forest' }}" data-announcement-bar data-interval="5000">
+  <div class="container announcement-bar__inner">
+    {%- for block in section.blocks -%}
+      <p class="announcement-bar__item" data-announcement-item {{ block.shopify_attributes }}{% unless forloop.first %} hidden{% endunless %}>
+        {%- if block.settings.url != blank -%}
+          <a href="{{ block.settings.url }}">{{ block.settings.text }}</a>
+        {%- else -%}
+          {{ block.settings.text }}
+        {%- endif -%}
+      </p>
+    {%- endfor -%}
+  </div>
+</section>
+
+<style>
+  .announcement-bar {
+    font-size: .85rem;
+    letter-spacing: .02em;
+    line-height: 1.4;
+  }
+  .announcement-bar__inner {
+    padding-block: 10px;
+    text-align: center;
+  }
+  .announcement-bar__item { margin: 0; }
+  .announcement-bar__item[hidden] { display: none; }
+</style>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "max_blocks": 3,
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "light", "label": "Light" },
+        { "value": "cream", "label": "Cream" },
+        { "value": "forest", "label": "Dark green" },
+        { "value": "burgundy", "label": "Burgundy" }
+      ],
+      "default": "forest"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "announcement",
+      "name": "Announcement",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Text" },
+        { "type": "url", "id": "url", "label": "Link (optional)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement bar",
+      "blocks": [
+        { "type": "announcement", "settings": { "text": "Cash on delivery across Lebanon" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

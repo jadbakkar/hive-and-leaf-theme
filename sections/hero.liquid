@@ -1,43 +1,137 @@
-<div class="container section" style="text-align: center;">
-  <h1>{{ section.settings.heading }}</h1>
-  <p>{{ section.settings.text }}</p>
-  {% if section.settings.button_label != blank %}
-    <a href="{{ section.settings.button_link }}" class="btn">{{ section.settings.button_label }}</a>
+<style>
+  .hero { position: relative; }
+  .hero__inner { display: grid; gap: 32px; align-items: center; }
+  .hero__content { position: relative; z-index: 1; }
+  .hero__text { margin: 0 0 32px; }
+  .hero__buttons { display: flex; flex-wrap: wrap; gap: 12px; }
+  .hero__buttons--center { justify-content: center; }
+  .hero__media { position: relative; width: 100%; border-radius: 12px; overflow: hidden; background: var(--cream); aspect-ratio: 4 / 5; }
+  .hero__media .img-fill { height: 100%; }
+
+  /* Centered: text only */
+  .hero--centered .hero__content { text-align: center; max-width: 720px; margin-inline: auto; }
+  .hero--centered .hero__text { margin-inline: auto; }
+
+  /* Split: text and image side by side */
+  .hero--split .hero__inner { grid-template-columns: 1fr; }
+  @media (min-width: 768px) {
+    .hero--split .hero__inner { grid-template-columns: 1fr 1fr; gap: 64px; }
+  }
+
+  /* Full: background image with dark overlay and light text */
+  .hero--full { min-height: 70vh; display: flex; align-items: center; overflow: hidden; }
+  .hero--full .hero__inner { width: 100%; }
+  .hero--full .hero__content { text-align: center; max-width: 760px; margin-inline: auto; }
+  .hero--full .hero__text { margin-inline: auto; }
+  .hero__bg { position: absolute; inset: 0; z-index: 0; background: var(--forest); }
+  .hero__bg .img-fill { height: 100%; border-radius: 0; }
+  .hero__bg .img-blank { height: 100%; aspect-ratio: auto; border: 0; border-radius: 0; }
+  .hero__overlay { position: absolute; inset: 0; z-index: 0; background: rgba(20, 24, 20, .55); }
+  .hero.hero--full h1, .hero.hero--full h2, .hero.hero--full h3,
+  .hero.hero--full, .hero.hero--full .hero__text { color: var(--paper); }
+  .hero.hero--full .btn--outline { color: var(--paper); }
+  .hero.hero--full .btn { background: var(--burgundy); color: var(--paper); }
+  .hero.hero--full .btn:hover { background: var(--paper); color: var(--forest); }
+</style>
+
+{% assign layout = section.settings.layout | default: 'full' %}
+
+<section class="section hero hero--{{ layout }} {% render 'section-classes', settings: section.settings %}">
+  {% if layout == 'full' %}
+    <div class="hero__bg" aria-hidden="true">
+      {% if section.settings.image != blank %}
+        {{ section.settings.image | image_url: width: 2000 | image_tag: class: 'img-fill', loading: 'lazy' }}
+      {% else %}
+        <div class="img-blank"></div>
+      {% endif %}
+    </div>
+    <div class="hero__overlay" aria-hidden="true"></div>
   {% endif %}
-</div>
+
+  <div class="container">
+    <div class="hero__inner">
+      <div class="hero__content">
+        {% if section.index == 1 %}<h1>{{ section.settings.heading }}</h1>{% else %}<h2>{{ section.settings.heading }}</h2>{% endif %}
+        {% if section.settings.text != blank %}
+          <p class="hero__text">{{ section.settings.text }}</p>
+        {% endif %}
+
+        {% capture buttons %}
+          {% if section.settings.button_label != blank %}
+            <a href="{{ section.settings.button_link }}" class="btn">{{ section.settings.button_label }}</a>
+          {% endif %}
+          {% if section.settings.button_2_label != blank %}
+            <a href="{{ section.settings.button_2_link }}" class="btn btn--outline">{{ section.settings.button_2_label }}</a>
+          {% endif %}
+        {% endcapture %}
+        {% if buttons != blank %}
+          <div class="hero__buttons {% if layout != 'split' %}hero__buttons--center{% endif %}">
+            {{ buttons }}
+          </div>
+        {% endif %}
+      </div>
+
+      {% if layout == 'split' %}
+        {% if section.settings.image != blank %}
+          <div class="hero__media">
+            {{ section.settings.image | image_url: width: 1200 | image_tag: class: 'img-fill', loading: 'lazy' }}
+          </div>
+        {% else %}
+          <div class="img-blank img-blank--portrait"></div>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+</section>
 
 {% schema %}
 {
   "name": "Hero",
   "settings": [
     {
-      "type": "text",
-      "id": "heading",
-      "label": "Heading",
-      "default": "Page heading"
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        { "value": "centered", "label": "Centered text" },
+        { "value": "split", "label": "Text and image" },
+        { "value": "full", "label": "Full-width image" }
+      ],
+      "default": "full"
+    },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Page heading" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Short supporting text goes here." },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Button" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "text", "id": "button_2_label", "label": "Second button label", "default": "Button" },
+    { "type": "url", "id": "button_2_link", "label": "Second button link" },
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "light", "label": "Light" },
+        { "value": "cream", "label": "Cream" },
+        { "value": "forest", "label": "Dark green" },
+        { "value": "burgundy", "label": "Burgundy" }
+      ],
+      "default": "light"
     },
     {
-      "type": "textarea",
-      "id": "text",
-      "label": "Text",
-      "default": "Short supporting text goes here."
-    },
-    {
-      "type": "text",
-      "id": "button_label",
-      "label": "Button label",
-      "default": "Button"
-    },
-    {
-      "type": "url",
-      "id": "button_link",
-      "label": "Button link"
+      "type": "select",
+      "id": "padding",
+      "label": "Spacing",
+      "options": [
+        { "value": "s", "label": "Small" },
+        { "value": "m", "label": "Medium" },
+        { "value": "l", "label": "Large" }
+      ],
+      "default": "m"
     }
   ],
   "presets": [
-    {
-      "name": "Hero"
-    }
+    { "name": "Hero" }
   ]
 }
 {% endschema %}

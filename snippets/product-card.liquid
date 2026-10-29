@@ -1,11 +1,26 @@
-<a href="{{ product.url }}" class="product-card">
-  <div class="card-media">
-    {% if product.featured_image %}
-      {{ product.featured_image | image_url: width: 600 | image_tag: loading: 'lazy' }}
-    {% else %}
-      <div class="img-blank img-blank--portrait"></div>
-    {% endif %}
-  </div>
-  <h3>{{ product.title }}</h3>
-  <p>{{ product.price | money }}</p>
-</a>
+<div class="product-card">
+  <a href="{{ product.url }}" class="product-card__media" tabindex="-1" aria-hidden="true">
+    <div class="card-media">
+      {% if product.featured_media.media_type == 'image' %}
+        {{ product.featured_media | image_url: width: 600 | image_tag: alt: product.title, loading: 'lazy' }}
+        {% if product.media.size > 1 and product.media[1].media_type == 'image' %}
+          {{ product.media[1] | image_url: width: 600 | image_tag: alt: '', loading: 'lazy', class: 'product-card__image--alt' }}
+        {% endif %}
+      {% else %}
+        <div class="img-blank img-blank--portrait"></div>
+      {% endif %}
+    </div>
+  </a>
+
+  <h3 class="product-card__title"><a href="{{ product.url }}">{{ product.title }}</a></h3>
+  {% render 'price', product: product %}
+
+  {% if product.has_only_default_variant and product.available %}
+    {% form 'product', product, class: 'product-card__quick-add' %}
+      <input type="hidden" name="id" value="{{ product.first_available_variant.id }}">
+      <button type="submit" class="btn btn--outline product-card__button">Add to cart</button>
+    {% endform %}
+  {% else %}
+    <a href="{{ product.url }}" class="btn btn--outline product-card__button">Choose options</a>
+  {% endif %}
+</div>

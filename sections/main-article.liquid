@@ -1,15 +1,95 @@
-<div class="container section" style="max-width:720px;">
-  <p><a href="{{ blog.url }}">&larr; Back to {{ blog.title }}</a></p>
-  <h1>{{ article.title }}</h1>
-  <p style="color:var(--muted);">{{ article.published_at | date: "%B %d, %Y" }}</p>
-  <div class="article-content">
-    {{ article.content }}
-  </div>
+<style>
+  .article-page { max-width: 720px; margin-inline: auto; }
+  .article-back { display: inline-block; margin-bottom: var(--space-m); color: var(--muted); font-size: .9rem; text-decoration: none; }
+  .article-meta { color: var(--muted); font-size: .9rem; letter-spacing: .04em; margin: 0 0 var(--space-xs); }
+  .article-meta span + span::before { content: "\00b7"; margin: 0 .5em; }
+  .article-page h1 { margin-bottom: var(--space-s); }
+  .article-hero { width: 100%; margin: var(--space-m) 0; border-radius: 12px; overflow: hidden; aspect-ratio: 16 / 9; background: var(--cream); }
+  .article-hero img { width: 100%; height: 100%; object-fit: cover; }
+  .article-hero .img-blank { height: 100%; border-radius: 12px; }
+
+  .article-content { font-size: 1.1rem; line-height: 1.75; }
+  .article-content > * + * { margin-top: 1.1em; }
+  .article-content h2 { font-size: 2rem; margin-top: 1.6em; }
+  .article-content h3 { font-size: 1.5rem; margin-top: 1.4em; }
+  .article-content a { color: var(--burgundy); text-underline-offset: 3px; }
+  .article-content blockquote { margin: 1.6em 0; padding: 0 0 0 var(--space-s); border-left: 3px solid var(--burgundy); font-family: var(--serif); font-size: 1.35rem; font-style: italic; color: var(--forest); }
+  .article-content img { border-radius: 12px; height: auto; margin-inline: auto; }
+  .article-content ul, .article-content ol { padding-left: 1.4em; }
+  .article-content li + li { margin-top: .4em; }
+
+  .article-share { margin-top: var(--space-l); padding-top: var(--space-s); border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+  .article-share__label { font-weight: 600; margin-right: 4px; }
+  .article-share a { padding: 8px 16px; border: 1px solid var(--line); border-radius: 999px; font-size: .9rem; text-decoration: none; }
+  .article-share a:hover { background: var(--forest); border-color: var(--forest); color: var(--paper); }
+</style>
+
+{%- capture article_full_url -%}{{ shop.url }}{{ article.url }}{%- endcapture -%}
+{%- capture share_title -%}{{ article.title }} {{ article_full_url }}{%- endcapture -%}
+
+<section class="section article-section scheme-{{ section.settings.color_scheme | default: 'light' }}">
+<div class="container">
+  <article class="article-page">
+    <a class="article-back" href="{{ article.blog.url }}">&larr; Back to {{ article.blog.title }}</a>
+
+    <h1>{{ article.title }}</h1>
+    <p class="article-meta">
+      <span>{{ article.published_at | date: "%B %d, %Y" }}</span>
+      {% if article.author != blank %}<span>{{ article.author }}</span>{% endif %}
+    </p>
+
+    {% if article.image %}
+      <div class="article-hero">
+        {{ article.image | image_url: width: 1600 | image_tag: loading: 'lazy', alt: article.title }}
+      </div>
+    {% else %}
+      <div class="article-hero">
+        <div class="img-blank img-blank--wide"></div>
+      </div>
+    {% endif %}
+
+    <div class="article-content rte">
+      {{ article.content }}
+    </div>
+
+    <div class="article-share">
+      <span class="article-share__label">Share</span>
+      <a href="https://www.facebook.com/sharer/sharer.php?u={{ article_full_url | url_encode }}" target="_blank" rel="noopener">Facebook</a>
+      <a href="https://x.com/intent/post?url={{ article_full_url | url_encode }}&amp;text={{ article.title | url_encode }}" target="_blank" rel="noopener">X</a>
+      <a href="https://wa.me/?text={{ share_title | url_encode }}" target="_blank" rel="noopener">WhatsApp</a>
+    </div>
+  </article>
 </div>
+</section>
 
 {% schema %}
 {
   "name": "Article",
-  "settings": []
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        {
+          "value": "light",
+          "label": "Light"
+        },
+        {
+          "value": "cream",
+          "label": "Cream"
+        },
+        {
+          "value": "forest",
+          "label": "Dark green"
+        },
+        {
+          "value": "burgundy",
+          "label": "Burgundy"
+        }
+      ],
+      "default": "light"
+    }
+  ]
 }
 {% endschema %}

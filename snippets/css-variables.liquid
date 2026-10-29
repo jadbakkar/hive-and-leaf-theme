@@ -1,0 +1,17 @@
+<style>
+  {{ settings.type_heading_font | font_face: font_display: 'swap' }}
+  {{ settings.type_body_font | font_face: font_display: 'swap' }}
+
+  :root {
+    --paper: {{ settings.color_paper }};
+    --cream: {{ settings.color_cream }};
+    --forest: {{ settings.color_forest }};
+    --burgundy: {{ settings.color_burgundy }};
+    --ink: {{ settings.color_ink }};
+    --muted: {{ settings.color_muted }};
+    --line: {{ settings.color_line }};
+    --serif: {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
+    --sans: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+    --heading-weight: {{ settings.type_heading_font.weight }};
+  }
+</style>

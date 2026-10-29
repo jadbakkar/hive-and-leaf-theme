@@ -1,4 +1,5 @@
-<div class="container section">
+<section class="section multicolumn {% render 'section-classes', settings: section.settings %}">
+<div class="container">
   <h2 style="text-align: center;">{{ section.settings.heading }}</h2>
   <div class="grid">
     {% for block in section.blocks %}
@@ -16,6 +17,7 @@
     {% endfor %}
   </div>
 </div>
+</section>
 
 {% schema %}
 {
@@ -27,6 +29,50 @@
       "id": "heading",
       "label": "Heading",
       "default": "Section heading"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        {
+          "value": "light",
+          "label": "Light"
+        },
+        {
+          "value": "cream",
+          "label": "Cream"
+        },
+        {
+          "value": "forest",
+          "label": "Dark green"
+        },
+        {
+          "value": "burgundy",
+          "label": "Burgundy"
+        }
+      ],
+      "default": "light"
+    },
+    {
+      "type": "select",
+      "id": "padding",
+      "label": "Spacing",
+      "options": [
+        {
+          "value": "s",
+          "label": "Small"
+        },
+        {
+          "value": "m",
+          "label": "Medium"
+        },
+        {
+          "value": "l",
+          "label": "Large"
+        }
+      ],
+      "default": "m"
     }
   ],
   "blocks": [

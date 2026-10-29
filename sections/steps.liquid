@@ -1,0 +1,80 @@
+<style>
+  .steps__title { text-align: center; font-size: clamp(2rem, 4vw, 2.75rem); margin-bottom: 48px; }
+  .steps__list { display: grid; gap: 40px; max-width: 720px; margin-inline: auto; }
+  .steps__step { display: grid; grid-template-columns: auto 1fr; gap: 24px; align-items: start; }
+  .steps__num { font-family: var(--serif); font-size: 3rem; line-height: 1; color: var(--burgundy); }
+  .scheme-forest .steps__num, .scheme-burgundy .steps__num { color: inherit; opacity: .6; }
+  .steps__step-title { font-size: 1.75rem; margin: 0 0 8px; }
+  .steps__text { color: var(--muted); margin: 0; }
+</style>
+
+<section class="section steps {% render 'section-classes', settings: section.settings %}">
+  <div class="container">
+    <h2 class="steps__title">{{ section.settings.heading }}</h2>
+
+    <ol class="steps__list">
+      {% for block in section.blocks %}
+        <li class="steps__step" {{ block.shopify_attributes }}>
+          <span class="steps__num">{{ block.settings.number }}</span>
+          <div>
+            <h3 class="steps__step-title">{{ block.settings.title }}</h3>
+            <p class="steps__text">{{ block.settings.text }}</p>
+          </div>
+        </li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Steps",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Section heading" },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "light", "label": "Light" },
+        { "value": "cream", "label": "Cream" },
+        { "value": "forest", "label": "Dark green" },
+        { "value": "burgundy", "label": "Burgundy" }
+      ],
+      "default": "light"
+    },
+    {
+      "type": "select",
+      "id": "padding",
+      "label": "Spacing",
+      "options": [
+        { "value": "s", "label": "Small" },
+        { "value": "m", "label": "Medium" },
+        { "value": "l", "label": "Large" }
+      ],
+      "default": "m"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        { "type": "text", "id": "number", "label": "Number", "default": "01" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Title" },
+        { "type": "textarea", "id": "text", "label": "Text", "default": "Short description goes here." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Steps",
+      "blocks": [
+        { "type": "step", "settings": { "number": "01", "title": "Title", "text": "Short description goes here." } },
+        { "type": "step", "settings": { "number": "02", "title": "Title", "text": "Short description goes here." } },
+        { "type": "step", "settings": { "number": "03", "title": "Title", "text": "Short description goes here." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

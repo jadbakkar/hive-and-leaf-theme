@@ -1,0 +1,73 @@
+{% assign recs = recommendations %}
+<section class="section related-products {% render 'section-classes', settings: section.settings %}" data-related-products>
+<div class="container">
+  <h2>{{ section.settings.heading }}</h2>
+  <div data-recommendations data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&amp;product_id={{ product.id }}&amp;limit={{ section.settings.limit }}">
+    {% if recs.performed and recs.products_count > 0 %}
+      <div class="related-products__grid">
+        {% for recommended in recs.products %}
+          {% render 'product-card', product: recommended %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+</section>
+
+<style>
+  .related-products__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 16px; }
+  @media (min-width: 768px) {
+    .related-products__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px 24px; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Related products",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "You may also like"
+    },
+    {
+      "type": "range",
+      "id": "limit",
+      "label": "Number of products",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "light", "label": "Light" },
+        { "value": "cream", "label": "Cream" },
+        { "value": "forest", "label": "Dark green" },
+        { "value": "burgundy", "label": "Burgundy" }
+      ],
+      "default": "light"
+    },
+    {
+      "type": "select",
+      "id": "padding",
+      "label": "Spacing",
+      "options": [
+        { "value": "s", "label": "Small" },
+        { "value": "m", "label": "Medium" },
+        { "value": "l", "label": "Large" }
+      ],
+      "default": "m"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Related products"
+    }
+  ]
+}
+{% endschema %}
