@@ -1,6 +1,7 @@
 {%- comment -%}
   Inline SVG icons. Usage: {% render 'icon', name: 'cart' %}
-  Names: cart, menu, close, instagram, facebook, tiktok, whatsapp, search, account, plus, minus.
+  Names: cart, menu, close, instagram, facebook, tiktok, whatsapp, search, account, plus, minus,
+  arrow-right, leaf, honeycomb, jar, truck, cash, hand, sprout, cup, quote.
   Icons are decorative (aria-hidden); give the parent link or button an accessible label.
 {%- endcomment -%}
 <svg class="icon icon--{{ name }}" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
@@ -36,5 +37,41 @@
       <path d="M12 5v14M5 12h14"/>
     {%- when 'minus' -%}
       <path d="M5 12h14"/>
+    {%- when 'arrow-right' -%}
+      <path d="M4 12h16M14 6l6 6-6 6"/>
+    {%- when 'leaf' -%}
+      <path d="M5 19c0-8 5-14 15-15 0 10-6 15-14 15"/>
+      <path d="M5 19 13 11"/>
+    {%- when 'honeycomb' -%}
+      <path d="M8 3.5 12 6v4.5L8 13l-4-2.5V6z"/>
+      <path d="M16 3.5 20 6v4.5L16 13l-4-2.5"/>
+      <path d="M12 10.5 16 13v4.5L12 20l-4-2.5V13"/>
+    {%- when 'jar' -%}
+      <path d="M8 3h8v3H8z"/>
+      <path d="M7 6h10l1 2.5V19a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V8.5z"/>
+      <path d="M6 11h12M6 16h12"/>
+    {%- when 'truck' -%}
+      <path d="M2.5 6h11v10h-11z"/>
+      <path d="M13.5 9.5h4l3 3.2V16h-7"/>
+      <circle cx="6.5" cy="17.5" r="1.6"/>
+      <circle cx="17" cy="17.5" r="1.6"/>
+    {%- when 'cash' -%}
+      <rect x="2.5" y="6" width="19" height="12" rx="1.5"/>
+      <circle cx="12" cy="12" r="2.6"/>
+      <path d="M6 9.5v5M18 9.5v5"/>
+    {%- when 'hand' -%}
+      <path d="M3 14.5h3.5l4.5 1.6h3.4a1.3 1.3 0 0 1 0 2.6H10"/>
+      <path d="M14.4 18.7 19 16.6a1.4 1.4 0 0 1 1.8 2L15.5 21H8.5L3 19.5"/>
+      <path d="M12.5 4.5c1.6-1.6 4.2.2 3 2.4l-3 3-3-3c-1.2-2.2 1.4-4 3-2.4z"/>
+    {%- when 'sprout' -%}
+      <path d="M12 21v-9"/>
+      <path d="M12 12c0-4-3-7-8-7 0 4.5 3 7 8 7z"/>
+      <path d="M12 14c0-3.5 2.5-6 7-6 0 4-2.5 6-7 6z"/>
+    {%- when 'cup' -%}
+      <path d="M4 9h13v5a6 6 0 0 1-6 6h-1a6 6 0 0 1-6-6z"/>
+      <path d="M17 11h1.5a2.5 2.5 0 0 1 0 5H16.5"/>
+      <path d="M8.5 3.5c-.8 1 .8 2-.1 3M12 3.5c-.8 1 .8 2-.1 3"/>
+    {%- when 'quote' -%}
+      <path d="M10 7c-3 1-5 3.5-5 7v3h5v-5H7.2c.2-1.8 1.3-3 3.3-3.6zM19 7c-3 1-5 3.5-5 7v3h5v-5h-2.8c.2-1.8 1.3-3 3.3-3.6z"/>
   {%- endcase -%}
 </svg>

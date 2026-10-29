@@ -1,23 +1,70 @@
 <section class="section multicolumn {% render 'section-classes', settings: section.settings %}">
-<div class="container">
-  <h2 style="text-align: center;">{{ section.settings.heading }}</h2>
-  <div class="grid">
-    {% for block in section.blocks %}
-      <article class="column" {{ block.shopify_attributes }}>
-        <div class="card-media">
-          {% if block.settings.image != blank %}
-            {{ block.settings.image | image_url: width: 800 | image_tag: class: 'img-fill', loading: 'lazy' }}
-          {% else %}
-            <div class="img-blank img-blank--portrait"></div>
-          {% endif %}
-        </div>
-        <h3 style="margin-top: 16px;">{{ block.settings.title }}</h3>
-        <p>{{ block.settings.text }}</p>
-      </article>
-    {% endfor %}
+  <div class="container">
+    <div class="section-header section-header--rule">
+      <div class="section-header__titles">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="eyebrow eyebrow--rule">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        <h2 class="section-header__title">{{ section.settings.heading }}</h2>
+      </div>
+      {%- if section.settings.text != blank -%}
+        <p class="lede multicolumn__intro">{{ section.settings.text }}</p>
+      {%- endif -%}
+    </div>
+
+    <ul class="multicolumn__grid" role="list" style="--cols: {{ section.blocks.size }};">
+      {%- for block in section.blocks -%}
+        <li class="multicolumn__item" {{ block.shopify_attributes }}>
+          <div class="media-frame multicolumn__media media-frame--{{ section.settings.image_ratio | default: 'landscape' }}">
+            {%- if block.settings.image != blank -%}
+              {{ block.settings.image | image_url: width: 900 | image_tag: loading: 'lazy', sizes: '(min-width: 768px) 33vw, 30vw', widths: '300, 600, 900' }}
+            {%- else -%}
+              <div class="img-blank img-blank--small" data-label="Image"></div>
+            {%- endif -%}
+          </div>
+          <div class="multicolumn__body">
+            {%- if section.settings.show_numbers -%}
+              <span class="multicolumn__num" aria-hidden="true">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>
+            {%- endif -%}
+            <h3 class="multicolumn__title">{{ block.settings.title }}</h3>
+            {%- if block.settings.text != blank -%}
+              <p class="multicolumn__text">{{ block.settings.text }}</p>
+            {%- endif -%}
+          </div>
+        </li>
+      {%- endfor -%}
+    </ul>
   </div>
-</div>
 </section>
+
+<style>
+  .multicolumn__intro { margin: 0; max-width: 420px; }
+  .multicolumn__grid { display: grid; gap: 28px; margin: 0; padding: 0; list-style: none; }
+  .multicolumn__item { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 20px; align-items: start; }
+  .multicolumn__media.media-frame { aspect-ratio: 1; }
+  .multicolumn__media .img-blank::after { display: none; }
+  .multicolumn__media .img-blank { outline-offset: -8px; }
+  .multicolumn__num {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--accent);
+    font: 400 .95rem/1 var(--serif);
+    font-style: italic;
+    letter-spacing: .02em;
+  }
+  .multicolumn__title { margin: 0 0 8px; }
+  .multicolumn__text { margin: 0; color: var(--fg-muted); max-width: 40ch; }
+  @media (min-width: 768px) {
+    .multicolumn__grid { grid-template-columns: repeat(min(var(--cols, 3), 4), minmax(0, 1fr)); gap: 56px clamp(24px, 3vw, 48px); }
+    .multicolumn__item { grid-template-columns: 1fr; gap: 0; }
+    .multicolumn__media.media-frame--landscape { aspect-ratio: 3 / 2; }
+    .multicolumn__media.media-frame--square { aspect-ratio: 1; }
+    .multicolumn__media.media-frame--portrait { aspect-ratio: 4 / 5; }
+    .multicolumn__media .img-blank::after { display: block; }
+    .multicolumn__media .img-blank { outline-offset: -12px; }
+    .multicolumn__body { padding-top: 24px; }
+  }
+</style>
 
 {% schema %}
 {
@@ -26,9 +73,47 @@
   "settings": [
     {
       "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "info": "Small label above the heading",
+      "default": "Short label"
+    },
+    {
+      "type": "text",
       "id": "heading",
       "label": "Heading",
       "default": "Section heading"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Intro text (optional)"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image shape",
+      "options": [
+        {
+          "value": "landscape",
+          "label": "Landscape"
+        },
+        {
+          "value": "square",
+          "label": "Square"
+        },
+        {
+          "value": "portrait",
+          "label": "Portrait"
+        }
+      ],
+      "default": "landscape"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_numbers",
+      "label": "Show column numbers",
+      "default": true
     },
     {
       "type": "select",
@@ -107,7 +192,7 @@
         {
           "type": "column",
           "settings": {
-            "title": "Morning",
+            "title": "Column title",
             "text": "Short description goes here."
           }
         },

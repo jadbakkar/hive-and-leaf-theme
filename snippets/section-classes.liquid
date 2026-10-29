@@ -1,1 +1,5 @@
-{%- -%}scheme-{{ settings.color_scheme | default: 'light' }} section--pad-{{ settings.padding | default: 'm' }}{%- -%}
+{%- liquid
+  assign scheme = settings.color_scheme | default: 'light'
+  assign padding = settings.padding | default: 'm'
+  echo 'scheme-' | append: scheme | append: ' section--pad-' | append: padding
+-%}

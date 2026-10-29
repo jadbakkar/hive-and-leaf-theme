@@ -15,16 +15,23 @@
 
 <style>
   .announcement-bar {
-    font-size: .85rem;
-    letter-spacing: .02em;
-    line-height: 1.4;
+    position: relative;
+    font: 500 .68rem/1.4 var(--sans);
+    letter-spacing: .18em;
+    text-transform: uppercase;
   }
   .announcement-bar__inner {
-    padding-block: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 38px;
+    padding-block: 8px;
     text-align: center;
   }
   .announcement-bar__item { margin: 0; }
   .announcement-bar__item[hidden] { display: none; }
+  .announcement-bar__item a { text-decoration: none; border-bottom: 1px solid color-mix(in srgb, currentColor 40%, transparent); }
+  .announcement-bar__item a:hover { border-bottom-color: currentColor; }
 </style>
 {%- endif -%}
 

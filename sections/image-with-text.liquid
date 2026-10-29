@@ -1,30 +1,45 @@
+{%- assign button_href = section.settings.button_link | default: routes.all_products_collection_url -%}
 <section class="section image-with-text {% render 'section-classes', settings: section.settings %}">
-<div class="container">
-  <div class="iwt iwt--{{ section.settings.image_position }}">
-    <div class="iwt__media">
-      {% if section.settings.image != blank %}
-        {{ section.settings.image | image_url: width: 1200 | image_tag: class: 'img-fill', loading: 'lazy' }}
-      {% else %}
-        <div class="img-blank img-blank--portrait"></div>
-      {% endif %}
-    </div>
-    <div class="iwt__content">
-      <h2>{{ section.settings.heading }}</h2>
-      <div>{{ section.settings.text }}</div>
-      {% if section.settings.button_label != blank %}
-        <a href="{{ section.settings.button_link }}" class="btn">{{ section.settings.button_label }}</a>
-      {% endif %}
+  <div class="container">
+    <div class="iwt iwt--{{ section.settings.image_position | default: 'left' }}">
+      <div class="iwt__media">
+        {%- if section.settings.image != blank -%}
+          {{ section.settings.image | image_url: width: 1400 | image_tag: class: 'img-fill', loading: 'lazy', sizes: '(min-width: 768px) 55vw, 100vw', widths: '600, 900, 1200, 1400' }}
+        {%- else -%}
+          <div class="img-blank" data-label="Image"></div>
+        {%- endif -%}
+      </div>
+      <div class="iwt__content">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="eyebrow eyebrow--rule">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        <h2 class="iwt__heading">{{ section.settings.heading }}</h2>
+        {%- if section.settings.text != blank -%}
+          <div class="rte iwt__text">{{ section.settings.text }}</div>
+        {%- endif -%}
+        {%- if section.settings.button_label != blank -%}
+          <div class="btn-row iwt__actions">
+            <a href="{{ button_href }}" class="btn">{{ section.settings.button_label }}</a>
+          </div>
+        {%- endif -%}
+      </div>
     </div>
   </div>
-</div>
 </section>
 
 <style>
-  .iwt { display: grid; grid-template-columns: 1fr; gap: 24px; align-items: center; }
-  .iwt__content p:first-child { margin-top: 0; }
+  .iwt { display: grid; grid-template-columns: 1fr; gap: 40px; align-items: center; }
+  .iwt__media { position: relative; aspect-ratio: 4 / 3; border-radius: var(--radius); overflow: hidden; background: var(--ph-bg); }
+  .iwt__media .img-fill, .iwt__media .img-blank { position: absolute; inset: 0; height: 100%; aspect-ratio: auto; border-radius: 0; }
+  .iwt__heading { margin-bottom: 24px; }
+  .iwt__text { color: var(--fg-muted); font-size: var(--fs-lead); line-height: 1.65; }
+  .iwt__actions { margin-top: 36px; }
   @media (min-width: 768px) {
-    .iwt { grid-template-columns: 1fr 1fr; gap: 48px; }
+    .iwt { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(48px, 7vw, 112px); }
+    .iwt__media { aspect-ratio: 5 / 6; }
+    .iwt--right { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
     .iwt--right .iwt__media { order: 2; }
+    .iwt__content { max-width: 480px; }
   }
 </style>
 
@@ -55,6 +70,13 @@
     },
     {
       "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "info": "Small label above the heading",
+      "default": "Short label"
+    },
+    {
+      "type": "text",
       "id": "heading",
       "label": "Heading",
       "default": "Section heading"
@@ -74,7 +96,8 @@
     {
       "type": "url",
       "id": "button_link",
-      "label": "Button link"
+      "label": "Button link",
+      "info": "Defaults to all products"
     },
     {
       "type": "select",
@@ -98,7 +121,7 @@
           "label": "Burgundy"
         }
       ],
-      "default": "light"
+      "default": "cream"
     },
     {
       "type": "select",

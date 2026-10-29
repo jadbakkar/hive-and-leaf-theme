@@ -2,6 +2,7 @@
   .page-hero__title { font-size: clamp(2.5rem, 6vw, 4.5rem); }
   .page-hero__sub { max-width: 640px; margin: 0 auto 40px; color: var(--muted); font-size: 1.15rem; }
   .page-hero--left { text-align: left; }
+  .page-hero--center .page-hero__eyebrow { justify-content: center; }
   .page-hero--left .page-hero__sub { margin-left: 0; }
   .page-hero__media { position: relative; width: 100%; border-radius: 12px; overflow: hidden; background: var(--cream); aspect-ratio: 16 / 9; }
   .page-hero__media .img-fill { height: 100%; }
@@ -9,6 +10,9 @@
 
 <section class="section page-hero page-hero--{{ section.settings.alignment | default: 'center' }} {% render 'section-classes', settings: section.settings %}">
   <div class="container">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="eyebrow page-hero__eyebrow">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
     <h1 class="page-hero__title">{{ section.settings.heading }}</h1>
     {% if section.settings.subheading != blank %}
       <p class="page-hero__sub">{{ section.settings.subheading }}</p>
@@ -19,7 +23,7 @@
         {{ section.settings.image | image_url: width: 1200 | image_tag: class: 'img-fill', loading: 'lazy' }}
       </div>
     {% else %}
-      <div class="img-blank img-blank--wide"></div>
+      <div class="img-blank img-blank--wide" data-label="Image"></div>
     {% endif %}
   </div>
 </section>
@@ -28,16 +32,43 @@
 {
   "name": "Page hero",
   "settings": [
-    { "type": "text", "id": "heading", "label": "Heading", "default": "Page title" },
-    { "type": "textarea", "id": "subheading", "label": "Subheading", "default": "Supporting text goes here." },
-    { "type": "image_picker", "id": "image", "label": "Image" },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "info": "Small label above the heading",
+      "default": "Short label"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Page title"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Supporting text goes here."
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
     {
       "type": "select",
       "id": "alignment",
       "label": "Alignment",
       "options": [
-        { "value": "center", "label": "Center" },
-        { "value": "left", "label": "Left" }
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        }
       ],
       "default": "center"
     },
@@ -46,10 +77,22 @@
       "id": "color_scheme",
       "label": "Color scheme",
       "options": [
-        { "value": "light", "label": "Light" },
-        { "value": "cream", "label": "Cream" },
-        { "value": "forest", "label": "Dark green" },
-        { "value": "burgundy", "label": "Burgundy" }
+        {
+          "value": "light",
+          "label": "Light"
+        },
+        {
+          "value": "cream",
+          "label": "Cream"
+        },
+        {
+          "value": "forest",
+          "label": "Dark green"
+        },
+        {
+          "value": "burgundy",
+          "label": "Burgundy"
+        }
       ],
       "default": "light"
     },
@@ -58,15 +101,26 @@
       "id": "padding",
       "label": "Spacing",
       "options": [
-        { "value": "s", "label": "Small" },
-        { "value": "m", "label": "Medium" },
-        { "value": "l", "label": "Large" }
+        {
+          "value": "s",
+          "label": "Small"
+        },
+        {
+          "value": "m",
+          "label": "Medium"
+        },
+        {
+          "value": "l",
+          "label": "Large"
+        }
       ],
       "default": "m"
     }
   ],
   "presets": [
-    { "name": "Page hero" }
+    {
+      "name": "Page hero"
+    }
   ]
 }
 {% endschema %}

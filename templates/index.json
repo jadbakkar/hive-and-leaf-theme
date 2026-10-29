@@ -3,29 +3,38 @@
     "hero": {
       "type": "hero",
       "settings": {
-        "layout": "full"
+        "layout": "full",
+        "alignment": "left",
+        "eyebrow": "Raw honey · Loose-leaf tea",
+        "padding": "l"
       }
     },
     "trust-bar": {
       "type": "trust-bar",
-      "settings": {},
+      "settings": {
+        "color_scheme": "cream",
+        "padding": "s"
+      },
       "blocks": {
         "item_1": {
           "type": "item",
           "settings": {
-            "text": "Item text"
+            "text": "Item text",
+            "builtin_icon": "honeycomb"
           }
         },
         "item_2": {
           "type": "item",
           "settings": {
-            "text": "Item text"
+            "text": "Item text",
+            "builtin_icon": "leaf"
           }
         },
         "item_3": {
           "type": "item",
           "settings": {
-            "text": "Item text"
+            "text": "Item text",
+            "builtin_icon": "truck"
           }
         }
       },
@@ -37,15 +46,26 @@
     },
     "featured-collection": {
       "type": "featured-collection",
-      "settings": {}
+      "settings": {
+        "eyebrow": "Short label",
+        "color_scheme": "light"
+      }
     },
     "image-with-text": {
       "type": "image-with-text",
-      "settings": {}
+      "settings": {
+        "eyebrow": "Short label",
+        "color_scheme": "cream",
+        "image_position": "left",
+        "padding": "l"
+      }
     },
     "multicolumn": {
       "type": "multicolumn",
-      "settings": {},
+      "settings": {
+        "eyebrow": "Short label",
+        "color_scheme": "light"
+      },
       "blocks": {
         "column_1": {
           "type": "column",
@@ -78,12 +98,19 @@
     "hero-split": {
       "type": "hero",
       "settings": {
-        "layout": "split"
+        "layout": "split",
+        "eyebrow": "Short label",
+        "color_scheme": "cream",
+        "padding": "l"
       }
     },
     "testimonials": {
       "type": "testimonials",
-      "settings": {},
+      "settings": {
+        "eyebrow": "Short label",
+        "color_scheme": "forest",
+        "padding": "l"
+      },
       "blocks": {
         "testimonial_1": {
           "type": "testimonial",
@@ -115,11 +142,18 @@
     },
     "rich-text": {
       "type": "rich-text",
-      "settings": {}
+      "settings": {
+        "eyebrow": "Short label",
+        "color_scheme": "light",
+        "button_style": "outline"
+      }
     },
     "newsletter": {
       "type": "newsletter",
-      "settings": {}
+      "settings": {
+        "eyebrow": "Short label",
+        "color_scheme": "burgundy"
+      }
     }
   },
   "order": [

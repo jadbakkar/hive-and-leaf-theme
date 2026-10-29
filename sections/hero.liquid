@@ -1,88 +1,145 @@
-<style>
-  .hero { position: relative; }
-  .hero__inner { display: grid; gap: 32px; align-items: center; }
-  .hero__content { position: relative; z-index: 1; }
-  .hero__text { margin: 0 0 32px; }
-  .hero__buttons { display: flex; flex-wrap: wrap; gap: 12px; }
-  .hero__buttons--center { justify-content: center; }
-  .hero__media { position: relative; width: 100%; border-radius: 12px; overflow: hidden; background: var(--cream); aspect-ratio: 4 / 5; }
-  .hero__media .img-fill { height: 100%; }
+{%- liquid
+  assign layout = section.settings.layout | default: 'full'
+  assign align = section.settings.alignment | default: 'left'
+  if layout == 'centered'
+    assign align = 'center'
+  endif
+  assign primary_href = section.settings.button_link | default: routes.all_products_collection_url
+  assign secondary_href = section.settings.button_2_link | default: routes.collections_url
+  assign padding = section.settings.padding | default: 'm'
 
-  /* Centered: text only */
-  .hero--centered .hero__content { text-align: center; max-width: 720px; margin-inline: auto; }
-  .hero--centered .hero__text { margin-inline: auto; }
+  # Full-width layout always sits on a dark surface (image + overlay), so it uses a dark scheme's tokens.
+  if layout == 'full'
+    if section.settings.color_scheme == 'burgundy'
+      assign section_classes = 'scheme-burgundy section--pad-' | append: padding
+    else
+      assign section_classes = 'scheme-forest section--pad-' | append: padding
+    endif
+  endif
+-%}
 
-  /* Split: text and image side by side */
-  .hero--split .hero__inner { grid-template-columns: 1fr; }
-  @media (min-width: 768px) {
-    .hero--split .hero__inner { grid-template-columns: 1fr 1fr; gap: 64px; }
-  }
-
-  /* Full: background image with dark overlay and light text */
-  .hero--full { min-height: 70vh; display: flex; align-items: center; overflow: hidden; }
-  .hero--full .hero__inner { width: 100%; }
-  .hero--full .hero__content { text-align: center; max-width: 760px; margin-inline: auto; }
-  .hero--full .hero__text { margin-inline: auto; }
-  .hero__bg { position: absolute; inset: 0; z-index: 0; background: var(--forest); }
-  .hero__bg .img-fill { height: 100%; border-radius: 0; }
-  .hero__bg .img-blank { height: 100%; aspect-ratio: auto; border: 0; border-radius: 0; }
-  .hero__overlay { position: absolute; inset: 0; z-index: 0; background: rgba(20, 24, 20, .55); }
-  .hero.hero--full h1, .hero.hero--full h2, .hero.hero--full h3,
-  .hero.hero--full, .hero.hero--full .hero__text { color: var(--paper); }
-  .hero.hero--full .btn--outline { color: var(--paper); }
-  .hero.hero--full .btn { background: var(--burgundy); color: var(--paper); }
-  .hero.hero--full .btn:hover { background: var(--paper); color: var(--forest); }
-</style>
-
-{% assign layout = section.settings.layout | default: 'full' %}
-
-<section class="section hero hero--{{ layout }} {% render 'section-classes', settings: section.settings %}">
-  {% if layout == 'full' %}
+<section class="section hero hero--{{ layout }} hero--align-{{ align }} {% if layout == 'full' %}{{ section_classes }}{% if section.settings.image == blank %} hero--no-image{% endif %}{% else %}{% render 'section-classes', settings: section.settings %}{% endif %}">
+  {%- if layout == 'full' -%}
     <div class="hero__bg" aria-hidden="true">
-      {% if section.settings.image != blank %}
-        {{ section.settings.image | image_url: width: 2000 | image_tag: class: 'img-fill', loading: 'lazy' }}
-      {% else %}
-        <div class="img-blank"></div>
-      {% endif %}
+      {%- if section.settings.image != blank -%}
+        {{ section.settings.image | image_url: width: 2400 | image_tag: class: 'img-fill', loading: 'eager', sizes: '100vw', widths: '750, 1100, 1500, 2000, 2400', alt: '' }}
+      {%- else -%}
+        <div class="img-blank img-blank--bg" data-label="Hero image"></div>
+      {%- endif -%}
     </div>
     <div class="hero__overlay" aria-hidden="true"></div>
-  {% endif %}
+  {%- endif -%}
 
   <div class="container">
     <div class="hero__inner">
       <div class="hero__content">
-        {% if section.index == 1 %}<h1>{{ section.settings.heading }}</h1>{% else %}<h2>{{ section.settings.heading }}</h2>{% endif %}
-        {% if section.settings.text != blank %}
-          <p class="hero__text">{{ section.settings.text }}</p>
-        {% endif %}
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="eyebrow eyebrow--rule hero__eyebrow">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        {%- if section.index == 1 -%}
+          <h1 class="hero__heading display">{{ section.settings.heading }}</h1>
+        {%- else -%}
+          <h2 class="hero__heading h1">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.text != blank -%}
+          <p class="hero__text lede">{{ section.settings.text }}</p>
+        {%- endif -%}
 
-        {% capture buttons %}
-          {% if section.settings.button_label != blank %}
-            <a href="{{ section.settings.button_link }}" class="btn">{{ section.settings.button_label }}</a>
-          {% endif %}
-          {% if section.settings.button_2_label != blank %}
-            <a href="{{ section.settings.button_2_link }}" class="btn btn--outline">{{ section.settings.button_2_label }}</a>
-          {% endif %}
-        {% endcapture %}
-        {% if buttons != blank %}
-          <div class="hero__buttons {% if layout != 'split' %}hero__buttons--center{% endif %}">
-            {{ buttons }}
+        {%- if section.settings.button_label != blank or section.settings.button_2_label != blank -%}
+          <div class="hero__buttons btn-row">
+            {%- if section.settings.button_label != blank -%}
+              <a href="{{ primary_href }}" class="btn">{{ section.settings.button_label }}</a>
+            {%- endif -%}
+            {%- if section.settings.button_2_label != blank -%}
+              <a href="{{ secondary_href }}" class="btn btn--outline">{{ section.settings.button_2_label }}</a>
+            {%- endif -%}
           </div>
-        {% endif %}
+        {%- endif -%}
       </div>
 
-      {% if layout == 'split' %}
-        {% if section.settings.image != blank %}
-          <div class="hero__media">
-            {{ section.settings.image | image_url: width: 1200 | image_tag: class: 'img-fill', loading: 'lazy' }}
-          </div>
-        {% else %}
-          <div class="img-blank img-blank--portrait"></div>
-        {% endif %}
-      {% endif %}
+      {%- if layout == 'split' -%}
+        <div class="hero__media">
+          {%- if section.settings.image != blank -%}
+            {{ section.settings.image | image_url: width: 1400 | image_tag: class: 'img-fill', loading: 'lazy', sizes: '(min-width: 768px) 50vw, 100vw', widths: '600, 900, 1200, 1400' }}
+          {%- else -%}
+            <div class="img-blank" data-label="Image"></div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
     </div>
   </div>
 </section>
+
+<style>
+  .hero { position: relative; overflow: hidden; }
+  .hero__inner { display: grid; gap: 40px; align-items: center; }
+  .hero__content { position: relative; z-index: 1; }
+  .hero__heading { margin-bottom: 24px; }
+  .hero__text { margin: 0 0 36px; }
+  .hero--align-center .hero__content { text-align: center; margin-inline: auto; }
+  .hero--align-center .hero__text { margin-inline: auto; }
+  .hero--align-center .hero__buttons { justify-content: center; }
+  .hero--align-center .eyebrow--rule::after {
+    content: ""; width: 28px; height: 1px; background: var(--eyebrow-rule); flex: none;
+  }
+
+  /* Centered: text only */
+  .hero--centered .hero__content { max-width: 820px; }
+
+  /* Split: text and image side by side */
+  .hero__media { position: relative; width: 100%; aspect-ratio: 4 / 3; border-radius: var(--radius); overflow: hidden; background: var(--ph-bg); }
+  .hero__media .img-fill, .hero__media .img-blank { position: absolute; inset: 0; height: 100%; aspect-ratio: auto; }
+  @media (min-width: 768px) {
+    .hero--split .hero__inner { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(48px, 7vw, 112px); }
+    .hero--split .hero__media { aspect-ratio: 4 / 5; }
+    .hero--split .hero__content { max-width: 520px; }
+  }
+
+  /* Full: background image, dark overlay, light text */
+  .hero--full {
+    display: flex;
+    align-items: flex-end;
+    min-height: min(88vh, 820px);
+    min-height: min(88svh, 820px);
+  }
+  .hero--full > .container { width: min(var(--container), 100% - 2 * var(--gutter)); }
+  .hero--full .hero__content { max-width: 680px; }
+  .hero--full.hero--align-center { align-items: center; }
+  .hero--full.hero--align-center .hero__content { max-width: 820px; }
+  .hero__bg { position: absolute; inset: 0; z-index: 0; background: var(--bg); }
+  .hero__bg .img-fill { height: 100%; border-radius: 0; }
+  .hero__overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background:
+      linear-gradient(0deg, rgba(12, 22, 16, .55) 0%, rgba(12, 22, 16, 0) 60%),
+      linear-gradient(90deg, rgba(12, 22, 16, .45) 0%, rgba(12, 22, 16, .1) 70%);
+  }
+  .hero--align-center .hero__overlay { background: rgba(12, 22, 16, .42); }
+  .hero--no-image .hero__overlay { display: none; }
+  .hero--full .hero__text { color: color-mix(in srgb, var(--paper) 86%, transparent); }
+
+  /* Background placeholder: big faint pattern, sprig and caption tucked bottom-right. */
+  .img-blank--bg {
+    height: 100%;
+    aspect-ratio: auto;
+    border-radius: 0;
+    place-content: end;
+    justify-items: end;
+    padding: 0 clamp(28px, 4vw, 56px) clamp(28px, 4vw, 48px) 0;
+    outline-offset: -20px;
+    background:
+      radial-gradient(ellipse 60% 70% at 25% 65%, var(--ph-bg) 20%, transparent 100%),
+      var(--ph-pattern) center / 42px 72px repeat,
+      var(--ph-bg);
+  }
+  @media (max-width: 767px) {
+    .hero--full { min-height: 600px; min-height: 82svh; }
+    .hero--full .hero__buttons .btn { flex: 1 1 auto; }
+    .img-blank--bg { padding: 32px 32px 0 0; place-content: start end; }
+  }
+</style>
 
 {% schema %}
 {
@@ -99,12 +156,24 @@
       ],
       "default": "full"
     },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Text alignment",
+      "info": "Applies to the full-width image layout",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "left"
+    },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "info": "Small label above the heading", "default": "Raw honey · Loose-leaf tea" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "Page heading" },
     { "type": "textarea", "id": "text", "label": "Text", "default": "Short supporting text goes here." },
     { "type": "text", "id": "button_label", "label": "Button label", "default": "Button" },
-    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "url", "id": "button_link", "label": "Button link", "info": "Defaults to all products" },
     { "type": "text", "id": "button_2_label", "label": "Second button label", "default": "Button" },
-    { "type": "url", "id": "button_2_link", "label": "Second button link" },
+    { "type": "url", "id": "button_2_link", "label": "Second button link", "info": "Defaults to all collections" },
     { "type": "image_picker", "id": "image", "label": "Image" },
     {
       "type": "select",

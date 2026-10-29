@@ -1,32 +1,69 @@
-<section class="section newsletter {% render 'section-classes', settings: section.settings %}">
-<div class="container">
-  <div style="max-width: 560px; margin-inline: auto; text-align: center;">
-    <h2>{{ section.settings.heading }}</h2>
-    <p>{{ section.settings.text }}</p>
+{%- assign layout = section.settings.layout | default: 'split' -%}
+<section class="section newsletter newsletter--{{ layout }} {% render 'section-classes', settings: section.settings %}">
+  <div class="container">
+    <div class="newsletter__inner{% if layout == 'center' %} text-center{% endif %}">
+      <div class="newsletter__copy">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="eyebrow eyebrow--rule">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        <h2 class="newsletter__heading">{{ section.settings.heading }}</h2>
+        {%- if section.settings.text != blank -%}
+          <p class="newsletter__text">{{ section.settings.text }}</p>
+        {%- endif -%}
+      </div>
 
-    {% form 'customer' %}
-      <input type="hidden" name="contact[tags]" value="newsletter">
-
-      {% if form.posted_successfully? %}
-        <p>Thanks for subscribing</p>
-      {% else %}
-        <input type="email" name="contact[email]" placeholder="Your email" autocomplete="email" required style="padding: .8em 1em; border: 1px solid var(--line); border-radius: 999px; width: 100%; max-width: 360px; font: inherit;">
-        <div style="margin-top: 12px;">
-          <input type="submit" class="btn" value="{{ section.settings.button_label }}">
-        </div>
-        {% if form.errors %}
-          <p>Please enter a valid email address.</p>
-        {% endif %}
-      {% endif %}
-    {% endform %}
+      <div class="newsletter__form-wrap">
+        {%- form 'customer', class: 'newsletter__form' -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          {%- if form.posted_successfully? -%}
+            <p class="newsletter__message" role="status">Thanks for subscribing.</p>
+          {%- else -%}
+            <label class="visually-hidden" for="newsletter-email-{{ section.id }}">Email address</label>
+            <div class="inline-form">
+              <input class="input" type="email" name="contact[email]" id="newsletter-email-{{ section.id }}" placeholder="Email address" autocomplete="email" required{% if form.errors %} aria-invalid="true" aria-describedby="newsletter-error-{{ section.id }}"{% endif %}>
+              <button type="submit" class="btn">{{ section.settings.button_label | default: 'Subscribe' }}</button>
+            </div>
+            {%- if form.errors -%}
+              <p class="newsletter__message" id="newsletter-error-{{ section.id }}" role="alert">Please enter a valid email address.</p>
+            {%- endif -%}
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+    </div>
   </div>
-</div>
 </section>
+
+<style>
+  .newsletter__inner { display: grid; gap: 32px; }
+  .newsletter__heading { margin-bottom: 16px; }
+  .newsletter__text { margin: 0; color: var(--fg-muted); max-width: 46ch; }
+  .newsletter__form { margin: 0; }
+  .newsletter__message { margin: 12px 0 0; font-size: var(--fs-small); }
+  .newsletter--center .newsletter__inner { max-width: 640px; margin-inline: auto; justify-items: center; }
+  .newsletter--center .newsletter__text { margin-inline: auto; }
+  .newsletter--center .inline-form { margin-inline: auto; }
+  @media (min-width: 768px) {
+    .newsletter--split .newsletter__inner {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: end;
+      gap: clamp(40px, 6vw, 96px);
+    }
+    .newsletter--split .newsletter__heading { margin-bottom: 16px; }
+    .newsletter--split .inline-form { max-width: none; }
+  }
+</style>
 
 {% schema %}
 {
   "name": "Newsletter",
   "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "info": "Small label above the heading",
+      "default": "Short label"
+    },
     {
       "type": "text",
       "id": "heading",
@@ -44,6 +81,22 @@
       "id": "button_label",
       "label": "Button label",
       "default": "Subscribe"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        {
+          "value": "split",
+          "label": "Text and form side by side"
+        },
+        {
+          "value": "center",
+          "label": "Centered"
+        }
+      ],
+      "default": "split"
     },
     {
       "type": "select",

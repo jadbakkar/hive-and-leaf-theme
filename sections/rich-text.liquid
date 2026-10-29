@@ -1,19 +1,56 @@
-<section class="section {% render 'section-classes', settings: section.settings %}">
-<div class="container">
-  <div style="max-width: 720px; margin-inline: auto; text-align: center;">
-    <h2>{{ section.settings.heading }}</h2>
-    <div>{{ section.settings.text }}</div>
-    {% if section.settings.button_label != blank %}
-      <a href="{{ section.settings.button_link }}" class="btn">{{ section.settings.button_label }}</a>
-    {% endif %}
+{%- liquid
+  assign button_href = section.settings.button_link | default: routes.all_products_collection_url
+  assign align = section.settings.alignment | default: 'center'
+  case section.settings.button_style
+    when 'primary'
+      assign button_class = 'btn'
+    when 'link'
+      assign button_class = 'link-arrow'
+    else
+      assign button_class = 'btn btn--outline'
+  endcase
+-%}
+<section class="section rich-text rich-text--{{ align }} {% render 'section-classes', settings: section.settings %}">
+  <div class="container">
+    <div class="rich-text__inner{% if align == 'center' %} text-center{% endif %}">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="rich-text__heading">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <div class="rte rich-text__text">{{ section.settings.text }}</div>
+      {%- endif -%}
+      {%- if section.settings.button_label != blank -%}
+        <div class="btn-row rich-text__actions">
+          <a href="{{ button_href }}" class="{{ button_class }}">{{ section.settings.button_label }}</a>
+        </div>
+      {%- endif -%}
+    </div>
   </div>
-</div>
 </section>
+
+<style>
+  .rich-text__inner { max-width: 860px; }
+  .rich-text--center .rich-text__inner { margin-inline: auto; }
+  .rich-text__heading { margin-bottom: 24px; }
+  .rich-text__text { font-size: var(--fs-lead); line-height: 1.65; color: var(--fg-muted); }
+  .rich-text__actions { margin-top: 36px; }
+  .rich-text--center .eyebrow { justify-content: center; }
+</style>
 
 {% schema %}
 {
   "name": "Rich text",
   "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "info": "Small label above the heading",
+      "default": "Short label"
+    },
     {
       "type": "text",
       "id": "heading",
@@ -35,17 +72,66 @@
     {
       "type": "url",
       "id": "button_link",
-      "label": "Button link"
+      "label": "Button link",
+      "info": "Defaults to all products"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "options": [
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button style",
+      "options": [
+        {
+          "value": "primary",
+          "label": "Filled"
+        },
+        {
+          "value": "outline",
+          "label": "Outline"
+        },
+        {
+          "value": "link",
+          "label": "Text link"
+        }
+      ],
+      "default": "outline"
     },
     {
       "type": "select",
       "id": "color_scheme",
       "label": "Color scheme",
       "options": [
-        { "value": "light", "label": "Light" },
-        { "value": "cream", "label": "Cream" },
-        { "value": "forest", "label": "Dark green" },
-        { "value": "burgundy", "label": "Burgundy" }
+        {
+          "value": "light",
+          "label": "Light"
+        },
+        {
+          "value": "cream",
+          "label": "Cream"
+        },
+        {
+          "value": "forest",
+          "label": "Dark green"
+        },
+        {
+          "value": "burgundy",
+          "label": "Burgundy"
+        }
       ],
       "default": "light"
     },
@@ -54,9 +140,18 @@
       "id": "padding",
       "label": "Spacing",
       "options": [
-        { "value": "s", "label": "Small" },
-        { "value": "m", "label": "Medium" },
-        { "value": "l", "label": "Large" }
+        {
+          "value": "s",
+          "label": "Small"
+        },
+        {
+          "value": "m",
+          "label": "Medium"
+        },
+        {
+          "value": "l",
+          "label": "Large"
+        }
       ],
       "default": "m"
     }
