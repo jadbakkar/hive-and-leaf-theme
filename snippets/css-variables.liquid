@@ -2,14 +2,23 @@
   {{ settings.type_heading_font | font_face: font_display: 'swap' }}
   {{ settings.type_body_font | font_face: font_display: 'swap' }}
 
+  {%- comment -%}
+    Brand role tokens. Setting ids keep their original names (color_forest, color_burgundy) so
+    merchant data survives; in the CSS they are exposed by role: --primary and --brand-accent.
+    The old names stay as aliases for any custom code that still uses them.
+  {%- endcomment -%}
   :root {
     --paper: {{ settings.color_paper }};
     --cream: {{ settings.color_cream }};
-    --forest: {{ settings.color_forest }};
-    --burgundy: {{ settings.color_burgundy }};
+    --primary: {{ settings.color_forest }};
+    --brand-accent: {{ settings.color_burgundy }};
+    --gold: {{ settings.color_gold | default: '#b08a4a' }};
+    --label: {{ settings.color_label | default: settings.color_burgundy }};
     --ink: {{ settings.color_ink }};
     --muted: {{ settings.color_muted }};
     --line: {{ settings.color_line }};
+    --forest: var(--primary);
+    --burgundy: var(--brand-accent);
     --serif: {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
     --sans: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
     --heading-weight: {{ settings.type_heading_font.weight }};

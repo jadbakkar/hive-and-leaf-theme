@@ -1,0 +1,58 @@
+{%- comment -%}
+  Floating "Order on WhatsApp" button (Theme settings > WhatsApp ordering).
+  Hidden when the setting is off or no WhatsApp number/link is set. Sits under the cart drawer,
+  filter drawer and mobile menu (it hides while the menu is open) and respects the iOS safe area.
+{%- endcomment -%}
+{%- if settings.whatsapp_float -%}
+  {%- capture wa_float_url -%}{%- render 'whatsapp-url', message: settings.whatsapp_message -%}{%- endcapture -%}
+  {%- if wa_float_url != blank -%}
+    {%- assign wa_float_label = settings.whatsapp_float_label | default: 'Order on WhatsApp' -%}
+    <a class="wa-float" href="{{ wa_float_url }}" target="_blank" rel="noopener" data-wa-float>
+      {%- render 'icon', name: 'whatsapp' -%}
+      <span class="wa-float__label">{{ wa_float_label }}</span>
+      <span class="visually-hidden"> (opens WhatsApp)</span>
+    </a>
+    <style>
+      .wa-float {
+        position: fixed;
+        right: max(16px, env(safe-area-inset-right));
+        bottom: max(16px, env(safe-area-inset-bottom));
+        z-index: 90;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 52px;
+        height: 52px;
+        padding: 0;
+        border-radius: 999px;
+        background: var(--primary);
+        color: var(--paper);
+        box-shadow:
+          inset 0 0 0 1px color-mix(in srgb, var(--gold) 75%, transparent),
+          0 0 0 1px color-mix(in srgb, var(--paper) 35%, transparent),
+          0 14px 30px -12px color-mix(in srgb, var(--primary-deep) 70%, transparent);
+        font: 500 .7rem/1 var(--sans);
+        letter-spacing: .16em;
+        text-transform: uppercase;
+        text-decoration: none;
+        transition: background-color var(--dur) var(--ease), transform var(--dur) var(--ease), opacity var(--dur) var(--ease);
+      }
+      .wa-float:hover { background: var(--brand-accent); color: var(--paper) !important; transform: translateY(-2px); }
+      .wa-float:focus-visible { outline: 2px solid var(--label); outline-offset: 6px; }
+      .wa-float .icon { flex: none; font-size: 22px; stroke-width: 1.5; }
+      .wa-float__label { display: none; }
+      /* The product page has its own "Order on WhatsApp" button; don't repeat it. */
+      body:has([data-wa-order]) .wa-float { display: none; }
+      body.is-nav-locked .wa-float, body.is-cart-open .wa-float { opacity: 0; pointer-events: none; visibility: hidden; }
+      /* Keep the end of the page (footer links, back to top) clear of the button. */
+      body:has(.wa-float) .site-footer { padding-bottom: 92px; }
+      @media (min-width: 990px) {
+        .wa-float { right: 28px; bottom: 28px; width: auto; height: 50px; padding: 0 22px 0 18px; }
+        .wa-float__label { display: inline; }
+        body:has(.wa-float) .site-footer { padding-bottom: 96px; }
+      }
+      @media print { .wa-float { display: none; } }
+    </style>
+  {%- endif -%}
+{%- endif -%}

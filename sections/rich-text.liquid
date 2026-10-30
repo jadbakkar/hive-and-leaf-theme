@@ -13,6 +13,9 @@
 <section class="section rich-text rich-text--{{ align }} {% render 'section-classes', settings: section.settings %}">
   <div class="container">
     <div class="rich-text__inner{% if align == 'center' %} text-center{% endif %}">
+      {%- if section.settings.show_emblem -%}
+        <span class="rich-text__emblem" aria-hidden="true">{% render 'icon', name: 'emblem' %}</span>
+      {%- endif -%}
       {%- if section.settings.eyebrow != blank -%}
         <p class="eyebrow">{{ section.settings.eyebrow }}</p>
       {%- endif -%}
@@ -35,6 +38,9 @@
   .rich-text__inner { max-width: 860px; }
   .rich-text--center .rich-text__inner { margin-inline: auto; }
   .rich-text__heading { margin-bottom: 24px; }
+  .rich-text__emblem { display: block; margin-bottom: 26px; color: var(--detail); font-size: 34px; line-height: 0; }
+  .rich-text__emblem .icon { stroke-width: 1; }
+  .rich-text--center .rich-text__emblem { display: flex; justify-content: center; }
   .rich-text__text { font-size: var(--fs-lead); line-height: 1.65; color: var(--fg-muted); }
   .rich-text__actions { margin-top: 36px; }
   .rich-text--center .eyebrow { justify-content: center; }
@@ -50,6 +56,12 @@
       "label": "Eyebrow",
       "info": "Small label above the heading",
       "default": "Short label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_emblem",
+      "label": "Show emblem above the text",
+      "default": false
     },
     {
       "type": "text",
@@ -126,11 +138,11 @@
         },
         {
           "value": "forest",
-          "label": "Dark green"
+          "label": "Dark (primary)"
         },
         {
           "value": "burgundy",
-          "label": "Burgundy"
+          "label": "Accent"
         }
       ],
       "default": "light"

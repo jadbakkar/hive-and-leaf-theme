@@ -1,4 +1,4 @@
-/* Hive & Leaf theme scripts. Plain vanilla JS, no dependencies. */
+/* Mézaj theme scripts. Plain vanilla JS, no dependencies. */
 (function () {
   'use strict';
 
@@ -638,6 +638,20 @@
       }
     }
 
+    // "Order on WhatsApp" link: rewrite the prefilled message for the selected variant.
+    var waLinks = all(section, '[data-wa-order]');
+    function updateWhatsApp(variant) {
+      waLinks.forEach(function (link) {
+        var base = link.getAttribute('data-wa-base') || '';
+        if (!variant || !/wa\.me|whatsapp\.com/.test(base)) return;
+        var title = link.getAttribute('data-wa-title') || '';
+        if (variant.title && variant.title !== 'Default Title') title += ' (' + variant.title + ')';
+        var page = (link.getAttribute('data-wa-page') || '') + '?variant=' + variant.id;
+        var text = (link.getAttribute('data-wa-intro') || '') + ' ' + title + ' ' + page;
+        link.href = base + (base.indexOf('?') === -1 ? '?' : '&') + 'text=' + encodeURIComponent(text);
+      });
+    }
+
     function syncUrl(variant) {
       if (!window.history || !window.history.replaceState) return;
       try {
@@ -656,6 +670,7 @@
         if (idInput) idInput.value = String(variant.id);
         if (priceWrap) renderPrice(priceWrap, variant, format);
         if (variant.featured_media) gallery.showMedia(variant.featured_media.id);
+        updateWhatsApp(variant);
         syncUrl(variant);
       }
       updateAvailability(wanted);

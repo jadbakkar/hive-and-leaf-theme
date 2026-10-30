@@ -1,1 +1,41 @@
-{"type":"header","name":"Header group","sections":{"announcement-bar":{"type":"announcement-bar","settings":{"color_scheme":"forest"},"blocks":{"announcement_1":{"type":"announcement","settings":{"text":"Cash on delivery across Lebanon"}}},"block_order":["announcement_1"]},"header":{"type":"header","settings":{}}},"order":["announcement-bar","header"]}
+{
+  "type": "header",
+  "name": "Header group",
+  "sections": {
+    "announcement-bar": {
+      "type": "announcement-bar",
+      "settings": {
+        "color_scheme": "forest"
+      },
+      "blocks": {
+        "announcement_1": {
+          "type": "announcement",
+          "settings": {
+            "text": "Cash on delivery across Lebanon"
+          }
+        },
+        "announcement_2": {
+          "type": "announcement",
+          "settings": {
+            "text": "Order on WhatsApp",
+            "link_whatsapp": true
+          }
+        }
+      },
+      "block_order": [
+        "announcement_1",
+        "announcement_2"
+      ]
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "show_emblem": true
+      }
+    }
+  },
+  "order": [
+    "announcement-bar",
+    "header"
+  ]
+}

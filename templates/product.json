@@ -3,33 +3,58 @@
     "main": {
       "type": "main-product",
       "blocks": {
-        "title": { "type": "title", "settings": {} },
-        "price": { "type": "price", "settings": {} },
-        "variant_picker": { "type": "variant_picker", "settings": {} },
-        "quantity": { "type": "quantity", "settings": {} },
-        "buy_buttons": { "type": "buy_buttons", "settings": {} },
-        "reassurance": { "type": "reassurance", "settings": {} },
-        "description": { "type": "description", "settings": {} },
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {}
+        },
+        "quantity": {
+          "type": "quantity",
+          "settings": {}
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {}
+        },
+        "reassurance": {
+          "type": "reassurance",
+          "settings": {}
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        },
         "tab_ingredients": {
           "type": "collapsible",
           "settings": {
             "heading": "Ingredients",
-            "content": "<p>Placeholder text. List the ingredients in this blend.</p>"
+            "content": "<p>Placeholder text. List the ingredients in this product, in order.</p>"
           }
         },
         "tab_how_to_use": {
           "type": "collapsible",
           "settings": {
             "heading": "How to use",
-            "content": "<p>Placeholder text. Explain how to prepare and enjoy this product.</p>"
+            "content": "<p>Placeholder text. Describe the ritual: how and when to use it.</p>"
           }
         },
         "tab_delivery": {
           "type": "collapsible",
           "settings": {
             "heading": "Delivery & payment",
-            "content": "<p>Placeholder text. Describe delivery times, costs and accepted payment methods.</p>"
+            "content": "<p>Cash on delivery across Lebanon. You can also order on WhatsApp or by Instagram DM.</p>"
           }
+        },
+        "whatsapp_order": {
+          "type": "whatsapp_order",
+          "settings": {}
         }
       },
       "block_order": [
@@ -38,6 +63,7 @@
         "variant_picker",
         "quantity",
         "buy_buttons",
+        "whatsapp_order",
         "reassurance",
         "description",
         "tab_ingredients",
@@ -49,9 +75,14 @@
     "related": {
       "type": "related-products",
       "settings": {
-        "color_scheme": "cream"
+        "color_scheme": "cream",
+        "eyebrow": "Complete the ritual",
+        "heading": "You may also like"
       }
     }
   },
-  "order": ["main", "related"]
+  "order": [
+    "main",
+    "related"
+  ]
 }

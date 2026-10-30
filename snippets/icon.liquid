@@ -1,9 +1,19 @@
 {%- comment -%}
   Inline SVG icons. Usage: {% render 'icon', name: 'cart' %}
   Names: cart, menu, close, instagram, facebook, tiktok, whatsapp, search, account, plus, minus,
-  arrow-right, leaf, honeycomb, jar, truck, cash, hand, sprout, cup, quote.
+  arrow-right, leaf, honeycomb, jar, truck, cash, hand, sprout, cup, quote, drop, emblem.
+  'emblem' is the Mézaj brand mark (a single drop above two leaves, line art). It has its own
+  40x44 viewBox, so it is 1em wide and 1.1em tall; size it with font-size or width.
   Icons are decorative (aria-hidden); give the parent link or button an accessible label.
 {%- endcomment -%}
+{%- if name == 'emblem' -%}
+<svg class="icon icon--emblem" width="1em" height="1.1em" viewBox="0 0 40 44" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <path d="M20 3c-3.6 4.6-6.4 9-6.4 12.6a6.4 6.4 0 0 0 12.8 0C26.4 12 23.6 7.6 20 3Z"/>
+  <path d="M19.2 40.5C11.4 40 5.9 34.6 4.6 27.4c7.9.3 13.4 5.6 14.6 13.1Z"/>
+  <path d="M20.8 40.5c7.8-.5 13.3-5.9 14.6-13.1-7.9.3-13.4 5.6-14.6 13.1Z"/>
+  <path d="M9.5 31.2 19.2 40.5M30.5 31.2l-9.7 9.3"/>
+</svg>
+{%- else -%}
 <svg class="icon icon--{{ name }}" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
   {%- case name -%}
     {%- when 'cart' -%}
@@ -71,7 +81,10 @@
       <path d="M4 9h13v5a6 6 0 0 1-6 6h-1a6 6 0 0 1-6-6z"/>
       <path d="M17 11h1.5a2.5 2.5 0 0 1 0 5H16.5"/>
       <path d="M8.5 3.5c-.8 1 .8 2-.1 3M12 3.5c-.8 1 .8 2-.1 3"/>
+    {%- when 'drop' -%}
+      <path d="M12 3.5c-2.9 3.7-5.2 7.3-5.2 10.2a5.2 5.2 0 0 0 10.4 0c0-2.9-2.3-6.5-5.2-10.2Z"/>
     {%- when 'quote' -%}
       <path d="M10 7c-3 1-5 3.5-5 7v3h5v-5H7.2c.2-1.8 1.3-3 3.3-3.6zM19 7c-3 1-5 3.5-5 7v3h5v-5h-2.8c.2-1.8 1.3-3 3.3-3.6z"/>
   {%- endcase -%}
 </svg>
+{%- endif -%}

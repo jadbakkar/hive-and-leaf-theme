@@ -1,1 +1,31 @@
-{ "current": {}, "presets": { "Default": {} } }
+{
+  "current": "Mezaj",
+  "presets": {
+    "Mezaj": {
+      "color_paper": "#fbf7f0",
+      "color_cream": "#f3ebdf",
+      "color_forest": "#3a2a20",
+      "color_burgundy": "#6e2233",
+      "color_gold": "#b08a4a",
+      "color_label": "#7f6033",
+      "color_ink": "#2b211b",
+      "color_muted": "#6d6157",
+      "color_line": "#e6dccb",
+      "type_heading_font": "playfair_display_n4",
+      "type_body_font": "work_sans_n4"
+    },
+    "Garden": {
+      "color_paper": "#fbf8f2",
+      "color_cream": "#f6f1e7",
+      "color_forest": "#1a3a2a",
+      "color_burgundy": "#6d1a36",
+      "color_gold": "#b8893b",
+      "color_label": "#6d1a36",
+      "color_ink": "#1d1d1b",
+      "color_muted": "#6b6a63",
+      "color_line": "#e3dccd",
+      "type_heading_font": "playfair_display_n4",
+      "type_body_font": "work_sans_n4"
+    }
+  }
+}

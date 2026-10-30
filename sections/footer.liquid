@@ -1,24 +1,9 @@
 {%- liquid
   assign scheme = section.settings.color_scheme | default: 'forest'
 
-  # WhatsApp: digits only (spaces, +, -, brackets allowed) becomes a wa.me link; anything else is used as a URL.
-  assign wa = settings.social_whatsapp | strip
-  assign wa_digits = wa | remove: '+' | remove: ' ' | remove: '-' | remove: '(' | remove: ')'
-  assign wa_is_number = false
-  if wa_digits != blank
-    assign wa_is_number = true
-    assign wa_chars = wa_digits | split: ''
-    for c in wa_chars
-      unless '0123456789' contains c
-        assign wa_is_number = false
-      endunless
-    endfor
-  endif
-  if wa_is_number
-    assign wa_url = 'https://wa.me/' | append: wa_digits
-  elsif wa != blank
-    assign wa_url = wa
-  endif
+-%}
+{%- capture wa_url -%}{%- render 'whatsapp-url' -%}{%- endcapture -%}
+{%- liquid
   assign has_social = false
   if settings.social_instagram != blank or settings.social_facebook != blank or settings.social_tiktok != blank or wa_url != blank
     assign has_social = true
@@ -29,7 +14,16 @@
     <div class="site-footer__top">
       {%- if section.settings.show_brand -%}
         <div class="site-footer__brand">
-          <a class="site-footer__wordmark" href="{{ routes.root_url }}">{{ shop.name }}</a>
+          <a class="site-footer__wordmark" href="{{ routes.root_url }}">
+            {%- if settings.logo != blank and section.settings.use_logo -%}
+              {{ settings.logo | image_url: width: 600 | image_tag: width: settings.logo_width, loading: 'lazy', alt: shop.name, class: 'site-footer__logo-img' }}
+            {%- else -%}
+              <span class="wordmark wordmark--start">
+                {%- if section.settings.show_emblem -%}<span class="wordmark__emblem">{% render 'icon', name: 'emblem' %}</span>{%- endif -%}
+                <span class="wordmark__name">{{ shop.name }}</span>
+              </span>
+            {%- endif -%}
+          </a>
           {%- if section.settings.brand_text != blank -%}
             <p class="site-footer__brand-text">{{ section.settings.brand_text }}</p>
           {%- endif -%}
@@ -172,6 +166,10 @@
     text-decoration: none;
   }
   .site-footer__wordmark:hover { color: var(--heading) !important; }
+  .site-footer__wordmark .wordmark { align-items: flex-start; gap: 10px; }
+  .site-footer__wordmark .wordmark__emblem { color: var(--detail); font-size: 26px; line-height: 0; }
+  .site-footer__wordmark .wordmark__emblem .icon { stroke-width: 1.2; }
+  .site-footer__logo-img { height: auto; max-width: 100%; }
   .site-footer__brand-text { max-width: 34ch; margin: 0; color: var(--fg-muted); }
   .site-footer__grid {
     display: grid;
@@ -223,7 +221,7 @@
     font: inherit;
   }
   .site-footer__field input:focus-visible { outline: none; }
-  .site-footer__field:has(input:focus-visible) { outline: 2px solid var(--honey-pale); outline-offset: 4px; }
+  .site-footer__field:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 4px; }
   .site-footer__field input::placeholder { color: var(--fg-muted); opacity: 1; }
   .site-footer__submit {
     display: inline-flex;
@@ -305,11 +303,11 @@
         },
         {
           "value": "forest",
-          "label": "Dark green"
+          "label": "Dark (primary)"
         },
         {
           "value": "burgundy",
-          "label": "Burgundy"
+          "label": "Accent"
         }
       ],
       "default": "forest"
@@ -321,10 +319,23 @@
       "default": true
     },
     {
+      "type": "checkbox",
+      "id": "show_emblem",
+      "label": "Show emblem above the shop name",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "use_logo",
+      "label": "Use logo image when set",
+      "info": "Off: always show the shop name wordmark.",
+      "default": false
+    },
+    {
       "type": "textarea",
       "id": "brand_text",
       "label": "Brand text",
-      "default": "Short brand description goes here."
+      "default": "Skin, hair and herbal care from Lebanon. Everyday rituals, beautifully made."
     }
   ],
   "blocks": [
@@ -369,7 +380,7 @@
           "type": "text",
           "id": "heading",
           "label": "Heading",
-          "default": "Newsletter heading"
+          "default": "Letters from Mézaj"
         },
         {
           "type": "textarea",
@@ -408,8 +419,8 @@
         {
           "type": "newsletter",
           "settings": {
-            "heading": "Newsletter heading",
-            "text": "Short newsletter description goes here."
+            "heading": "Letters from Mézaj",
+            "text": "New rituals, gift sets and seasonal blends. No more than once a month."
           }
         }
       ]

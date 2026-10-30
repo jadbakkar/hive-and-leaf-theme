@@ -5,9 +5,76 @@
       "settings": {
         "layout": "full",
         "alignment": "left",
-        "eyebrow": "Raw honey · Loose-leaf tea",
+        "eyebrow": "Skin, Hair & Herbal Care",
+        "heading": "The art of everyday care",
+        "text": "Skin & hair care · Honey blends · Herbs",
+        "button_label": "Shop the collection",
+        "button_link": "shopify://collections/all",
+        "button_2_label": "Our story",
+        "button_2_link": "shopify://pages/about",
+        "color_scheme": "forest",
         "padding": "l"
       }
+    },
+    "collection-tiles": {
+      "type": "collection-tiles",
+      "settings": {
+        "eyebrow": "The collections",
+        "heading": "Rituals for skin, hair and home",
+        "link_label": "Shop",
+        "shape": "arch",
+        "color_scheme": "light",
+        "padding": "m"
+      },
+      "blocks": {
+        "tile_1": {
+          "type": "tile",
+          "settings": {
+            "title": "Skin",
+            "text": "Face and body oils, creams and a gentle scrub.",
+            "accent_color": "#b7898a"
+          }
+        },
+        "tile_2": {
+          "type": "tile",
+          "settings": {
+            "title": "Hair",
+            "text": "Oils to keep every length soft.",
+            "accent_color": "#3f4b63"
+          }
+        },
+        "tile_3": {
+          "type": "tile",
+          "settings": {
+            "title": "Honey",
+            "text": "Honey blends in jars and 15 g sachets.",
+            "accent_color": "#a65f3c"
+          }
+        },
+        "tile_4": {
+          "type": "tile",
+          "settings": {
+            "title": "Herbs",
+            "text": "Herbal teas in tins and herbal powder.",
+            "accent_color": "#2f4a3a"
+          }
+        },
+        "tile_5": {
+          "type": "tile",
+          "settings": {
+            "title": "Gift Sets",
+            "text": "Boxed rituals, ready to give.",
+            "accent_color": "#6e2233"
+          }
+        }
+      },
+      "block_order": [
+        "tile_1",
+        "tile_2",
+        "tile_3",
+        "tile_4",
+        "tile_5"
+      ]
     },
     "trust-bar": {
       "type": "trust-bar",
@@ -19,22 +86,25 @@
         "item_1": {
           "type": "item",
           "settings": {
-            "text": "Item text",
-            "builtin_icon": "honeycomb"
+            "text": "Cash on delivery",
+            "subtext": "Pay when your order arrives",
+            "builtin_icon": "cash"
           }
         },
         "item_2": {
           "type": "item",
           "settings": {
-            "text": "Item text",
-            "builtin_icon": "leaf"
+            "text": "Delivery across Lebanon",
+            "subtext": "Packed by hand, sent to your door",
+            "builtin_icon": "truck"
           }
         },
         "item_3": {
           "type": "item",
           "settings": {
-            "text": "Item text",
-            "builtin_icon": "truck"
+            "text": "Natural ingredients",
+            "subtext": "Honey, herbs and plant oils",
+            "builtin_icon": "leaf"
           }
         }
       },
@@ -44,48 +114,78 @@
         "item_3"
       ]
     },
-    "featured-collection": {
+    "best-sellers": {
       "type": "featured-collection",
       "settings": {
-        "eyebrow": "Short label",
-        "color_scheme": "light"
+        "eyebrow": "Most loved",
+        "heading": "Best sellers",
+        "text": "",
+        "link_label": "Shop all",
+        "limit": 8,
+        "columns": 4,
+        "color_scheme": "light",
+        "padding": "m"
       }
     },
-    "image-with-text": {
+    "gift-sets": {
       "type": "image-with-text",
       "settings": {
-        "eyebrow": "Short label",
+        "eyebrow": "Gift sets",
+        "heading": "A ritual, wrapped and ready to give",
+        "text": "<p>Our boxed sets gather honey blends, herbal teas and oils in one keepsake box, finished with a gold seal. Add a handwritten note and we will tuck it inside.</p>",
+        "button_label": "Shop gift sets",
+        "button_link": "shopify://collections/gift-sets",
+        "image_position": "right",
         "color_scheme": "cream",
-        "image_position": "left",
         "padding": "l"
       }
     },
-    "multicolumn": {
+    "brand-story": {
+      "type": "rich-text",
+      "settings": {
+        "eyebrow": "Our story",
+        "heading": "Everyday rituals, beautifully made.",
+        "text": "<p>Mézaj began with a simple idea: the small things you do for yourself every day deserve care. We blend honey, herbs and plant oils in Lebanon, in small batches, and pack them in jars and tins you will want to keep.</p>",
+        "button_label": "Read our story",
+        "button_link": "shopify://pages/about",
+        "alignment": "center",
+        "button_style": "outline",
+        "color_scheme": "forest",
+        "padding": "l",
+        "show_emblem": true
+      }
+    },
+    "rituals": {
       "type": "multicolumn",
       "settings": {
-        "eyebrow": "Short label",
-        "color_scheme": "light"
+        "eyebrow": "Rituals",
+        "heading": "Morning, afternoon, evening",
+        "text": "Small moments of care, woven through the day.",
+        "image_ratio": "portrait",
+        "show_numbers": true,
+        "color_scheme": "light",
+        "padding": "m"
       },
       "blocks": {
         "column_1": {
           "type": "column",
           "settings": {
-            "title": "Column title",
-            "text": "Short description goes here."
+            "title": "Morning",
+            "text": "A spoon of honey blend stirred into warm water, and a few drops of face oil before the day begins."
           }
         },
         "column_2": {
           "type": "column",
           "settings": {
-            "title": "Column title",
-            "text": "Short description goes here."
+            "title": "Afternoon",
+            "text": "A tin of herbal tea within reach, and body oil smoothed in after the sun."
           }
         },
         "column_3": {
           "type": "column",
           "settings": {
-            "title": "Column title",
-            "text": "Short description goes here."
+            "title": "Evening",
+            "text": "A cup of Comfort tea, a slow body scrub, and hair oil worked through before sleep."
           }
         }
       },
@@ -95,76 +195,73 @@
         "column_3"
       ]
     },
-    "hero-split": {
-      "type": "hero",
+    "social-grid": {
+      "type": "social-grid",
       "settings": {
-        "layout": "split",
-        "eyebrow": "Short label",
+        "eyebrow": "Follow our rituals",
+        "heading": "@mezaj.rituals",
+        "text": "Ask us anything by DM, or order straight from Instagram.",
+        "button_label": "Follow on Instagram",
         "color_scheme": "cream",
-        "padding": "l"
-      }
-    },
-    "testimonials": {
-      "type": "testimonials",
-      "settings": {
-        "eyebrow": "Short label",
-        "color_scheme": "forest",
-        "padding": "l"
+        "padding": "m"
       },
       "blocks": {
-        "testimonial_1": {
-          "type": "testimonial",
-          "settings": {
-            "quote": "Quote goes here.",
-            "author": "Name"
-          }
+        "post_1": {
+          "type": "image",
+          "settings": {}
         },
-        "testimonial_2": {
-          "type": "testimonial",
-          "settings": {
-            "quote": "Quote goes here.",
-            "author": "Name"
-          }
+        "post_2": {
+          "type": "image",
+          "settings": {}
         },
-        "testimonial_3": {
-          "type": "testimonial",
-          "settings": {
-            "quote": "Quote goes here.",
-            "author": "Name"
-          }
+        "post_3": {
+          "type": "image",
+          "settings": {}
+        },
+        "post_4": {
+          "type": "image",
+          "settings": {}
+        },
+        "post_5": {
+          "type": "image",
+          "settings": {}
+        },
+        "post_6": {
+          "type": "image",
+          "settings": {}
         }
       },
       "block_order": [
-        "testimonial_1",
-        "testimonial_2",
-        "testimonial_3"
+        "post_1",
+        "post_2",
+        "post_3",
+        "post_4",
+        "post_5",
+        "post_6"
       ]
-    },
-    "rich-text": {
-      "type": "rich-text",
-      "settings": {
-        "eyebrow": "Short label",
-        "color_scheme": "light",
-        "button_style": "outline"
-      }
     },
     "newsletter": {
       "type": "newsletter",
       "settings": {
-        "eyebrow": "Short label",
-        "color_scheme": "burgundy"
+        "eyebrow": "Letters from Mézaj",
+        "heading": "New rituals, first",
+        "text": "Seasonal blends, new gift sets and the occasional recipe. No more than once a month.",
+        "button_label": "Subscribe",
+        "layout": "split",
+        "color_scheme": "light",
+        "padding": "m"
       }
     }
   },
   "order": [
     "hero",
+    "collection-tiles",
     "trust-bar",
-    "featured-collection",
-    "image-with-text",
-    "multicolumn",
-    "hero-split",
-    "testimonials",
-    "rich-text",
+    "best-sellers",
+    "gift-sets",
+    "brand-story",
+    "rituals",
+    "social-grid",
     "newsletter"
   ]
 }

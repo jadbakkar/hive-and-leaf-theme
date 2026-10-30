@@ -146,6 +146,34 @@
                     <span data-add-label>{% if current_variant.available %}Add to cart{% else %}Sold out{% endif %}</span>
                   </button>
 
+                {%- when 'whatsapp_order' -%}
+                  {%- liquid
+                    assign wa_intro = block.settings.message | default: 'Hello, I would like to order:'
+                    assign wa_product = product.title
+                    unless product.has_only_default_variant
+                      assign wa_product = wa_product | append: ' (' | append: current_variant.title | append: ')'
+                    endunless
+                    assign wa_page = shop.url | append: current_variant.url
+                    assign wa_message = wa_intro | append: ' ' | append: wa_product | append: ' ' | append: wa_page
+                  -%}
+                  {%- capture wa_order_base -%}{%- render 'whatsapp-url' -%}{%- endcapture -%}
+                  {%- if wa_order_base != blank -%}
+                    {%- capture wa_order_url -%}{%- render 'whatsapp-url', message: wa_message -%}{%- endcapture -%}
+                    <a class="btn btn--outline btn--block pdp-wa" href="{{ wa_order_url }}" target="_blank" rel="noopener"
+                      data-wa-order
+                      data-wa-base="{{ wa_order_base | escape }}"
+                      data-wa-intro="{{ wa_intro | escape }}"
+                      data-wa-title="{{ product.title | escape }}"
+                      data-wa-page="{{ shop.url | append: product.url | escape }}">
+                      {%- render 'icon', name: 'whatsapp' -%}
+                      <span>{{ block.settings.label | default: 'Order on WhatsApp' }}</span>
+                      <span class="visually-hidden"> (opens WhatsApp)</span>
+                    </a>
+                    {%- if block.settings.note != blank -%}
+                      <p class="pdp-wa__note">{{ block.settings.note }}</p>
+                    {%- endif -%}
+                  {%- endif -%}
+
                 {%- when 'reassurance' -%}
                   <ul class="pdp-assure" role="list">
                     {%- if block.settings.text_1 != blank -%}
@@ -300,7 +328,12 @@
     list-style: none;
     border-block: 1px solid var(--rule);
   }
-  .pdp-block--buy_buttons + .pdp-block--reassurance { margin-top: 20px; }
+  .pdp-block--buy_buttons + .pdp-block--reassurance,
+  .pdp-block--whatsapp_order + .pdp-block--reassurance { margin-top: 20px; }
+  .pdp-block--buy_buttons + .pdp-block--whatsapp_order { margin-top: 10px; }
+  .pdp-wa { min-height: 54px; }
+  .pdp-wa .icon { font-size: 18px; stroke-width: 1.5; }
+  .pdp-wa__note { margin: 10px 0 0; color: var(--fg-muted); font-size: var(--fs-small); text-align: center; }
   .pdp-assure__item {
     display: flex;
     flex-direction: column;
@@ -340,8 +373,8 @@
       "options": [
         { "value": "light", "label": "Light" },
         { "value": "cream", "label": "Cream" },
-        { "value": "forest", "label": "Dark green" },
-        { "value": "burgundy", "label": "Burgundy" }
+        { "value": "forest", "label": "Dark (primary)" },
+        { "value": "burgundy", "label": "Accent" }
       ],
       "default": "light"
     },
@@ -371,6 +404,17 @@
     { "type": "quantity", "name": "Quantity", "limit": 1, "settings": [] },
     { "type": "buy_buttons", "name": "Buy buttons", "limit": 1, "settings": [] },
     {
+      "type": "whatsapp_order",
+      "name": "WhatsApp order button",
+      "limit": 1,
+      "settings": [
+        { "type": "paragraph", "content": "Opens a WhatsApp chat with the number in Theme settings > Social media, prefilled with the product, the selected option and its link. Hidden when no number is set." },
+        { "type": "text", "id": "label", "label": "Button label", "default": "Order on WhatsApp" },
+        { "type": "text", "id": "message", "label": "Message start", "default": "Hello Mézaj, I would like to order:" },
+        { "type": "text", "id": "note", "label": "Note under the button", "default": "Or send us a DM on Instagram. Cash on delivery." }
+      ]
+    },
+    {
       "type": "reassurance",
       "name": "Reassurance",
       "limit": 1,
@@ -383,6 +427,7 @@
             { "value": "cash", "label": "Cash" },
             { "value": "truck", "label": "Truck" },
             { "value": "leaf", "label": "Leaf" },
+            { "value": "drop", "label": "Drop" },
             { "value": "honeycomb", "label": "Honeycomb" },
             { "value": "jar", "label": "Jar" },
             { "value": "hand", "label": "Hand" },
@@ -400,6 +445,7 @@
             { "value": "cash", "label": "Cash" },
             { "value": "truck", "label": "Truck" },
             { "value": "leaf", "label": "Leaf" },
+            { "value": "drop", "label": "Drop" },
             { "value": "honeycomb", "label": "Honeycomb" },
             { "value": "jar", "label": "Jar" },
             { "value": "hand", "label": "Hand" },
@@ -417,6 +463,7 @@
             { "value": "cash", "label": "Cash" },
             { "value": "truck", "label": "Truck" },
             { "value": "leaf", "label": "Leaf" },
+            { "value": "drop", "label": "Drop" },
             { "value": "honeycomb", "label": "Honeycomb" },
             { "value": "jar", "label": "Jar" },
             { "value": "hand", "label": "Hand" },
@@ -425,7 +472,7 @@
           ],
           "default": "leaf"
         },
-        { "type": "text", "id": "text_3", "label": "Text 3", "default": "Short benefit" }
+        { "type": "text", "id": "text_3", "label": "Text 3", "default": "Natural ingredients" }
       ]
     },
     { "type": "description", "name": "Description", "limit": 1, "settings": [] },

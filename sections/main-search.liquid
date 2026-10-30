@@ -17,7 +17,7 @@
           <input type="hidden" name="type" value="product">
         {%- endif -%}
         <span class="search__icon" aria-hidden="true">{% render 'icon', name: 'search' %}</span>
-        <input class="search__input" type="search" name="q" id="SearchInput-{{ section.id }}" value="{{ terms }}" placeholder="Honey, green tea, gift box" autocomplete="off">
+        <input class="search__input" type="search" name="q" id="SearchInput-{{ section.id }}" value="{{ terms }}" placeholder="Body oil, honey blend, gift set" autocomplete="off">
         <button type="submit" class="btn search__submit">Search</button>
       </form>
 
@@ -205,11 +205,11 @@
         },
         {
           "value": "forest",
-          "label": "Dark green"
+          "label": "Dark (primary)"
         },
         {
           "value": "burgundy",
-          "label": "Burgundy"
+          "label": "Accent"
         }
       ],
       "default": "light"

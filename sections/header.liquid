@@ -13,7 +13,10 @@
       {%- if settings.logo -%}
         {{ settings.logo | image_url: width: 600 | image_tag: width: settings.logo_width, loading: 'eager', alt: shop.name, class: 'site-header__logo-img' }}
       {%- else -%}
-        <span class="site-header__wordmark">{{ shop.name }}</span>
+        <span class="wordmark site-header__wordmark">
+          {%- if section.settings.show_emblem -%}<span class="wordmark__emblem">{% render 'icon', name: 'emblem' %}</span>{%- endif -%}
+          <span class="wordmark__name">{{ shop.name }}</span>
+        </span>
       {%- endif -%}
     </a>
 
@@ -85,7 +88,7 @@
     transition: box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
   }
   .site-header.is-scrolled {
-    box-shadow: 0 10px 30px -22px rgba(26, 58, 42, .45);
+    box-shadow: 0 10px 30px -22px color-mix(in srgb, var(--primary-deep) 55%, transparent);
   }
   .site-header__inner {
     min-height: 64px;
@@ -105,13 +108,9 @@
   }
   .site-header__logo:hover { color: var(--heading) !important; }
   .site-header__logo-img { height: auto; max-width: 100%; }
-  .site-header__wordmark {
-    font-family: var(--serif);
-    font-size: 1.45rem;
-    line-height: 1;
-    letter-spacing: -.01em;
-    white-space: nowrap;
-  }
+  .site-header__wordmark .wordmark__emblem { font-size: 15px; }
+  .site-header__wordmark .wordmark__emblem .icon { stroke-width: 1.5; }
+  .site-header__wordmark { font-size: 1.55rem; }
   .site-header__actions {
     grid-column: 3;
     justify-self: end;
@@ -146,12 +145,12 @@
     height: 17px;
     padding: 0 4px;
     border-radius: 999px;
-    background: var(--burgundy);
+    background: var(--brand-accent);
     color: var(--paper);
     font: 500 .64rem/17px var(--sans);
     text-align: center;
   }
-  .scheme-burgundy .site-header__count { background: var(--paper); color: var(--burgundy); }
+  .scheme-burgundy .site-header__count, .scheme-forest .site-header__count { background: var(--paper); color: var(--brand-accent); }
   .site-header__count[hidden] { display: none; }
   .site-header__toggle {
     grid-column: 1;
@@ -173,7 +172,7 @@
     overflow-y: auto;
     background: var(--paper);
     color: var(--ink);
-    box-shadow: 8px 0 40px rgba(20, 30, 24, .18);
+    box-shadow: 8px 0 40px color-mix(in srgb, var(--primary-deep) 20%, transparent);
     transform: translateX(-102%);
     visibility: hidden;
     transition: transform .35s var(--ease), visibility .35s var(--ease);
@@ -191,7 +190,7 @@
     border-bottom: 1px solid var(--line);
   }
   .site-header__nav-title {
-    color: var(--burgundy);
+    color: var(--label);
     font: 500 var(--fs-eyebrow)/1 var(--sans);
     letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
@@ -206,7 +205,7 @@
   .site-header .site-header__nav summary {
     display: block;
     padding: 14px var(--gutter);
-    color: var(--forest);
+    color: var(--primary);
     font-family: var(--serif);
     font-size: 1.6rem;
     line-height: 1.2;
@@ -214,8 +213,8 @@
     cursor: pointer;
   }
   .site-header .site-header__nav a:hover,
-  .site-header .site-header__nav summary:hover { color: var(--burgundy); }
-  .site-header .site-header__nav a[aria-current="page"] { color: var(--burgundy); }
+  .site-header .site-header__nav summary:hover { color: var(--label); }
+  .site-header .site-header__nav a[aria-current="page"] { color: var(--label); }
   .site-header .site-header__dropdown summary { list-style: none; }
   .site-header .site-header__dropdown summary::-webkit-details-marker { display: none; }
   .site-header .site-header__sub { list-style: none; margin: 0 0 8px; padding: 0; }
@@ -237,7 +236,7 @@
     position: fixed;
     inset: 0;
     z-index: 1;
-    background: rgba(20, 30, 24, .45);
+    background: var(--scrim);
   }
   .site-header__overlay[hidden] { display: none; }
   body.is-nav-locked { overflow: hidden; }
@@ -253,7 +252,8 @@
       gap: 32px;
     }
     .site-header__logo { grid-column: 1; justify-self: start; }
-    .site-header__wordmark { font-size: 1.7rem; }
+    .site-header__wordmark { font-size: 1.85rem; }
+    .site-header__wordmark .wordmark__emblem { font-size: 17px; }
     .site-header__toggle,
     .site-header__nav-top,
     .site-header__account-link,
@@ -358,8 +358,8 @@
       "options": [
         { "value": "light", "label": "Light" },
         { "value": "cream", "label": "Cream" },
-        { "value": "forest", "label": "Dark green" },
-        { "value": "burgundy", "label": "Burgundy" }
+        { "value": "forest", "label": "Dark (primary)" },
+        { "value": "burgundy", "label": "Accent" }
       ],
       "default": "light"
     },
@@ -367,6 +367,13 @@
       "type": "checkbox",
       "id": "sticky",
       "label": "Sticky header",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_emblem",
+      "label": "Show emblem above the shop name",
+      "info": "Shown when no logo image is set (Theme settings > Logo).",
       "default": true
     }
   ]

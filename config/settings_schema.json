@@ -1,8 +1,8 @@
 [
   {
     "name": "theme_info",
-    "theme_name": "Hive & Leaf",
-    "theme_author": "Hive & Leaf",
+    "theme_name": "Mézaj",
+    "theme_author": "Mézaj",
     "theme_version": "1.0.0",
     "theme_documentation_url": "https://shopify.dev/docs/themes",
     "theme_support_url": "https://help.shopify.com"
@@ -30,29 +30,149 @@
   {
     "name": "Colors",
     "settings": [
-      { "type": "color", "id": "color_paper", "label": "Paper (page background)", "default": "#fbf8f2" },
-      { "type": "color", "id": "color_cream", "label": "Cream (alternate background)", "default": "#f6f1e7" },
-      { "type": "color", "id": "color_forest", "label": "Forest (primary)", "default": "#1a3a2a" },
-      { "type": "color", "id": "color_burgundy", "label": "Burgundy (accent)", "default": "#6d1a36" },
-      { "type": "color", "id": "color_ink", "label": "Ink (body text)", "default": "#1d1d1b" },
-      { "type": "color", "id": "color_muted", "label": "Muted text", "default": "#6b6a63" },
-      { "type": "color", "id": "color_line", "label": "Lines and borders", "default": "#e3dccd" }
+      {
+        "type": "paragraph",
+        "content": "Colors are roles, not hues: Primary drives headings, buttons and dark sections; Accent is a sparing highlight; Gold is for hairlines and details. The theme ships two styles, Mézaj (espresso and gold) and Garden (forest green and burgundy). Keep text colors at 4.5:1 or more against Paper and Cream."
+      },
+      {
+        "type": "header",
+        "content": "Backgrounds"
+      },
+      {
+        "type": "color",
+        "id": "color_paper",
+        "label": "Paper (page background, light scheme)",
+        "default": "#fbf7f0"
+      },
+      {
+        "type": "color",
+        "id": "color_cream",
+        "label": "Cream (alternate background)",
+        "default": "#f3ebdf"
+      },
+      {
+        "type": "header",
+        "content": "Brand roles"
+      },
+      {
+        "type": "color",
+        "id": "color_forest",
+        "label": "Primary",
+        "info": "Headings, primary buttons, the Dark (primary) scheme and the footer.",
+        "default": "#3a2a20"
+      },
+      {
+        "type": "color",
+        "id": "color_burgundy",
+        "label": "Accent",
+        "info": "Used sparingly: sale badges, cart count, the Accent scheme.",
+        "default": "#6e2233"
+      },
+      {
+        "type": "color",
+        "id": "color_gold",
+        "label": "Gold detail",
+        "info": "Hairlines, the emblem, eyebrow rules and details on dark schemes. Never used for body text on light backgrounds.",
+        "default": "#b08a4a"
+      },
+      {
+        "type": "color",
+        "id": "color_label",
+        "label": "Labels on light backgrounds",
+        "info": "Eyebrows, small capitals and focus rings on Paper and Cream. Must reach 4.5:1 against both.",
+        "default": "#7f6033"
+      },
+      {
+        "type": "header",
+        "content": "Text and lines"
+      },
+      {
+        "type": "color",
+        "id": "color_ink",
+        "label": "Ink (body text)",
+        "default": "#2b211b"
+      },
+      {
+        "type": "color",
+        "id": "color_muted",
+        "label": "Muted text",
+        "default": "#6d6157"
+      },
+      {
+        "type": "color",
+        "id": "color_line",
+        "label": "Lines and borders",
+        "default": "#e6dccb"
+      }
+    ]
+  },
+  {
+    "name": "WhatsApp ordering",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "whatsapp_float",
+        "label": "Show floating WhatsApp button",
+        "info": "Uses the WhatsApp number from Social media. Hidden when that is empty.",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "whatsapp_float_label",
+        "label": "Button label",
+        "default": "Order on WhatsApp"
+      },
+      {
+        "type": "text",
+        "id": "whatsapp_message",
+        "label": "Default message",
+        "default": "Hello Mézaj, I would like to place an order."
+      }
     ]
   },
   {
     "name": "Typography",
     "settings": [
-      { "type": "font_picker", "id": "type_heading_font", "label": "Heading font", "default": "playfair_display_n4" },
-      { "type": "font_picker", "id": "type_body_font", "label": "Body font", "default": "work_sans_n4" }
+      {
+        "type": "font_picker",
+        "id": "type_heading_font",
+        "label": "Heading font",
+        "info": "A refined, high-contrast serif suits the Mézaj wordmark.",
+        "default": "playfair_display_n4"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_body_font",
+        "label": "Body font",
+        "default": "work_sans_n4"
+      }
     ]
   },
   {
     "name": "Social media",
     "settings": [
-      { "type": "text", "id": "social_instagram", "label": "Instagram URL" },
-      { "type": "text", "id": "social_facebook", "label": "Facebook URL" },
-      { "type": "text", "id": "social_tiktok", "label": "TikTok URL" },
-      { "type": "text", "id": "social_whatsapp", "label": "WhatsApp number or link" }
+      {
+        "type": "text",
+        "id": "social_instagram",
+        "label": "Instagram URL",
+        "info": "Also used by the Instagram grid section."
+      },
+      {
+        "type": "text",
+        "id": "social_facebook",
+        "label": "Facebook URL"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok",
+        "label": "TikTok URL"
+      },
+      {
+        "type": "text",
+        "id": "social_whatsapp",
+        "label": "WhatsApp number or link",
+        "info": "A number such as +961 70 123 456 becomes a wa.me link. Anything else is used as a link."
+      }
     ]
   }
 ]

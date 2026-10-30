@@ -1,0 +1,40 @@
+{%- comment -%}
+  Outputs the WhatsApp link built from Theme settings > Social media > WhatsApp (nothing when empty).
+  A phone number (digits with optional +, spaces, dashes, brackets) becomes https://wa.me/<digits>;
+  anything else is used as a link. Capture it:
+    {% capture wa_url %}{% render 'whatsapp-url', message: 'Hello' %}{% endcapture %}
+  Optional `message` is url-encoded into ?text= for wa.me / whatsapp.com links.
+{%- endcomment -%}
+{%- liquid
+  assign wa = settings.social_whatsapp | strip
+  assign wa_digits = wa | remove: '+' | remove: ' ' | remove: '-' | remove: '(' | remove: ')' | remove: '.'
+  assign wa_is_number = false
+  if wa_digits != blank
+    assign wa_is_number = true
+    assign wa_chars = wa_digits | split: ''
+    for c in wa_chars
+      unless '0123456789' contains c
+        assign wa_is_number = false
+        break
+      endunless
+    endfor
+  endif
+  assign wa_url = ''
+  if wa_is_number
+    assign wa_url = 'https://wa.me/' | append: wa_digits
+  elsif wa != blank
+    assign wa_url = wa
+  endif
+  if wa_url != blank and message != blank
+    if wa_url contains 'wa.me' or wa_url contains 'whatsapp.com'
+      # url_encode turns spaces into '+'; WhatsApp expects %20 (a literal '+' is already %2B).
+      assign wa_text = message | url_encode | replace: '+', '%20'
+      if wa_url contains '?'
+        assign wa_url = wa_url | append: '&text=' | append: wa_text
+      else
+        assign wa_url = wa_url | append: '?text=' | append: wa_text
+      endif
+    endif
+  endif
+  echo wa_url
+-%}

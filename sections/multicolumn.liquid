@@ -40,7 +40,7 @@
 <style>
   .multicolumn__intro { margin: 0; max-width: 420px; }
   .multicolumn__grid { display: grid; gap: 28px; margin: 0; padding: 0; list-style: none; }
-  .multicolumn__item { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 20px; align-items: start; }
+  .multicolumn__item { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 20px; align-items: start; align-content: start; }
   .multicolumn__media.media-frame { aspect-ratio: 1; }
   .multicolumn__media .img-blank::after { display: none; }
   .multicolumn__media .img-blank { outline-offset: -8px; }
@@ -130,11 +130,11 @@
         },
         {
           "value": "forest",
-          "label": "Dark green"
+          "label": "Dark (primary)"
         },
         {
           "value": "burgundy",
-          "label": "Burgundy"
+          "label": "Accent"
         }
       ],
       "default": "light"

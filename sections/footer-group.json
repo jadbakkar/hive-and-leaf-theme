@@ -1,1 +1,54 @@
-{"type":"footer","name":"Footer group","sections":{"footer":{"type":"footer","settings":{"color_scheme":"forest"},"blocks":{"menu_shop":{"type":"menu","settings":{"heading":"Shop","menu":"main-menu"}},"menu_info":{"type":"menu","settings":{"heading":"Info","menu":"footer"}},"text_contact":{"type":"text","settings":{"heading":"Contact","text":"<p>Beirut, Lebanon</p><p>Cash on delivery available</p>"}},"newsletter":{"type":"newsletter","settings":{"heading":"Newsletter heading","text":"Short newsletter description goes here."}}},"block_order":["menu_shop","menu_info","text_contact","newsletter"]}},"order":["footer"]}
+{
+  "type": "footer",
+  "name": "Footer group",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "settings": {
+        "color_scheme": "forest",
+        "show_brand": true,
+        "show_emblem": true,
+        "brand_text": "Skin, hair and herbal care from Lebanon. Everyday rituals, beautifully made."
+      },
+      "blocks": {
+        "menu_shop": {
+          "type": "menu",
+          "settings": {
+            "heading": "Shop",
+            "menu": "main-menu"
+          }
+        },
+        "menu_info": {
+          "type": "menu",
+          "settings": {
+            "heading": "Info",
+            "menu": "footer"
+          }
+        },
+        "text_contact": {
+          "type": "text",
+          "settings": {
+            "heading": "Order",
+            "text": "<p>Cash on delivery across Lebanon</p><p>Order on WhatsApp or by Instagram DM</p>"
+          }
+        },
+        "newsletter": {
+          "type": "newsletter",
+          "settings": {
+            "heading": "Stay in touch",
+            "text": "New rituals and gift sets, once a month at most."
+          }
+        }
+      },
+      "block_order": [
+        "menu_shop",
+        "menu_info",
+        "text_contact",
+        "newsletter"
+      ]
+    }
+  },
+  "order": [
+    "footer"
+  ]
+}

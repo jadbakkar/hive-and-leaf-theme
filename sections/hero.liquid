@@ -25,6 +25,7 @@
         {{ section.settings.image | image_url: width: 2400 | image_tag: class: 'img-fill', loading: 'eager', sizes: '100vw', widths: '750, 1100, 1500, 2000, 2400', alt: '' }}
       {%- else -%}
         <div class="img-blank img-blank--bg" data-label="Hero image"></div>
+        <span class="hero__emblem">{%- render 'icon', name: 'emblem' -%}</span>
       {%- endif -%}
     </div>
     <div class="hero__overlay" aria-hidden="true"></div>
@@ -113,31 +114,49 @@
     inset: 0;
     z-index: 0;
     background:
-      linear-gradient(0deg, rgba(12, 22, 16, .55) 0%, rgba(12, 22, 16, 0) 60%),
-      linear-gradient(90deg, rgba(12, 22, 16, .45) 0%, rgba(12, 22, 16, .1) 70%);
+      linear-gradient(0deg, color-mix(in srgb, var(--primary-deep) 60%, transparent) 0%, transparent 60%),
+      linear-gradient(90deg, color-mix(in srgb, var(--primary-deep) 50%, transparent) 0%, color-mix(in srgb, var(--primary-deep) 10%, transparent) 70%);
   }
-  .hero--align-center .hero__overlay { background: rgba(12, 22, 16, .42); }
+  .hero--align-center .hero__overlay { background: color-mix(in srgb, var(--primary-deep) 45%, transparent); }
   .hero--no-image .hero__overlay { display: none; }
   .hero--full .hero__text { color: color-mix(in srgb, var(--paper) 86%, transparent); }
 
-  /* Background placeholder: big faint pattern, sprig and caption tucked bottom-right. */
+  /* Background placeholder: the dark scheme surface lit by a soft diagonal of sunlight,
+     a gold inset frame and a large line-art emblem on the right; caption tucked bottom-right. */
   .img-blank--bg {
     height: 100%;
     aspect-ratio: auto;
     border-radius: 0;
     place-content: end;
     justify-items: end;
-    padding: 0 clamp(28px, 4vw, 56px) clamp(28px, 4vw, 48px) 0;
+    padding: 0 clamp(36px, 4vw, 64px) clamp(36px, 4vw, 56px) 0;
+    outline: 1px solid color-mix(in srgb, var(--detail) 38%, transparent);
     outline-offset: -20px;
     background:
-      radial-gradient(ellipse 60% 70% at 25% 65%, var(--ph-bg) 20%, transparent 100%),
-      var(--ph-pattern) center / 42px 72px repeat,
-      var(--ph-bg);
+      radial-gradient(ellipse 50% 70% at 76% 42%, color-mix(in srgb, var(--gold) 14%, transparent), transparent 70%),
+      linear-gradient(122deg, transparent 34%, color-mix(in srgb, var(--paper) 5%, transparent) 44%, transparent 52%, transparent 60%, color-mix(in srgb, var(--paper) 4%, transparent) 68%, transparent 76%),
+      linear-gradient(180deg, transparent 50%, color-mix(in srgb, #000 18%, transparent)),
+      var(--bg);
   }
+  .img-blank--bg::before { display: none; }
+  .hero__emblem {
+    position: absolute;
+    top: 50%;
+    right: clamp(40px, 12vw, 220px);
+    z-index: 0;
+    width: clamp(180px, 22vw, 340px);
+    height: auto;
+    color: var(--detail);
+    opacity: .75;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+  .hero__emblem .icon { width: 100%; height: auto; stroke-width: .32; }
   @media (max-width: 767px) {
     .hero--full { min-height: 600px; min-height: 82svh; }
     .hero--full .hero__buttons .btn { flex: 1 1 auto; }
-    .img-blank--bg { padding: 32px 32px 0 0; place-content: start end; }
+    .img-blank--bg { padding: 30px 28px 0 0; place-content: start end; outline-offset: -10px; }
+    .hero__emblem { top: 20%; right: 50%; width: 120px; transform: translate(50%, -50%); opacity: .6; }
   }
 </style>
 
@@ -167,12 +186,12 @@
       ],
       "default": "left"
     },
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "info": "Small label above the heading", "default": "Raw honey · Loose-leaf tea" },
-    { "type": "text", "id": "heading", "label": "Heading", "default": "Page heading" },
-    { "type": "textarea", "id": "text", "label": "Text", "default": "Short supporting text goes here." },
-    { "type": "text", "id": "button_label", "label": "Button label", "default": "Button" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "info": "Small label above the heading", "default": "Skin & hair care · Honey blends · Herbs" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "The art of everyday care" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Everyday rituals, beautifully made." },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop the collection" },
     { "type": "url", "id": "button_link", "label": "Button link", "info": "Defaults to all products" },
-    { "type": "text", "id": "button_2_label", "label": "Second button label", "default": "Button" },
+    { "type": "text", "id": "button_2_label", "label": "Second button label", "default": "Our story" },
     { "type": "url", "id": "button_2_link", "label": "Second button link", "info": "Defaults to all collections" },
     { "type": "image_picker", "id": "image", "label": "Image" },
     {
@@ -182,8 +201,8 @@
       "options": [
         { "value": "light", "label": "Light" },
         { "value": "cream", "label": "Cream" },
-        { "value": "forest", "label": "Dark green" },
-        { "value": "burgundy", "label": "Burgundy" }
+        { "value": "forest", "label": "Dark (primary)" },
+        { "value": "burgundy", "label": "Accent" }
       ],
       "default": "light"
     },

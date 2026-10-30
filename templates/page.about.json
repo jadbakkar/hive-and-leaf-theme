@@ -33,7 +33,7 @@
         "value_nourish": {
           "type": "column",
           "settings": {
-            "builtin_icon": "honeycomb",
+            "builtin_icon": "drop",
             "title": "Title",
             "text": "Short description goes here."
           }

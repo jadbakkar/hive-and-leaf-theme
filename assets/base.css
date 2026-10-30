@@ -1,14 +1,21 @@
 /* ==========================================================================
-   Hive & Leaf: design system
+   Mézaj: design system
    --------------------------------------------------------------------------
-   Brand tokens (--paper, --cream, --forest, --burgundy, --ink, --muted, --line,
-   --serif, --sans, --heading-weight) come from snippets/css-variables.liquid.
-   Everything else here is derived from them, so merchants' color changes flow
-   through the whole system.
+   Brand ROLE tokens come from snippets/css-variables.liquid (theme settings):
+     --paper, --cream      light backgrounds
+     --primary             headings, primary buttons, dark scheme, footer   (setting color_forest)
+     --brand-accent        sparing accent: badges, cart count, accent scheme (setting color_burgundy)
+     --gold                hairlines, emblem, eyebrow rules, details on dark (never text on light)
+     --label               eyebrows / small caps / focus on light (AA on paper and cream)
+     --ink, --muted, --line, --serif, --sans, --heading-weight
+   --forest and --burgundy remain as aliases of --primary and --brand-accent.
+   Everything else is derived from these, so a preset (config/settings_data.json:
+   "Mézaj" espresso + gold, "Garden" forest + burgundy) restyles the whole system.
 
    Contents
      1. Tokens (space, type, radius, motion, derived colors)
-     2. Color schemes (light, cream, forest, burgundy) -> semantic tokens
+     2. Color schemes -> semantic tokens. Class names keep their legacy values
+        (scheme-light, scheme-cream, scheme-forest = "Dark (primary)", scheme-burgundy = "Accent")
      3. Base elements and type scale
      4. Layout: container, section spacing, adjacent-section logic
      5. Type primitives: .eyebrow, .lede, .rte, .measure
@@ -59,42 +66,55 @@
   --dur: .25s;
 
   /* Derived brand colors */
-  --forest-deep: color-mix(in srgb, var(--forest) 78%, #000);
-  --sage: color-mix(in srgb, var(--forest) 7%, color-mix(in srgb, var(--cream) 92%, var(--honey)));
-  --sage-strong: color-mix(in srgb, var(--forest) 16%, var(--cream));
-  --honey: #b8893b;                         /* hairline detail only */
-  --honey-pale: #dcc497;                    /* eyebrow/details on dark schemes */
+  --primary-deep: color-mix(in srgb, var(--primary) 78%, #000);
+  --gold-pale: color-mix(in srgb, var(--gold) 55%, var(--paper));   /* eyebrows and details on dark schemes */
+  /* Warm stone / linen surfaces (placeholders, tiles): cream warmed with gold, a breath of primary. */
+  --stone: color-mix(in srgb, var(--primary) 5%, color-mix(in srgb, var(--cream) 86%, var(--gold)));
+  --stone-strong: color-mix(in srgb, var(--primary) 12%, color-mix(in srgb, var(--cream) 85%, var(--gold)));
   --line-strong: color-mix(in srgb, var(--ink) 22%, transparent);
-  --shadow-soft: 0 1px 0 rgba(26, 58, 42, .06), 0 12px 32px -18px rgba(26, 58, 42, .28);
+  --shadow-soft: 0 1px 0 color-mix(in srgb, var(--primary) 6%, transparent), 0 12px 32px -18px color-mix(in srgb, var(--primary) 30%, transparent);
+  --scrim: color-mix(in srgb, var(--primary-deep) 50%, transparent);
+  /* Legacy aliases (Hive & Leaf names) */
+  --forest-deep: var(--primary-deep);
+  --honey: var(--gold);
+  --honey-pale: var(--gold-pale);
+  --sage: var(--stone);
+  --sage-strong: var(--stone-strong);
 }
 
 /* 2. Color schemes ----------------------------------------------------------
    Each scheme sets semantic tokens; components only use the semantic ones:
    --bg, --fg, --heading, --fg-muted, --rule, --accent, --eyebrow,
-   --btn-bg/-fg, --btn-hover-bg/-fg, --ph-bg/--ph-fg (placeholders), --field-border. */
+   --btn-bg/-fg, --btn-hover-bg/-fg, --ph-bg/--ph-fg/--ph-light (placeholders), --field-border,
+   --focus (focus ring), --detail (gold hairlines and ornaments).
+   Light schemes: --accent is the AA-safe --label colour (link hover, icons); the brand accent
+   (wine/burgundy) is kept for badges and the Accent scheme so it stays rare. */
 :root,
 .scheme-light {
   --bg: var(--paper);
   --fg: var(--ink);
-  --heading: var(--forest);
+  --heading: var(--primary);
   --fg-muted: var(--muted);
   --rule: var(--line);
-  --accent: var(--burgundy);
-  --eyebrow: var(--burgundy);
-  --eyebrow-rule: var(--honey);
-  --btn-bg: var(--forest);
+  --accent: var(--label);
+  --eyebrow: var(--label);
+  --eyebrow-rule: var(--gold);
+  --detail: var(--gold);
+  --focus: var(--label);
+  --btn-bg: var(--primary);
   --btn-fg: var(--paper);
-  --btn-hover-bg: var(--burgundy);
+  --btn-hover-bg: var(--brand-accent);
   --btn-hover-fg: var(--paper);
-  --outline-fg: var(--forest);
-  --ph-bg: var(--sage);
-  --ph-fg: color-mix(in srgb, var(--forest) 55%, var(--cream));
-  --ph-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='48' viewBox='0 0 28 48'%3E%3Cpath d='M14 0L28 8V24L14 32L0 24V8Z M14 32V48' fill='none' stroke='%231a3a2a' stroke-opacity='.07' stroke-width='1'/%3E%3C/svg%3E");
+  --outline-fg: var(--primary);
+  --ph-bg: var(--stone);
+  --ph-fg: color-mix(in srgb, var(--primary) 52%, var(--cream));
+  --ph-light: rgba(255, 255, 255, .55);
+  --ph-shade: color-mix(in srgb, var(--primary) 9%, transparent);
   --field-border: var(--line-strong);
 }
 .scheme-cream {
   --bg: var(--cream);
-  --ph-bg: color-mix(in srgb, var(--forest) 9%, color-mix(in srgb, var(--cream) 94%, var(--honey)));
+  --ph-bg: var(--stone-strong);
   --rule: color-mix(in srgb, var(--ink) 13%, var(--cream));
 }
 .scheme-forest,
@@ -104,27 +124,30 @@
   --fg-muted: color-mix(in srgb, var(--paper) 78%, transparent);
   --muted: color-mix(in srgb, var(--paper) 78%, transparent);
   --rule: color-mix(in srgb, var(--paper) 18%, transparent);
-  --accent: var(--honey-pale);
-  --eyebrow: var(--honey-pale);
-  --eyebrow-rule: var(--honey-pale);
+  --accent: var(--gold-pale);
+  --eyebrow: var(--gold-pale);
+  --eyebrow-rule: var(--gold);
+  --detail: var(--gold);
+  --focus: var(--gold-pale);
   --btn-bg: var(--paper);
   --btn-hover-bg: var(--cream);
   --outline-fg: var(--paper);
   --ph-fg: color-mix(in srgb, var(--paper) 55%, transparent);
-  --ph-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='48' viewBox='0 0 28 48'%3E%3Cpath d='M14 0L28 8V24L14 32L0 24V8Z M14 32V48' fill='none' stroke='%23fbf8f2' stroke-opacity='.05' stroke-width='1'/%3E%3C/svg%3E");
+  --ph-light: rgba(255, 255, 255, .07);
+  --ph-shade: rgba(0, 0, 0, .14);
   --field-border: color-mix(in srgb, var(--paper) 40%, transparent);
 }
 .scheme-forest {
-  --bg: var(--forest);
-  --btn-fg: var(--forest);
-  --btn-hover-fg: var(--forest);
-  --ph-bg: color-mix(in srgb, var(--paper) 7%, var(--forest));
+  --bg: var(--primary);
+  --btn-fg: var(--primary);
+  --btn-hover-fg: var(--primary);
+  --ph-bg: color-mix(in srgb, var(--paper) 7%, var(--primary));
 }
 .scheme-burgundy {
-  --bg: var(--burgundy);
-  --btn-fg: var(--burgundy);
-  --btn-hover-fg: var(--burgundy);
-  --ph-bg: color-mix(in srgb, var(--paper) 8%, var(--burgundy));
+  --bg: var(--brand-accent);
+  --btn-fg: var(--brand-accent);
+  --btn-hover-fg: var(--brand-accent);
+  --ph-bg: color-mix(in srgb, var(--paper) 8%, var(--brand-accent));
 }
 .scheme-light, .scheme-cream, .scheme-forest, .scheme-burgundy {
   background: var(--bg);
@@ -152,7 +175,7 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: var(--space-m) 0; }
 h1, h2, h3, h4, .h1, .h2, .h3, .h4, .display {
   font-family: var(--serif);
   font-weight: var(--heading-weight, 400);
-  color: var(--heading, var(--forest));
+  color: var(--heading, var(--primary));
   line-height: 1.12;
   letter-spacing: var(--tracking-heading);
   margin: 0 0 .5em;
@@ -291,7 +314,7 @@ h4, .h4 { font-size: var(--fs-h4); line-height: 1.3; letter-spacing: 0; }
   color: var(--_fg);
 }
 .btn:disabled, .btn[aria-disabled="true"] { opacity: .5; cursor: not-allowed; }
-.btn--forest { --_bg: var(--forest); --_fg: var(--paper); --_border: var(--forest); }
+.btn--forest { --_bg: var(--primary); --_fg: var(--paper); --_border: var(--primary); }
 .btn--outline {
   --_bg: transparent;
   --_fg: var(--outline-fg);
@@ -363,7 +386,7 @@ h4, .h4 { font-size: var(--fs-h4); line-height: 1.3; letter-spacing: 0; }
 .input:hover, .field input:hover, .field textarea:hover, .field select:hover { border-color: var(--fg); }
 .input:focus-visible, .field input:focus-visible, .field textarea:focus-visible, .field select:focus-visible {
   border-color: var(--fg);
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
 .field label, .label {
@@ -382,10 +405,13 @@ h4, .h4 { font-size: var(--fs-h4); line-height: 1.3; letter-spacing: 0; }
 
 /* 9. Media ------------------------------------------------------------------- */
 /* Designed placeholder shown until a merchant picks an image.
-   Tinted surface, faint honeycomb at the edges, inset hairline frame, a line-art tea sprig
-   and a small caption. Caption reads "Image" or the element's data-label attribute.
+   Warm stone / linen surface with a soft diagonal of window light and shadow, a fine linen
+   weave, an inset hairline frame, the line-art emblem (drop above two leaves) and a small caption.
+   Caption reads "Image" or the element's data-label attribute. All colours come from scheme
+   tokens (--ph-bg, --ph-fg, --ph-light, --ph-shade, --detail).
    Ratio modifiers: --square, --portrait, --wide, --landscape; or set aspect-ratio inline. */
 .img-blank {
+  --ph-emblem: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 44' fill='none' stroke='black' stroke-width='1.15' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 3c-3.6 4.6-6.4 9-6.4 12.6a6.4 6.4 0 0 0 12.8 0C26.4 12 23.6 7.6 20 3Z'/%3E%3Cpath d='M19.2 40.5C11.4 40 5.9 34.6 4.6 27.4c7.9.3 13.4 5.6 14.6 13.1Z'/%3E%3Cpath d='M20.8 40.5c7.8-.5 13.3-5.9 14.6-13.1-7.9.3-13.4 5.6-14.6 13.1Z'/%3E%3Cpath d='M9.5 31.2 19.2 40.5M30.5 31.2l-9.7 9.3'/%3E%3C/svg%3E");
   position: relative;
   display: grid;
   place-content: center;
@@ -396,20 +422,21 @@ h4, .h4 { font-size: var(--fs-h4); line-height: 1.3; letter-spacing: 0; }
   overflow: hidden;
   border-radius: var(--radius);
   background:
-    radial-gradient(ellipse 75% 70% at 50% 50%, var(--ph-bg) 45%, transparent 100%),
-    var(--ph-pattern) center / 28px 48px repeat,
+    radial-gradient(ellipse 70% 60% at 22% 12%, var(--ph-light), transparent 70%),
+    linear-gradient(118deg, transparent 38%, var(--ph-shade) 58%, transparent 82%),
+    repeating-linear-gradient(90deg, color-mix(in srgb, var(--ph-fg) 3%, transparent) 0 1px, transparent 1px 3px),
     var(--ph-bg);
   color: var(--ph-fg);
-  outline: 1px solid color-mix(in srgb, var(--ph-fg) 24%, transparent);
+  outline: 1px solid color-mix(in srgb, var(--detail, var(--ph-fg)) 45%, transparent);
   outline-offset: -12px;
 }
 .img-blank::before {
   content: "";
-  width: 44px;
-  height: 56px;
+  width: 40px;
+  height: 44px;
   background: currentColor;
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 56' fill='none' stroke='black' stroke-width='1.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 54C22 40 22 24 22 6'/%3E%3Cpath d='M22 40C14 39.5 9 34 8 27c7.5 0 13 5 14 13Z'/%3E%3Cpath d='M15 33.5 22 40'/%3E%3Cpath d='M22 29c8-.5 13-6 14-13-7.5 0-13 5-14 13Z'/%3E%3Cpath d='M29 22.5 22 29'/%3E%3Cpath d='M22 17c-5.5-.5-9-4.5-9.5-10 5.5 0 9 4 9.5 10Z'/%3E%3Cpath d='M22 6c1.6-2 3.2-3 5-3.4-.3 2-1.6 3.6-5 3.4Z'/%3E%3C/svg%3E") center / contain no-repeat;
-          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 56' fill='none' stroke='black' stroke-width='1.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 54C22 40 22 24 22 6'/%3E%3Cpath d='M22 40C14 39.5 9 34 8 27c7.5 0 13 5 14 13Z'/%3E%3Cpath d='M15 33.5 22 40'/%3E%3Cpath d='M22 29c8-.5 13-6 14-13-7.5 0-13 5-14 13Z'/%3E%3Cpath d='M29 22.5 22 29'/%3E%3Cpath d='M22 17c-5.5-.5-9-4.5-9.5-10 5.5 0 9 4 9.5 10Z'/%3E%3Cpath d='M22 6c1.6-2 3.2-3 5-3.4-.3 2-1.6 3.6-5 3.4Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  -webkit-mask: var(--ph-emblem) center / contain no-repeat;
+          mask: var(--ph-emblem) center / contain no-repeat;
 }
 .img-blank::after {
   content: "Image";
@@ -422,7 +449,7 @@ h4, .h4 { font-size: var(--fs-h4); line-height: 1.3; letter-spacing: 0; }
 .img-blank--portrait { aspect-ratio: 4 / 5; }
 .img-blank--landscape { aspect-ratio: 3 / 2; }
 .img-blank--wide { aspect-ratio: 16 / 9; }
-.img-blank--small::before { width: 32px; height: 40px; }
+.img-blank--small::before { width: 30px; height: 33px; }
 /* Placeholders never become tall slabs on phones. */
 @media (max-width: 767px) {
   .img-blank--portrait { aspect-ratio: 4 / 4.4; }
@@ -496,7 +523,7 @@ h4, .h4 { font-size: var(--fs-h4); line-height: 1.3; letter-spacing: 0; }
   display: inline-block;
   padding: .35em .7em;
   border-radius: 2px;
-  background: var(--burgundy);
+  background: var(--brand-accent);
   color: var(--paper);
   font-size: .62rem;
   font-weight: 500;
@@ -505,23 +532,28 @@ h4, .h4 { font-size: var(--fs-h4); line-height: 1.3; letter-spacing: 0; }
   line-height: 1.3;
 }
 .badge--muted { background: var(--paper); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
-.scheme-burgundy .price__badge, .scheme-forest .price__badge { background: var(--paper); color: var(--burgundy); }
+.scheme-burgundy .price__badge, .scheme-forest .price__badge { background: var(--paper); color: var(--brand-accent); }
 .price__sold-out { color: var(--fg-muted); font-size: .68rem; letter-spacing: .16em; text-transform: uppercase; }
 
 /* 11. Utilities and accessibility ---------------------------------------------- */
-.text-burgundy { color: var(--burgundy); }
-.bg-burgundy { background: var(--burgundy); color: var(--paper); }
+.text-burgundy { color: var(--brand-accent); }
+.bg-burgundy { background: var(--brand-accent); color: var(--paper); }
 .hairline { border: 0; border-top: 1px solid var(--rule); margin: 0; }
+
+/* Wordmark: the shop name in the display serif with the gold emblem (drop above two leaves)
+   stacked above it. Used by the header and footer when no logo image is set. */
+.wordmark { display: inline-flex; flex-direction: column; align-items: center; gap: 4px; }
+.wordmark__emblem { display: block; color: var(--detail); line-height: 0; }
+.wordmark__name { display: block; font-family: var(--serif); font-weight: var(--heading-weight, 400); line-height: 1; letter-spacing: .005em; white-space: nowrap; }
 
 .skip-link {
   position: absolute; left: var(--space-xs); top: var(--space-xs); z-index: 1000;
-  padding: .7em 1.2em; background: var(--forest); color: var(--paper);
+  padding: .7em 1.2em; background: var(--primary); color: var(--paper);
   border-radius: var(--radius); text-decoration: none; transform: translateY(-200%);
 }
 .skip-link:focus { transform: none; }
 .visually-hidden { position: absolute !important; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-:focus-visible { outline: 2px solid var(--accent, var(--burgundy)); outline-offset: 3px; }
-.scheme-forest :focus-visible, .scheme-burgundy :focus-visible { outline-color: var(--honey-pale); }
+:focus-visible { outline: 2px solid var(--focus, var(--label)); outline-offset: 3px; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -717,7 +749,7 @@ h4, .h4 { font-size: var(--fs-h4); line-height: 1.3; letter-spacing: 0; }
 }
 .pill:hover { border-color: var(--fg); }
 .pill-input:checked + .pill { background: var(--btn-bg); border-color: var(--btn-bg); color: var(--btn-fg); }
-.pill-input:focus-visible + .pill { outline: 2px solid var(--accent); outline-offset: 2px; }
+.pill-input:focus-visible + .pill { outline: 2px solid var(--focus); outline-offset: 2px; }
 .pill.is-unavailable { color: var(--fg-muted); border-style: dashed; text-decoration: line-through; text-decoration-thickness: 1px; }
 .pill-input:checked + .pill.is-unavailable { background: transparent; border-color: var(--fg); color: var(--fg-muted); }
 
@@ -751,7 +783,7 @@ h4, .h4 { font-size: var(--fs-h4); line-height: 1.3; letter-spacing: 0; }
 .check:hover input { border-color: var(--fg); }
 .check input:checked { background: var(--btn-bg); border-color: var(--btn-bg); }
 .check input:checked::before { transform: scale(1); }
-.check input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.check input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 .check input:disabled + span { color: var(--fg-muted); }
 .check__count { margin-left: auto; color: var(--fg-muted); font-size: var(--fs-small); font-variant-numeric: tabular-nums; }
 
@@ -788,7 +820,7 @@ h4, .h4 { font-size: var(--fs-h4); line-height: 1.3; letter-spacing: 0; }
   transition: border-color var(--dur) var(--ease);
 }
 .select select:hover { border-color: var(--fg); }
-.select select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.select select:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 .select option { color: var(--ink); background: var(--paper); }
 .select::after {
   content: "";
@@ -904,7 +936,7 @@ h4, .h4 { font-size: var(--fs-h4); line-height: 1.3; letter-spacing: 0; }
 .prose strong { font-weight: 600; color: var(--fg); }
 .prose ul { padding: 0; list-style: none; }
 .prose ul > li { position: relative; padding-left: 1.7em; }
-.prose ul > li::before { content: ""; position: absolute; top: .9em; left: 0; width: 12px; height: 1px; background: var(--honey); }
+.prose ul > li::before { content: ""; position: absolute; top: .9em; left: 0; width: 12px; height: 1px; background: var(--detail); }
 .prose ol { padding-left: 1.4em; }
 .prose ol > li::marker { color: var(--accent); font-family: var(--serif); }
 .prose li + li { margin-top: .5em; }
@@ -912,8 +944,8 @@ h4, .h4 { font-size: var(--fs-h4); line-height: 1.3; letter-spacing: 0; }
   margin-block: 2.4em;
   margin-inline: 0;
   padding: 1.6em 0 1.5em;
-  border-top: 1px solid var(--honey);
-  border-bottom: 1px solid var(--honey);
+  border-top: 1px solid var(--detail);
+  border-bottom: 1px solid var(--detail);
   color: var(--heading);
   font: italic var(--heading-weight, 400) clamp(1.45rem, 1.2rem + 1vw, 2rem)/1.35 var(--serif);
   letter-spacing: -.005em;
@@ -934,7 +966,7 @@ h4, .h4 { font-size: var(--fs-h4); line-height: 1.3; letter-spacing: 0; }
 .prose img { height: auto; margin-inline: auto; border-radius: var(--radius); }
 .prose figure { margin-inline: 0; }
 .prose figcaption { margin-top: 10px; color: var(--fg-muted); font-size: var(--fs-small); }
-.prose hr { width: 72px; margin: 3em auto; border-top-color: var(--honey); }
+.prose hr { width: 72px; margin: 3em auto; border-top-color: var(--detail); }
 .prose table { width: 100%; border-collapse: collapse; font-size: var(--fs-small); }
 .prose th, .prose td { padding: 12px 8px; border-bottom: 1px solid var(--rule); text-align: left; }
 .prose--dropcap > p:first-child::first-letter {
